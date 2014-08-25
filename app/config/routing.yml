@@ -1,0 +1,14 @@
+eye3_control:
+    resource: "@Eye3ControlBundle/Controller"
+    type:     annotation
+    prefix:   /
+
+login:
+    path:     /login
+    defaults: { _controller: Eye3ControlBundle:Security:login }
+
+login_check:
+    path: /login_check
+
+home:
+    path: /
