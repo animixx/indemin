@@ -1,0 +1,3 @@
+eye3_control_homepage:
+    path:     /
+    defaults: { _controller: Eye3ControlBundle:Default:index }
