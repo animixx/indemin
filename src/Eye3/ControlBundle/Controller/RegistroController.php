@@ -28,7 +28,7 @@ class RegistroController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('Eye3ControlBundle:Datos')->findAll();
+        $entities = $em->getRepository('Eye3ControlBundle:Datos')->findMax();
 
         return array(
             'entities' => $entities,
