@@ -96,7 +96,7 @@
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<span class="user-info">
 									<small>Welcome,</small>
-									{{app.user.username}}
+									{{app.user.nombre}}
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>
@@ -319,7 +319,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="#">
+								<a href="{{path('registro_historial')}}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Historial
 								</a>
@@ -351,7 +351,7 @@
 							</li>
 
 							<li class="">
-								<a href="#">
+								<a href="{{path('uso_sistema')}}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Ver uso del sistema
 								</a>

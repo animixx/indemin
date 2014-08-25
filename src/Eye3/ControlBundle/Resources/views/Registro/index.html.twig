@@ -1,0 +1,31 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Datos</h1>
+
+    <table class="records_list" border=1>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Camion</th>
+                <th>Grua</th>
+                <th>Inicio</th>
+                <th>Duracion</th>
+                <th>Hit</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities|slice(0, 10) %}
+            <tr>
+                <td>{{ entity.id }}</td>
+                <td>{{ entity.camion }}</td>
+                <td>{{ entity.grua }}</td>
+                <td>{% if entity.inicio %}{{ entity.inicio|date('Y-m-d H:i') }}{% endif %}</td>
+                <td>{{ entity.duracion|date('i:s') }}</td>
+                <td>{{ entity.hit }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}
