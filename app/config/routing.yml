@@ -10,5 +10,9 @@ login:
 login_check:
     path: /login_check
 
-home:
+logout:
+    path: /logout
+
+home_page:
     path: /
+    defaults: { _controller: Eye3ControlBundle:Default:index }
