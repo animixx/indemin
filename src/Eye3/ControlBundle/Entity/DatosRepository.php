@@ -27,5 +27,20 @@ class DatosRepository extends EntityRepository
 				return null;
 			}
 		}
+		
+		public function tiempo_dia()
+		{
+		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
+			$query = $this->getEntityManager()
+				->createQuery(
+					'SELECT p FROM Eye3ControlBundle:Datos p'
+				)->setMaxResults(10);
+
+			try {
+				return $query->getResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				return null;
+			}
+		}
 
 }
