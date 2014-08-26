@@ -18,10 +18,12 @@ class EstadisticasController extends Controller
 		$em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia();
-		
+
         return array(
-                // ...
-            );    }
+                'entities' => $entities,
+            );    
+			
+	}
 
     /**
      * @Route("/camion")

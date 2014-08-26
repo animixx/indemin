@@ -32,15 +32,16 @@ class DatosRepository extends EntityRepository
 		{
 		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
 			$query = $this->getEntityManager()
-				->createQuery(
-					'SELECT p FROM Eye3ControlBundle:Datos p'
-				)->setMaxResults(10);
+				->getConnection()
+				->prepare(
+					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM Datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua'
+				);
+				$query->bindValue('fecha', '2013-08-15');
 
-			try {
-				return $query->getResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				return null;
-			}
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+			 
 		}
 
 }
