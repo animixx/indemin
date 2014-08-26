@@ -34,7 +34,7 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM Datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua'
+					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua'
 				);
 				$query->bindValue('fecha', '2013-08-15');
 
