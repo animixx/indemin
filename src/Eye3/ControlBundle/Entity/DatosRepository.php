@@ -28,15 +28,30 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function tiempo_dia()
+		public function max_tiempo_dia($fecha = '2014-07-10%')
+		{
+		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 
+			$query = $this->getEntityManager()
+				->createQuery(
+					'SELECT COUNT(DISTINCT p.camion ) as datos , p.grua from Eye3ControlBundle:Datos p where p.inicio LIKE :fecha GROUP BY p.grua ORDER BY p.grua,p.camion'
+				)->setParameter('fecha', $fecha);
+
+			try {
+				return $query->getResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				return null;
+			}
+		}
+		
+		public function tiempo_dia($fecha = '2014-07-10')
 		{
 		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua'
+					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua order by d.grua , d.camion'
 				);
-				$query->bindValue('fecha', '2013-08-15');
+				$query->bindValue('fecha', $fecha );
 
 			 $query->execute();
 			 

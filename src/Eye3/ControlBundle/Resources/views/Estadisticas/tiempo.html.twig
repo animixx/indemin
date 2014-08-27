@@ -2,152 +2,160 @@
 
 {% block title %}Control Estadisticas{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/datepicker.css') }}" />
+
+{% endblock %}
+
 {% block body %}
-<div class="row">
-	<div class="col-xs-4">
-			En Grúa 1
-			<table class="table table-striped table-bordered table-hover">
-						<thead>
-							<tr>
-								<th class="center">
-									Cami&oacute;n
-								</th>
-								<th class="center">
-									Tiempo de Uso
-								</th>
-								<th class="center">
-									Veces
-								</th>
-								
-							</tr>
-						</thead>
 
-						<tbody>
-							{% set totales = {} %}
-							{% set total = 0 %}
-							{% set aux = 0 %}
-							{% for row in entities if row.grua == "Grúa-1" %}
-							{% set hora = row.tiempo_total|date("H")%}
-							{% set min = row.tiempo_total|date("i") %}
-							{% set seg = row.tiempo_total|date("s") %}
-							{% set totales = totales|merge({ (aux) : hora*3600+min*60+seg }) %}
-							{% set total = total + hora*3600+min*60+seg %}
-							<tr>
-								<td class="center">
-									{{row.camion}}
-								</td>
-								<td class="center">
-									{{row.tiempo_total}}
-								</td>
-								<td class="center">
-									{{row.veces}}
-								</td>
-							</tr>
-								{% set aux = aux+1 %}
-								{% endfor %}
-							<tr>
-								<td class="center">
-									Total :
-								</td>
-								<td class="center">
-									{{total|date("i:s ")}}
-								</td>
-							</tr>
-						</tbody>
-			</table>
-	</div>	<!-- /.col -->	
-	
-
-	<div class="col-xs-4">
-		<div class="widget-box">
-			
-
-			<div class="widget-body">
-				<div class="widget-main">
-					<!-- #section:plugins/charts.flotchart -->
-					<div id="piechart-placeholder"></div>
-
-					
-					
-				</div><!-- /.widget-main -->
-			</div><!-- /.widget-body -->
-		</div><!-- /.widget-box -->
-	</div><!-- /.col -->
-		
-		<div class="col-xs-3">
-			
-			<table class="table table-striped table-bordered table-hover">
-						<thead>
-							<tr>
-								<th class="center">
-									Cami&oacute;n
-								</th>
-								<th class="center">
-									Promedio
-								</th>
-																
-							</tr>
-						</thead>
-
-						<tbody>
-							{% for row in entities if row.grua == "Grúa-1" %}
-							<tr>
-								<td class="center">
-									{{row.camion}}
-								</td>
-								<td class="center">
-									{{row.veces}}
-								</td>
-								
-							</tr>
-								
-							{% endfor %}
-						</tbody>
-			</table>
-	</div>	<!-- /.col -->	
-		
-</div><!-- /.row -->
-<div class="row">		
-	<div class="col-xs-4">		
-			En Grúa 2
-			<table class="table table-striped table-bordered table-hover">
-						<thead>
-							<tr>
-								<th class="center">
-									Cami&oacute;n
-								</th>
-								<th class="center">
-									Tiempo de Uso
-								</th>
-								<th class="center">
-									Veces
-								</th>
-								
-							</tr>
-						</thead>
-
-						<tbody>
-							{% for row in entities if row.grua == "Grúa-2" %}
-							<tr>
-								<td class="center">
-									{{row.camion}}
-								</td>
-								<td class="center">
-									{{dump(row)}}
-								</td>
-								<td class="center">
-									{{row.veces}}
-								</td>
-							</tr>
-								{% endfor %}
-						</tbody>
-			</table>
-
+	<div class="row" >
+		<div class="col-xs-5"></div>
+		<div class="col-xs-2">
+			<!-- #section:plugins/date-time.datepicker -->
+			<div class="input-group">
+				<input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="10-07-2014" />
+				<span class="input-group-addon">
+					<i class="fa fa-calendar bigger-110"></i>
+				</span>
+			</div>
+		</div>
 	</div>
-</div>
+	
+{% set totales = {} %}
 
+{% for grua in tablas %}
+
+		
+
+	{% if loop.length == 1 and grua.grua == "Grúa-2" %}
+			<div class="row">
+				Sin datos para la Grúa-1
+			</div><!-- /.row -->
+	{% endif %}	
 	
-	
+			<div class="row">
+				<div class="col-12">	En {{grua.grua}} </div>
+				<div class="col-xs-4">
+						<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th class="center">
+												Cami&oacute;n
+											</th>
+											<th class="center">
+												Tiempo de Uso
+											</th>
+											<th class="center">
+												Veces
+											</th>
+											
+										</tr>
+									</thead>
+
+									<tbody>
+										{% set total = 0 %}
+										{% set aux = 0 %}
+										{% for row in datos if row.grua == grua.grua %}
+										{% set hora = row.tiempo_total|date("G")%}
+										{% set min = row.tiempo_total|date("i") %}
+										{% set seg = row.tiempo_total|date("s") %}
+										{% set totales = totales|merge({ (aux) : hora*3600+min*60+seg }) %}
+										{% set total = total + hora*3600+min*60+seg %}
+										<tr>
+											<td class="center">
+												{{row.camion}}
+											</td>
+											<td class="center">
+												{{row.tiempo_total}}
+											</td>
+											<td class="center">
+												{{row.veces}}
+											</td>
+										</tr>
+											{% set aux = aux+1 %}
+											{% endfor %}
+										<tr>
+											<td class="center">
+												Total :
+											</td>
+											<td class="center">
+												{{total|date("G:i:s", false)}} 
+											</td>
+										</tr>
+									</tbody>
+						</table>
+				</div>	<!-- /.col -->	
+				
+
+				<div class="col-xs-4">
+					<div class="widget-box">
+						
+
+						<div class="widget-body">
+							<div class="widget-main">
+								<!-- #section:plugins/charts.flotchart -->
+								<div id="piechart-placeholder{{ loop.index }}"></div>
+
+								
+								
+							</div><!-- /.widget-main -->
+						</div><!-- /.widget-body -->
+					</div><!-- /.widget-box -->
+				</div><!-- /.col -->
+					
+					<div class="col-xs-3">
+						
+						<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th class="center">
+												Cami&oacute;n
+											</th>
+											<th class="center">
+												Promedio
+											</th>
+																			
+										</tr>
+									</thead>
+
+									<tbody>
+										{% for row in datos if row.grua == grua.grua %}
+										<tr>
+											<td class="center">
+												{{row.camion}}
+											</td>
+											<td class="center">{% if loop.parent.loop.first %}
+																{% set nest=loop.index0 %}
+																{% else %}
+																{% set nest= loop.index0 + tablas.0.datos %} 
+																{# <-------------------------    arreglar este hack ---------------------#}
+																{% endif %}
+												{{(totales[nest]/row.veces)|round(0, 'floor')|date("i:s", false) }} 
+											</td>
+											
+										</tr>
+											
+										{% endfor %}
+									</tbody>
+						</table>
+				</div>	<!-- /.col -->	
+					
+			</div><!-- /.row -->
+			
+	{% if not loop.last %}		
+		<div class="hr hr32 hr-dotted"></div>		
+	{% endif %}		
+		
+	{% if loop.length == 1 and grua.grua == "Grúa-1" %}
+			<div class="row">
+				Sin datos para la Grúa-2
+			</div><!-- /.row -->
+	{% endif %}		
+
+{% endfor %}			
+				
 	
 <!-- basic scripts -->
 
@@ -163,6 +171,15 @@
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.pie.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-timepicker.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/moment.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/daterangepicker.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datetimepicker.min.js') }}"></script>
+		
+		<!-- ace scripts -->
+		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}"></script>
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
@@ -190,12 +207,29 @@
 			  //but sometimes it brings up errors with normal resize event handlers
 			  $.resize.throttleWindow = false;
 			
-			  var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
-			  var data = [
-				{ label: "{{entities.0.camion}}",  data: {{totales[0]}}, color: "#68BC31"},
-				{ label: "{{entities.1.camion}}",  data: {{totales[1]}}, color: "#DA5430"},
-				{ label: "{{entities.2.camion}}",  data: {{totales[2]}}, color: "#FEE074"}
+			  var placeholder1 = $('#piechart-placeholder1').css({'width':'90%' , 'min-height':'150px'});
+
+				{% set corte = tablas.0.datos %} {# <-------------------------    arreglar este hack ---------------------#}
+				{% set colores = ["#68BC31", "#2091CF", "#AF4E96" , "#DA5430", "#FEE074"] %}
+				
+				
+			  var data1 = [
+				{% for i in datos[:corte] %}
+					{% set cual = loop.index0 %}
+					{ label: "{{i.camion}}",  data: {{totales[loop.index0]}}, color: "{{ cycle(colores, loop.index0 ) }}"}
+					{% if not loop.last %},{% endif %}
+				{% endfor %}
 			  ]
+			  var placeholder2 = $('#piechart-placeholder2').css({'width':'90%' , 'min-height':'150px'});
+			  
+			   var data2 = [
+				{% for i in datos[corte:] %}
+					{% set cual = loop.index0 %}
+					{ label: "{{i.camion}}",  data: {{totales[loop.index0+corte]}}, color: "{{ cycle(colores, loop.index0+corte ) }}"}
+					{% if not loop.last %},{% endif %}
+				{% endfor %}
+			  ]
+
 			  function drawPieChart(placeholder, data, position) {
 			 	  $.plot(placeholder, data, {
 					series: {
@@ -225,21 +259,30 @@
 					}
 				 })
 			 }
-			 drawPieChart(placeholder, data);
+			 drawPieChart(placeholder1, data1);
+			 drawPieChart(placeholder2, data2);
 			
-			 /**
-			 we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
-			 so that's not needed actually.
-			 */
-			 placeholder.data('chart', data);
-			 placeholder.data('draw', drawPieChart);
-			
+					
 			
 			  //pie chart tooltip example
 			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
 			  var previousPoint = null;
 			
-			  placeholder.on('plothover', function (event, pos, item) {
+			  placeholder1.on('plothover', function (event, pos, item) {
+				if(item) {
+					if (previousPoint != item.seriesIndex) {
+						previousPoint = item.seriesIndex;
+						var tip = item.series['label'] + " : " + item.series['percent']+'%';
+						$tooltip.show().children(0).text(tip);
+					}
+					$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
+				} else {
+					$tooltip.hide();
+					previousPoint = null;
+				}
+				
+			 });
+			  placeholder2.on('plothover', function (event, pos, item) {
 				if(item) {
 					if (previousPoint != item.seriesIndex) {
 						previousPoint = item.seriesIndex;
@@ -256,14 +299,28 @@
 			
 			
 			
+			})
 			
-			
-			
-			
+			jQuery(function($) {
 				
 			
+				
+				//datepicker plugin
+				//link
+				$('.date-picker').datepicker({
+					autoclose: true,
+					todayHighlight: true
+				})
+				//show datepicker when clicking on the icon
+				.next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
 			
-			})
+			
+			
+			
+			});
+				
 		</script>
 	
 {% endblock %}

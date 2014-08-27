@@ -17,10 +17,12 @@ class EstadisticasController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia();
+        $tablas = $em->getRepository('Eye3ControlBundle:Datos')->max_tiempo_dia();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia();
 
         return array(
-                'entities' => $entities,
+                'tablas' => $tablas,
+                'datos' => $datos,
             );    
 			
 	}
