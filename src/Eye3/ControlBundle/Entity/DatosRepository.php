@@ -59,20 +59,26 @@ class DatosRepository extends EntityRepository
 			 
 		}
 		
-		public function camion_dia($fecha = '2013-08-13')
+		public function camion_dia($fecha = '2013-08-13%' , $camion = 'camion-4')
 		{
-		// SELECT camion,inicio,duracion, grua   FROM `datos` where date(inicio) = '2013-08-13'   order by camion,grua
-			$query = $this->getEntityManager()
-				->createQuery(
-					'SELECT d.camion, d.inicio, d.duracion, d.grua  FROM Eye3ControlBundle:Datos d where d.inicio LIKE :fecha ORDER BY d.camion, d.grua'
-				)->setParameter('fecha', $fecha);
+		// (SELECT camion,grua,inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
+		// union
+		// (SELECT camion,grua,inicio,duracion,1,1,1 FROM datos WHERE  camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
 
-			try {
-				return $query->getResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				return null;
-			}
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'(SELECT camion,grua,null,min(duracion) as tiempo,max(duracion) as max,avg(TIME_TO_SEC(duracion)) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = :camion and inicio like :fecha  ORDER BY grua )
+		union
+		 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),1,1,1 FROM datos WHERE  camion = :camion and inicio like :fecha  ORDER BY grua )'
+
+			);
+				$query->bindValue('fecha', $fecha );
+				$query->bindValue('camion', $camion );
+
+			 $query->execute();
 			 
+			 return $query->fetchAll();
 		}
 
 }
