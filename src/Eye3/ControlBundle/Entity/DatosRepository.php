@@ -28,7 +28,7 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function max_tiempo_dia($fecha = '2014-07-10%')
+		public function max_tiempo_dia($fecha = '2013-08-24%')
 		{
 		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 
 			$query = $this->getEntityManager()
@@ -43,7 +43,7 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function tiempo_dia($fecha = '2014-07-10')
+		public function tiempo_dia($fecha = '2013-08-24')
 		{
 		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
 			$query = $this->getEntityManager()
