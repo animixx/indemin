@@ -9,6 +9,6 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('Eye3ControlBundle:Default:index.html.twig');
+		return $this->redirect($this->generateUrl('eye3_control_estadisticas_tiempo'));
     }
 }
