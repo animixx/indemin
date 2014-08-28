@@ -30,10 +30,10 @@ class DatosRepository extends EntityRepository
 		
 		public function max_tiempo_dia($fecha = '2013-08-24%')
 		{
-		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 
+		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 ??
 			$query = $this->getEntityManager()
 				->createQuery(
-					'SELECT COUNT(DISTINCT p.camion ) as datos , p.grua from Eye3ControlBundle:Datos p where p.inicio LIKE :fecha GROUP BY p.grua ORDER BY p.grua,p.camion'
+					'SELECT COUNT(DISTINCT p.camion ) as datos , p.grua FROM Eye3ControlBundle:Datos p where p.inicio LIKE :fecha GROUP BY p.grua ORDER BY p.grua,p.camion'
 				)->setParameter('fecha', $fecha);
 
 			try {
@@ -56,6 +56,22 @@ class DatosRepository extends EntityRepository
 			 $query->execute();
 			 
 			 return $query->fetchAll();
+			 
+		}
+		
+		public function camion_dia($fecha = '2013-08-13')
+		{
+		// SELECT camion,inicio,duracion, grua   FROM `datos` where date(inicio) = '2013-08-13'   order by camion,grua
+			$query = $this->getEntityManager()
+				->createQuery(
+					'SELECT d.camion, d.inicio, d.duracion, d.grua  FROM Eye3ControlBundle:Datos d where d.inicio LIKE :fecha ORDER BY d.camion, d.grua'
+				)->setParameter('fecha', $fecha);
+
+			try {
+				return $query->getResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				return null;
+			}
 			 
 		}
 

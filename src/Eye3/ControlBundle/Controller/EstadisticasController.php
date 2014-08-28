@@ -33,9 +33,15 @@ class EstadisticasController extends Controller
      */
     public function camionAction()
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia();
+
         return array(
-                // ...
-            );    }
+                'datos' => $datos,
+            );    
+		
+	}
 
     /**
      * @Route("/grua")
