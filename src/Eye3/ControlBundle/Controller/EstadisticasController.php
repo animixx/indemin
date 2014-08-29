@@ -35,10 +35,12 @@ class EstadisticasController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia();
 
         return array(
                 'datos' => $datos,
+                'camiones' => $camiones,
             );    
 		
 	}

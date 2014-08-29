@@ -43,6 +43,22 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
+		
+		public function camiones()
+		{
+		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 ??
+			$query = $this->getEntityManager()
+				->createQuery(
+					'SELECT DISTINCT p.camion FROM Eye3ControlBundle:Datos p ORDER BY p.camion'
+				);
+
+			try {
+				return $query->getResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				return null;
+			}
+		}
+		
 		public function tiempo_dia($fecha = '2013-08-24')
 		{
 		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
@@ -61,20 +77,20 @@ class DatosRepository extends EntityRepository
 		
 		public function camion_dia($fecha = '2013-08-13%' , $camion = 'camion-4')
 		{
-		// (SELECT camion,grua,inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
+		// (SELECT camion,grua,null,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
 		// union
 		// (SELECT camion,grua,inicio,duracion,1,1,1 FROM datos WHERE  camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion,grua,null,min(duracion) as tiempo,max(duracion) as max,avg(TIME_TO_SEC(duracion)) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = :camion and inicio like :fecha  ORDER BY grua )
+					'(SELECT camion,grua,count(*) as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE inicio like :fecha GROUP BY camion,grua )
 		union
-		 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),1,1,1 FROM datos WHERE  camion = :camion and inicio like :fecha  ORDER BY grua )'
+		 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),1,1,1 FROM datos WHERE inicio like :fecha )
+		 ORDER BY camion,grua,max,inicio'
 
 			);
 				$query->bindValue('fecha', $fecha );
-				$query->bindValue('camion', $camion );
 
 			 $query->execute();
 			 

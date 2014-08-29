@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block body %}
-
 {{dump(datos)}}
 	<div class="row" >
 		<div class="col-md-4 col-xs-2"></div>
@@ -23,59 +22,54 @@
 			</div>
 		</div>
 	</div>
-
+{#dump(camiones)#}
 	<div class="row">
 		<div class="col-12">
-			<div class="page-header"><h1>{{datos.0.camion}} </h1></div>
+			<div class="page-header"><h1>Camiones</h1></div>
 		</div>
-		<div class="col-xs-12 col-md-5">
+		<div class="col-12 ">
 				<table class="table table-striped table-bordered table-hover">
-
-					<tr>
-						<td class="center">
-						Cant Ciclos
-						</td>
-						<td class="center">
-						{{(datos|length)-1}}
-						</td>
-					</tr>
-					<tr>
-						<td class="center">
-						Ciclo &Delta;t Max.
-						</td>
-						<td class="center">
-						{{datos.0.max}}
-						</td>
-					</tr>
-					<tr>
-						<td class="center">
-						Ciclo &Delta;t Min.
-						</td>
-						<td class="center">
-						{{datos.0.tiempo}}
-						</td>
-					</tr>
-					<tr>
-						<td class="center">
-						Duracion Promedio
-						</td>
-						<td class="center">
-						{{datos.0.prom|round|date("G:i:s", false)}}
-						</td>
-					</tr>
-					<tr>
-						<td class="center">
-							Total periodo:
-						</td>
-						<td class="center">
-						{{datos.0.suma}}
-						</td>
-					</tr>
+				{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
+				{% set contenido = [ null, datos.0.inicio, datos.0.max, datos.0.tiempo , datos.0.prom, datos.0.suma] %} 
+				{% for row in 0..4 %}
+					{% if loop.first %}
+					<thead>
+						<tr>
+							<td >
+							&nbsp;
+							</td>
+							{% for camion in camiones %}
+							<td class="center">
+							{{camion.camion}}
+							</td>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+					{% endif %}
+						<tr>
+							<td class="center">
+							{{ cycle(titulos, loop.index )|raw }}
+							</td>
+							{% for camion in camiones %}
+								<td class="center">
+								{% if camion.camion == datos.0.camion %}
+									{{ cycle(contenido, loop.parent.loop.index ) }}
+								{% elseif camion.camion < datos.0.camion %}
+									como ?
+								{% endif %}
+								</td>
+							{% endfor %}
+						</tr>
+					{% if loop.last %}
+					</tbody>
+					{% endif %}
+				{% endfor %}
 				</table>
 		</div>	<!-- /.col -->	
 		
 
-		<div class=" col-xs-12 col-md-6 ">
+		<div class=" col-12 ">
 			<div class="widget-box">
 				
 
@@ -95,7 +89,6 @@
 			
 	</div><!-- /.row -->
 			
-	<div class="hr hr32 hr-double"></div>		
 			
 	
 <!-- basic scripts -->
@@ -127,7 +120,7 @@
 	  //but sometimes it brings up errors with normal resize event handlers
 	  $.resize.throttleWindow = false;
 	
-	  var placeholder = $('#placeholder').css({'width':'90%' , 'min-height':'200px'});
+	  var placeholder = $('#placeholder').css({'width':'90%' , 'min-height':'300px'});
 				
 			var data = [
 		{data: [[1, 218],[2, 175],[3, 216]]}
