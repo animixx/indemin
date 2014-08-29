@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block body %}
-{{dump(datos)}}
 	<div class="row" >
 		<div class="col-md-4 col-xs-2"></div>
 		<div class="col-md-3 col-xs-8">
@@ -29,8 +28,9 @@
 		</div>
 		<div class="col-12 ">
 				<table class="table table-striped table-bordered table-hover">
+				
 				{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
-				{% set contenido = [ null, datos.0.inicio, datos.0.max, datos.0.tiempo , datos.0.prom, datos.0.suma] %} 
+				{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
 				{% for row in 0..4 %}
 					{% if loop.first %}
 					<thead>
@@ -51,12 +51,14 @@
 							<td class="center">
 							{{ cycle(titulos, loop.index )|raw }}
 							</td>
+							{% set pivote = 0 %}
 							{% for camion in camiones %}
 								<td class="center">
-								{% if camion.camion == datos.0.camion %}
-									{{ cycle(contenido, loop.parent.loop.index ) }}
-								{% elseif camion.camion < datos.0.camion %}
-									como ?
+								{% if camion.camion == datos[pivote]['camion'] %}
+									{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
+									{% if datos|length > (pivote + datos[pivote]['inicio'] + 1)%}
+										{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
+									{% endif %}
 								{% endif %}
 								</td>
 							{% endfor %}
@@ -122,28 +124,20 @@
 	
 	  var placeholder = $('#placeholder').css({'width':'90%' , 'min-height':'300px'});
 				
-			var data = [
-		{data: [[1, 218],[2, 175],[3, 216]]}
-    ];
+		var data = [[-373597200000, 315.71], [-370918800000, 317.45], [-368326800000, 317.50],  [-99968400000, 319.79]]; 
 
-	$.plot( placeholder, data, {
-		series: {
-			lines: {
-				fill: true,
-			},
-			bars: {
-				show: true,
-				align:'center',
-				barWidth: 0.2,
-			}	
-		},
-		xaxis: {
-            min : 0
-		},
-		yaxis: {
-			min: 0
-		}
-	});
+$.plot(placeholder, data, {
+        yaxis: {
+        },
+        xaxis: { mode: "time",minTickSize: [1, "hour"],
+                min: (new Date("2000/01/01")).getTime(),
+                max: (new Date("2000/01/02")).getTime()
+},
+        "lines": {"show": "true"},
+        "points": {"show": "true"},
+        clickable:true,hoverable: true
+});
+
 			})
 			
 			jQuery(function($) {
