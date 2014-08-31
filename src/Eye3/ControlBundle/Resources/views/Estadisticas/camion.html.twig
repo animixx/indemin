@@ -89,10 +89,10 @@
 				
 
 				<div class="widget-body">
-					<div class="widget-main">
+					<div class="widget-main" style="display:flex;">
 						<!-- #section:plugins/charts.flotchart -->
 						<div id="placeholder" ></div>
-
+						<p id="choices" style="float:right; width:85px;"></p>
 						
 						
 					</div><!-- /.widget-main -->
@@ -132,7 +132,7 @@
 	  //but sometimes it brings up errors with normal resize event handlers
 	  $.resize.throttleWindow = false;
 	
-	  var placeholder = $('#placeholder').css({'width':'90%' , 'min-height':'300px'});
+	  var placeholder = $('#placeholder').css({'width':'85%' , 'min-height':'230px'});
 				
 				 
 		var d = [
@@ -181,8 +181,37 @@
 								
 			
 			
+			
+		var i = 0;
+		$.each(d, function(key, val) {
+			val.color = i;
+			++i;
+		});
 
-		$.plot(placeholder, d, {
+		// insert checkboxes 
+		var choiceContainer = $("#choices");
+		$.each(d, function(key, val) {
+			choiceContainer.append("<br/><input type='checkbox' name='" + key +
+				"' checked='checked' id='id" + key + "'></input>" +
+				"<label for='id" + key + "'>"
+				+ val.label + "</label>");
+		});
+
+		choiceContainer.find("input").click(plotAccordingToChoices);
+
+		function plotAccordingToChoices() {
+
+			var graficos = [];
+
+			choiceContainer.find("input:checked").each(function () {
+				var key = $(this).attr("name");
+				if (key && d[key]) {
+					graficos.push(d[key]);
+				}
+			});
+
+			if (graficos.length > 0) {
+			$.plot(placeholder, graficos, {
 										series: {
 											bars: {
 												show: true,
@@ -216,6 +245,12 @@
 											labelBoxBorderColor: "none"											
 										}
 									});
+			}
+		}
+
+		plotAccordingToChoices();
+		
+		
 									
 			// tooltip format
 			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
@@ -242,8 +277,7 @@
 				}
 				
 			 });
-			
-			
+			 
 			})
 			
 			jQuery(function($) {
