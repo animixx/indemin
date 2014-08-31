@@ -240,7 +240,7 @@
 				if(item) {
 					if (previousPoint != item.seriesIndex) {
 						previousPoint = item.seriesIndex;
-						var tip = item.series['label'] + " : " + item.series['percent']+'%';
+						var tip = item.series['label'] + " : " + Math.floor(item.series['percent']* 100) / 100 +'%';
 						$tooltip.show().children(0).text(tip);
 					}
 					$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
@@ -279,3 +279,4 @@
 		</script>
 	
 {% endblock %}
+{# restricciones de la pagina, la base de datos debe contener datos('grua') y sus datos deben ser en formato "Grúa-x no siendo mayor a 9 unidades #}

@@ -21,14 +21,17 @@
 			</div>
 		</div>
 	</div>
-{#dump(camiones)#}
+{#dump(datos)#}
 	<div class="row">
 		<div class="col-12">
 			<div class="page-header"><h1>Camiones</h1></div>
 		</div>
 		<div class="col-12 ">
 				<table class="table table-striped table-bordered table-hover">
-				
+				{% set info = 1 %}
+				{% set tiempo_min = null %}
+				{% set tiempo_max = null %}
+				{% set ciclos_max = null %}
 				{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
 				{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
 				{% for row in 0..4 %}
@@ -56,6 +59,16 @@
 								<td class="center">
 								{% if camion.camion == datos[pivote]['camion'] %}
 									{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
+									
+									{% if tiempo_min > datos[pivote]['tiempo'] or tiempo_min is null %}
+										{% set tiempo_min = datos[pivote]['tiempo']|split(':') %}
+									{% endif %}
+									{% if tiempo_max < datos[pivote]['max'] %}
+										{% set tiempo_max = datos[pivote]['max']|split(':') %}
+									{% endif %}
+									{% if ciclos_max < datos[pivote]['inicio'] %}
+										{% set ciclos_max = datos[pivote]['inicio'] %}
+									{% endif %}
 									{% if datos|length > (pivote + datos[pivote]['inicio'] + 1)%}
 										{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
 									{% endif %}
@@ -91,8 +104,8 @@
 			
 	</div><!-- /.row -->
 			
-			
 	
+		
 <!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -105,14 +118,11 @@
 <!-- page specific plugin scripts -->
 
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.time.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
 		
-{# no compatibles con la el menu deslizable, asi que se desactivan , estaban para habilitar la seleccion del calendario con el icono 	
-	<!-- ace scripts -->
-		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}"></script>
-		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}"></script>
-#}
+
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
 
@@ -124,20 +134,116 @@
 	
 	  var placeholder = $('#placeholder').css({'width':'90%' , 'min-height':'300px'});
 				
-		var data = [[-373597200000, 315.71], [-370918800000, 317.45], [-368326800000, 317.50],  [-99968400000, 319.79]]; 
+				 
+		var d = [
+				{% set contador = 0   %}
+				{% set serializador = 0   %}
+				{% set llenado  = null %}
+				{% set extra  = null %}
+				{% for camion in datos %}
+					{% if loop.first %}
+					{
+						 "label": "{{camion.camion}}",
+						 "data": 
+						 [
+								{% set temp = camion.inicio    %}
+					{% elseif camion.max is null %}
+									{% set contador = contador +1 %}
+									{% set llenado   %}
+											{{ llenado}}[{{contador}}, {{camion.tiempo}}] 
+												{% if contador != temp %},{% endif %}
+									{% endset %}
+									{% set extra   %}
+											{{ extra}}'{{camion.inicio|date("d/m/y \\a \\l\\a\\s H:i",false)}}'
+												{% if contador != temp %},{% endif %}
+									{% endset %}			
+							{% if loop.last %}
+									{{ llenado}}	
+									], "extra": [{{ extra}} ] }
+								]; 
+							{% endif %}
+					{% else %}
+										{{ llenado}}	
+						], "extra": [{{ extra}} ] }
+										{% set serializador  = serializador+0.1 %}
+										{% set contador  = 0+serializador %}
+										{% set llenado  = null %}
+										{% set extra  = null %}
+										{% set temp = camion.inicio    %}
+										,
+										{
+						 "label": "{{camion.camion}}",
+						 "data": 
+						 [
+									
+					{% endif %}
+				{% endfor %}
+								
+			
+			
 
-$.plot(placeholder, data, {
-        yaxis: {
-        },
-        xaxis: { mode: "time",minTickSize: [1, "hour"],
-                min: (new Date("2000/01/01")).getTime(),
-                max: (new Date("2000/01/02")).getTime()
-},
-        "lines": {"show": "true"},
-        "points": {"show": "true"},
-        clickable:true,hoverable: true
-});
+		$.plot(placeholder, d, {
+										series: {
+											bars: {
+												show: true,
+												barWidth: 0.1,
+												align: {% if serializador %}"right"{% else %}"center"{% endif %}
+											}
+										},
+										yaxis: {
+											  min : {{tiempo_min[1]*60+tiempo_min[2]-50}},
+											  tickFormatter: function (v, axis) {
+													  var minutes = Math.floor(v / 60);
+													  var seconds = v - minutes * 60;
+															return minutes + ":"+ seconds;
+														}
 
+										},
+										xaxis: {
+											min : 0,
+											tickSize: 1,
+											tickDecimals: 0, 
+											max : {{ciclos_max+1}},
+											autoscaleMargin: .10
+											
+										},
+										grid: {
+											hoverable: true,
+											clickable: false,
+											borderWidth: 1
+										},
+										legend: {
+											labelBoxBorderColor: "none"											
+										}
+									});
+									
+			// tooltip format
+			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+			  var previousPoint = null;
+									
+			placeholder.on('plothover', function (event, pos, item) {
+				if(item) {
+					if (previousPoint != item.seriesIndex) {
+						previousPoint = item.seriesIndex;
+						
+						var minutes = Math.floor(item.datapoint[1] / 60);
+						var seconds = item.datapoint[1] - minutes * 60;
+						var x = minutes + ":"+ seconds;
+						
+						
+						
+						var tip = item.series['label'] + " en total demoró " + x + ". El dia  "+ item.series['extra'][item.dataIndex];
+						$tooltip.show().children(0).text(tip);
+					}
+					$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
+				} else {
+					$tooltip.hide();
+					previousPoint = null;
+				}
+				
+			 });
+			
+			
 			})
 			
 			jQuery(function($) {
@@ -159,7 +265,11 @@ $.plot(placeholder, data, {
 			
 			
 			});
+			
+			
 				
 		</script>
+					
+		
 	
 {% endblock %}

@@ -77,17 +77,18 @@ class DatosRepository extends EntityRepository
 		
 		public function camion_dia($fecha = '2013-08-13%' , $camion = 'camion-4')
 		{
-		// (SELECT camion,grua,null,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
+		// (SELECT camion,grua,count(*) as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE inicio like '2013-08-13%'  GROUP BY camion,grua )
 		// union
-		// (SELECT camion,grua,inicio,duracion,1,1,1 FROM datos WHERE  camion = 'camion-4' and inicio like '2013-08-13%'  ORDER BY grua )
+		// (SELECT camion,grua,inicio,DATE_FORMAT(duracion,"%i,%s"),null,null,null FROM datos WHERE  inicio like '2013-08-13%'  )
+		//  ORDER BY camion,max desc, grua , inicio
 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
 					'(SELECT camion,grua,count(*) as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE inicio like :fecha GROUP BY camion,grua )
-		union
-		 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),1,1,1 FROM datos WHERE inicio like :fecha )
-		 ORDER BY camion,grua,max,inicio'
+				union
+					 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),null,null,null FROM datos WHERE inicio like :fecha )
+					 ORDER BY camion,max desc, grua , inicio'
 
 			);
 				$query->bindValue('fecha', $fecha );
