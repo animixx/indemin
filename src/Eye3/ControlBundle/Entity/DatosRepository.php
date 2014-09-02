@@ -28,25 +28,8 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function max_tiempo_dia($fecha = '2013-08-24%')
-		{
-		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
-			$query = $this->getEntityManager()
-				->createQuery(
-					'SELECT COUNT(DISTINCT p.camion ) as datos , p.grua FROM Eye3ControlBundle:Datos p where p.inicio LIKE :fecha GROUP BY p.grua ORDER BY p.grua,p.camion'
-				)->setParameter('fecha', $fecha);
-
-			try {
-				return $query->getResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				return null;
-			}
-		}
-		
-		
 		public function camiones()
 		{
-		//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
 			$query = $this->getEntityManager()
 				->createQuery(
 					'SELECT DISTINCT p.camion FROM Eye3ControlBundle:Datos p ORDER BY p.camion'
@@ -59,13 +42,21 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function tiempo_dia($fecha = '2013-08-24')
+		public function tiempo_dia($fecha = '2014-06-16%')
 		{
-		// SELECT `camion`, SEC_TO_TIME(SUM( TIME_TO_SEC(`duracion`))) as tiempo_total, count(*) as veces, grua FROM `datos` where DATE(inicio) = '2014-06-12'  group by camion,grua
+		// (SELECT camion, SEC_TO_TIME(SUM( TIME_TO_SEC(duracion))) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where DATE(inicio) = '2014-06-16'  group by camion, grua ) 
+		// union
+		// (SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT (camion) )  , grua   FROM datos  where inicio LIKE '2014-06-16%' GROUP BY grua) 
+		// ORDER BY grua, camion
+//grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-16, 2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
+
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT d.camion, SEC_TO_TIME(SUM( TIME_TO_SEC(d.duracion))) as tiempo_total, count(*) as veces, d.grua FROM datos d where DATE(d.inicio) = :fecha  group by d.camion, d.grua order by d.grua , d.camion'
+					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where inicio LIKE :fecha  group by camion, grua ) 
+				 union
+					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where inicio LIKE :fecha GROUP BY grua) 
+					ORDER BY grua, camion'
 				);
 				$query->bindValue('fecha', $fecha );
 
@@ -75,7 +66,7 @@ class DatosRepository extends EntityRepository
 			 
 		}
 		
-		public function camion_dia($fecha = '2013-09-24%')
+		public function camion_dia($fecha = '2014-06-16%')
 		{
 		// (SELECT camion,grua,count(*) as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma FROM datos WHERE inicio like '2013-09-24%'  GROUP BY camion,grua )
 		// union

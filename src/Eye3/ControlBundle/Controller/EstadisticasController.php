@@ -17,11 +17,9 @@ class EstadisticasController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 
-        $tablas = $em->getRepository('Eye3ControlBundle:Datos')->max_tiempo_dia();
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia();
 
         return array(
-                'tablas' => $tablas,
                 'datos' => $datos,
             );    
 			

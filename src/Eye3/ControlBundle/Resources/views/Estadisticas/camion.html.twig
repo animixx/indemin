@@ -21,91 +21,111 @@
 			</div>
 		</div>
 	</div>
-{#dump(datos)#}
-	<div class="row">
-		<div class="col-12">
-			<div class="page-header"><h1>Camiones</h1></div>
-		</div>
-		<div class="col-12 ">
-				<table class="table table-striped table-bordered table-hover">
-				{% set info = 1 %}
-				{% set tiempo_min = null %}
-				{% set tiempo_max = null %}
-				{% set ciclos_max = null %}
-				{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
-				{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
-				{% for row in 0..4 %}
-					{% if loop.first %}
-					<thead>
-						<tr>
-							<td >
-							&nbsp;
-							</td>
-							{% for camion in camiones %}
-							<td class="center">
-							{{camion.camion}}
-							</td>
-							{% endfor %}
-						</tr>
-					</thead>
-					<tbody>
-					{% endif %}
-						<tr>
-							<td class="center">
-							{{ cycle(titulos, loop.index )|raw }}
-							</td>
-							{% set pivote = 0 %}
-							{% for camion in camiones %}
-								<td class="center">
-								{% if camion.camion == datos[pivote]['camion'] %}
-									{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
-									
-									{% if tiempo_min > datos[pivote]['tiempo'] or tiempo_min is null %}
-										{% set tiempo_min = datos[pivote]['tiempo']|split(':') %}
-									{% endif %}
-									{% if tiempo_max < datos[pivote]['max'] %}
-										{% set tiempo_max = datos[pivote]['max']|split(':') %}
-									{% endif %}
-									{% if ciclos_max < datos[pivote]['inicio'] %}
-										{% set ciclos_max = datos[pivote]['inicio'] %}
-									{% endif %}
-									{% if datos|length > (pivote + datos[pivote]['inicio'] + 1)%}
-										{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
-									{% endif %}
-								{% endif %}
-								</td>
-							{% endfor %}
-						</tr>
-					{% if loop.last %}
-					</tbody>
-					{% endif %}
-				{% endfor %}
-				</table>
-		</div>	<!-- /.col -->	
-		
 
-		<div class=" col-12 ">
-			<div class="widget-box">
-				
+{% set cantidad_gruas = 2 %}
+{% set jumper = 0 %}
+{% set gruas_validas =  {} %}
+{% set cant_gruas_validas =  {} %}
+{% set tiempo_min =  {} %}
 
-				<div class="widget-body">
-					<div class="widget-main" style="display:flex;">
-						<!-- #section:plugins/charts.flotchart -->
-						<div id="placeholder" ></div>
-						<p id="choices" style="float:right; width:85px;"></p>
-						
-						
-					</div><!-- /.widget-main -->
-				</div><!-- /.widget-body -->
-			</div><!-- /.widget-box -->
-		</div><!-- /.col -->
-			
-			
-			
-	</div><!-- /.row -->
-			
+{% for grua in 1..cantidad_gruas %}
+
+	{% if datos[(jumper)]['grua'][5:1] != grua %}
+			<div class="row">
+				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+			</div><!-- /.row -->
+	{% else %}	
 	
+		 
 		
+				<div class="row">
+					<div class="col-12">
+						<div class="page-header"><h1>Camiones en Grúa {{grua}}</h1></div>
+					</div>
+					<div class="col-12 ">
+							<table class="table table-striped table-bordered table-hover">
+							{% set minimo = null %}
+							{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
+							{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
+							{% for row in 0..4 %}
+								{% if loop.first %}
+								<thead>
+									<tr>
+										<td >
+										&nbsp;
+										</td>
+										{% for camion in camiones %}
+										<td class="center">
+										{{camion.camion}}
+										</td>
+										{% endfor %}
+									</tr>
+								</thead>
+								<tbody>
+								{% endif %}
+									<tr>
+										<td class="center">
+										{{ cycle(titulos, loop.index )|raw }}
+										</td>
+										{% set pivote = 0 + jumper %}
+										{% for camion in camiones %}
+											<td class="center">
+											{% if camion.camion == datos[pivote]['camion'] %}
+												{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
+												
+												{% if minimo > datos[pivote]['tiempo'] or minimo is null %}
+													{% set minimo = datos[pivote]['tiempo'] %}
+												{% endif %}
+												
+												{% if datos|length > (pivote + datos[pivote]['inicio'] + 1) %}
+													{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
+												{% endif %}
+											{% endif %}
+											</td>
+										
+										{% endfor %}
+									</tr>
+								{% if loop.last %}
+									</tbody>	
+									{% set jumper = pivote %}
+								{% endif %}
+								
+							{% endfor %}
+							</table>
+					</div>	<!-- /.col -->	
+					
+
+					<div class=" col-12 ">
+						<div class="widget-box">
+							
+
+							<div class="widget-body">
+								<div class="widget-main" style="display:flex;">
+									<!-- #section:plugins/charts.flotchart -->
+									<div id="placeholder{{ grua }}" >{# Gráfico Grúa {grua} #}</div>
+									<p id="choices{{ grua }}" style="float:right; width:85px;"></p>
+									
+									
+								</div><!-- /.widget-main -->
+							</div><!-- /.widget-body -->
+						</div><!-- /.widget-box -->
+					</div><!-- /.col -->
+						
+				</div><!-- /.row -->
+				
+	{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
+	{% set cant_gruas_validas = cant_gruas_validas| merge ([ jumper ]) %}  
+	{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
+	
+					
+	{% endif %}		
+	
+	{% if not loop.last %}		
+		<div class="hr hr32 hr-double"></div>		
+	{% endif %}		
+
+{% endfor %}						
+
 <!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -118,7 +138,7 @@
 <!-- page specific plugin scripts -->
 
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}"></script>
-		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.time.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.orderBars.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
 		
@@ -132,98 +152,117 @@
 	  //but sometimes it brings up errors with normal resize event handlers
 	  $.resize.throttleWindow = false;
 	
-	  var placeholder = $('#placeholder').css({'width':'85%' , 'min-height':'230px'});
-				
+	{% set corte = 0 %}
+	
+	
+	{% for grua in gruas_validas %}
+				  var placeholder{{grua}} = $('#placeholder{{grua}}').css({'width':'85%' , 'min-height':'230px'});
+					
+				  var graficame{{grua}} =  [
+												{% set contador = 0   %}
+												
+												{% set llenado  = null %}
+												{% set extra  = null %}
+
+												{% for camion in datos|slice(corte, cant_gruas_validas[loop.index0])  %}
+													{% if loop.first %}
+													{
+														 "label": "{{camion.camion}}",
+														 "data": 
+														 [
+																{% set temp = camion.inicio    %}
+													{% elseif camion.max is null %}
+																	{% set contador = contador +1 %}
+																	{% set llenado   %}
+																			{{ llenado}}[{{contador}}, {{camion.tiempo}}]
+																				{% if contador != temp %},{% endif %}
+																	{% endset %}
+																	{% set extra   %}
+																			{{ extra}}'{{camion.inicio|date("d/m/y \\a \\l\\a\\s H:i",false)}}'
+																				{% if contador != temp %},{% endif %}
+																	{% endset %}			
+															{% if loop.last %}
+																	{{ llenado}}
+																	], "extra": [{{ extra}} ] }
+																]; 
+															{% endif %}
+													{% else %}
+																		{{ llenado}}
+														], "extra": [{{ extra}} ] }
+																		
+																		{% set contador  = 0  %}
+																		{% set llenado  = null %}
+																		{% set extra  = null %}
+																		{% set temp = camion.inicio  %}
+																		,
+																		{
+														 "label": "{{camion.camion}}",
+														 "data": 
+														 [
+																	
+													{% endif %}
+												{% endfor %}
+				  
+				  
+					{% if datos|length > (corte + cant_gruas_validas[loop.index0] )%}
+						{% set corte = corte + cant_gruas_validas[loop.index0]  %}
+					{% endif %}	
+	{% endfor %}
+			
+							
+			// tooltip format
+			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+			  var previousPoint = null;
+			
 				 
-		var d = [
-				{% set contador = 0   %}
-				{% set serializador = 0   %}
-				{% set llenado  = null %}
-				{% set extra  = null %}
-				{% for camion in datos %}
-					{% if loop.first %}
-					{
-						 "label": "{{camion.camion}}",
-						 "data": 
-						 [
-								{% set temp = camion.inicio    %}
-					{% elseif camion.max is null %}
-									{% set contador = contador +1 %}
-									{% set llenado   %}
-											{{ llenado}}[{{contador}}, {{camion.tiempo}}] 
-												{% if contador != temp %},{% endif %}
-									{% endset %}
-									{% set extra   %}
-											{{ extra}}'{{camion.inicio|date("d/m/y \\a \\l\\a\\s H:i",false)}}'
-												{% if contador != temp %},{% endif %}
-									{% endset %}			
-							{% if loop.last %}
-									{{ llenado}}	
-									], "extra": [{{ extra}} ] }
-								]; 
-							{% endif %}
-					{% else %}
-										{{ llenado}}	
-						], "extra": [{{ extra}} ] }
-										{% set serializador  = serializador+0.1 %}
-										{% set contador  = 0+serializador %}
-										{% set llenado  = null %}
-										{% set extra  = null %}
-										{% set temp = camion.inicio    %}
-										,
-										{
-						 "label": "{{camion.camion}}",
-						 "data": 
-						 [
-									
-					{% endif %}
-				{% endfor %}
-								
 			
-			
-			
+	{% for gruisima in gruas_validas %} 
+			 
 		var i = 0;
-		$.each(d, function(key, val) {
+		$.each(graficame{{gruisima}}, function(key, val) {
 			val.color = i;
 			++i;
 		});
 
 		// insert checkboxes 
-		var choiceContainer = $("#choices");
-		$.each(d, function(key, val) {
-			choiceContainer.append("<br/><input type='checkbox' name='" + key +
+		var choiceContainer{{gruisima}} = $("#choices{{gruisima}}");
+		$.each(graficame{{gruisima}}, function(key, val) {
+			choiceContainer{{gruisima}}.append("<br/><input type='checkbox' name='" + key +
 				"' checked='checked' id='id" + key + "'></input>" +
 				"<label for='id" + key + "'>"
 				+ val.label + "</label>");
 		});
 
-		choiceContainer.find("input").click(plotAccordingToChoices);
+		choiceContainer{{gruisima}}.find("input").click(plotAccordingToChoices{{gruisima}});
 
-		function plotAccordingToChoices() {
+		function plotAccordingToChoices{{gruisima}}() {
 
-			var graficos = [];
+			var graficos{{gruisima}} = [];
 
-			choiceContainer.find("input:checked").each(function () {
+			choiceContainer{{gruisima}}.find("input:checked").each(function () {
 				var key = $(this).attr("name");
-				if (key && d[key]) {
-					graficos.push(d[key]);
+				if (key && graficame{{gruisima}}[key]) {
+					graficos{{gruisima}}.push(graficame{{gruisima}}[key]);
 				}
 			});
 
-			if (graficos.length > 0) {
-			$.plot(placeholder, graficos, {
+			if (graficos{{gruisima}}.length > 0) {
+			$.plot(placeholder{{gruisima}}, graficos{{gruisima}}, {
 										series: {
 											bars: {
 												show: true,
 												barWidth: 0.1,
-												align: {% if serializador %}"right"{% else %}"center"{% endif %}
+												align: "center",
+												order:1
+											
 											}
 										},
 										yaxis: {
-											  min : {{tiempo_min[1]*60+tiempo_min[2]-50}},
+											  min : {{tiempo_min[loop.index0][1]*60+tiempo_min[loop.index0][2]-50}}, 
 											  tickFormatter: function (v, axis) {
 													  var minutes = Math.floor(v / 60);
 													  var seconds = v - minutes * 60;
+													  if (seconds < 10) {seconds = "0"+seconds;}
 															return minutes + ":"+ seconds;
 														}
 
@@ -232,7 +271,7 @@
 											min : 0,
 											tickSize: 1,
 											tickDecimals: 0, 
-											max : {{ciclos_max+1}},
+									
 											autoscaleMargin: .10
 											
 										},
@@ -248,21 +287,16 @@
 			}
 		}
 
-		plotAccordingToChoices();
+		plotAccordingToChoices{{gruisima}}();
 		
-		
-									
-			// tooltip format
-			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-			  var previousPoint = null;
-									
-			placeholder.on('plothover', function (event, pos, item) {
+			placeholder{{gruisima}}.on('plothover', function (event, pos, item) {
 				if(item) {
 					if (previousPoint != item.seriesIndex) {
 						previousPoint = item.seriesIndex;
 						
 						var minutes = Math.floor(item.datapoint[1] / 60);
 						var seconds = item.datapoint[1] - minutes * 60;
+						if (seconds < 10) {seconds = "0"+seconds;}
 						var x = minutes + ":"+ seconds;
 						
 						
@@ -277,7 +311,7 @@
 				}
 				
 			 });
-			 
+	{% endfor %}		 
 			})
 			
 			jQuery(function($) {
@@ -303,7 +337,6 @@
 			
 				
 		</script>
-					
-		
+	
 	
 {% endblock %}
