@@ -55,7 +55,7 @@
 												Uso
 											</th>
 											<td class="center">
-												{{datos.0.uso}}
+												{{datos.0.uso|date("G:i:s", false)}}
 											</td>
 										</tr>
 										<tr>
@@ -63,7 +63,7 @@
 												Muerto
 											</th>
 											<td class="center">
-												{{datos.0.muerto}}
+												{{datos.0.muerto|date("G:i:s", false)}}
 											</td>
 										</tr>
 										<tr>
@@ -170,6 +170,7 @@
 							highlight: {
 								opacity: 0.25
 							},
+							
 							stroke: {
 								color: '#fff',
 								width: 2
@@ -178,10 +179,7 @@
 						}
 					},
 					legend: {
-						show: true,
-						position: position || "ne", 
-						labelBoxBorderColor: null,
-						margin:[-30,15]
+						show: false
 					}
 					,
 					grid: {

@@ -92,11 +92,12 @@ class DatosRepository extends EntityRepository
 		public function grua_dia($fecha = '2013-09-24%')
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
-			//SELECT  SEC_TO_TIME(SUM(TIME_TO_SEC(duracion)))  as uso, SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) ) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
+			//SELECT  SUM(TIME_TO_SEC(duracion))  as uso, TIME_TO_SEC(SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
+			//SELECT t1.camion as camion, t1.inicio as inicio, t1.duracion as duracion, SUBTIME(time(t2.inicio),time(t1.inicio)) as proximo  from datos as t1 , datos as t2 where t1.id+1 = t2.id and t1.inicio like '2013-09-24%'
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) as uso, SUBTIME("24:00:00", SEC_TO_TIME(SUM(TIME_TO_SEC(duracion)))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion))) as prom, grua FROM datos where inicio LIKE :fecha GROUP BY grua'
+					'SELECT SUM(TIME_TO_SEC(duracion)) as uso, TIME_TO_SEC(SUBTIME("24:00:00", SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion))) as prom, grua FROM datos where inicio LIKE :fecha GROUP BY grua'
 				
 
 			);
