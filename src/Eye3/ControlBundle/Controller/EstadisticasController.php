@@ -49,8 +49,13 @@ class EstadisticasController extends Controller
      */
     public function gruaAction()
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->grua_dia();
+
         return array(
-                // ...
-            );    }
+                'datos' => $datos,
+            ); 
+     }
 
 }

@@ -1,239 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<meta charset="utf-8" />
-		<title>Dashboard - Ace Admin</title>
+{% extends "::base.html.twig" %}
 
-		<meta name="description" content="overview &amp; stats" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+{% block title %}Control Estadisticas{% endblock %}
 
-		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/bootstrap.min.css') }}" />
-		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/font-awesome.min.css') }}" />
+{% block stylesheets %}
+{{ parent() }}
+		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/datepicker.css') }}" />
 
-		<!-- page specific plugin styles -->
+{% endblock %}
 
-		<!-- text fonts -->
-		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/ace-fonts.css') }}" />
+{% block body %}
 
-		<!-- ace styles -->
-		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/ace.min.css') }}" id="main-ace-style" />
+	<div class="row" >
+		<div class="col-md-4 col-xs-2"></div>
+		<div class="col-md-3 col-xs-8">
+			<!-- #section:plugins/date-time.datepicker -->
+			<div class="input-group">
+				<input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="24-09-2013" />
+				<span class="input-group-addon">
+					<i class="fa fa-calendar bigger-110"></i>
+				</span>
+			</div>
+		</div>
+	</div>
 
-		
+{% set cantidad_gruas = 2 %}
 
-		
-	</head>
-
-	<body class="no-skin">
-		<!-- #section:basics/navbar.layout -->
-		<div id="navbar" class="navbar navbar-default">
-			
-
-			
-
-		<!-- /section:basics/navbar.layout -->
-		<div class="main-container" id="main-container">
-			
-
-			
-
-			<!-- /section:basics/sidebar -->
-			<div class="main-content">
+		<div class="row">
+				<div class="col-12">
+					<div class="page-header"><h1>Grúa 1 </h1></div>
+				</div>
 				
-				<div class="page-content">
-					
-					<div class="page-content-area">
-						<div class="page-header">
-							<h1>
-								Dashboard
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-									overview &amp; stats
-								</small>
-							</h1>
-						</div><!-- /.page-header -->
+				<div class=" col-xs-12 col-md-6 ">
+					<div class="widget-box">
+						
 
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<div class="alert alert-block alert-success">
-									<button type="button" class="close" data-dismiss="alert">
-										<i class="ace-icon fa fa-times"></i>
-									</button>
-
-									<i class="ace-icon fa fa-check green"></i>
-
-									Welcome to
-									<strong class="green">
-										Ace
-										<small>(v1.3.1)</small>
-									</strong>,
-	the lightweight, feature-rich and easy to use admin template.
-								</div>
-
-								<div class="row">
-									<div class="space-6"></div>
-
-									
-									<div class="vspace-12-sm"></div>
-
-									<div class="col-sm-5">
-										<div class="widget-box">
-											<div class="widget-header widget-header-flat widget-header-small">
-												<h5 class="widget-title">
-													<i class="ace-icon fa fa-signal"></i>
-													Traffic Sources
-												</h5>
-
-												<div class="widget-toolbar no-border">
-													<div class="inline dropdown-hover">
-														<button class="btn btn-minier btn-primary">
-															This Week
-															<i class="ace-icon fa fa-angle-down icon-on-right bigger-110"></i>
-														</button>
-
-														<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
-															<li class="active">
-																<a href="#" class="blue">
-																	<i class="ace-icon fa fa-caret-right bigger-110">&nbsp;</i>
-																	This Week
-																</a>
-															</li>
-
-															<li>
-																<a href="#">
-																	<i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-																	Last Week
-																</a>
-															</li>
-
-															<li>
-																<a href="#">
-																	<i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-																	This Month
-																</a>
-															</li>
-
-															<li>
-																<a href="#">
-																	<i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-																	Last Month
-																</a>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-
-											<div class="widget-body">
-												<div class="widget-main">
-													<!-- #section:plugins/charts.flotchart -->
-													<div id="piechart-placeholder"></div>
-
-													<!-- /section:plugins/charts.flotchart -->
-													<div class="hr hr8 hr-double"></div>
-
-													<div class="clearfix">
-														<!-- #section:custom/extra.grid -->
-														<div class="grid3">
-															<span class="grey">
-																<i class="ace-icon fa fa-facebook-square fa-2x blue"></i>
-																&nbsp; likes
-															</span>
-															<h4 class="bigger pull-right">1,255</h4>
-														</div>
-
-														<div class="grid3">
-															<span class="grey">
-																<i class="ace-icon fa fa-twitter-square fa-2x purple"></i>
-																&nbsp; tweets
-															</span>
-															<h4 class="bigger pull-right">941</h4>
-														</div>
-
-														<div class="grid3">
-															<span class="grey">
-																<i class="ace-icon fa fa-pinterest-square fa-2x red"></i>
-																&nbsp; pins
-															</span>
-															<h4 class="bigger pull-right">1,050</h4>
-														</div>
-
-														<!-- /section:custom/extra.grid -->
-													</div>
-												</div><!-- /.widget-main -->
-											</div><!-- /.widget-body -->
-										</div><!-- /.widget-box -->
-									</div><!-- /.col -->
-								</div><!-- /.row -->
-
-								<!-- #section:custom/extra.hr -->
-								<div class="hr hr32 hr-dotted"></div>
+						<div class="widget-body">
+							<div class="widget-main">
+								<!-- #section:plugins/charts.flotchart -->
+								<div id="piechart-placeholder1">Gráfico Grúa 1</div>
 
 								
+								
+							</div><!-- /.widget-main -->
+						</div><!-- /.widget-body -->
+					</div><!-- /.widget-box -->
+				</div><!-- /.col -->
+					
+					
+				<div class="col-xs-12 col-md-5">
+						<table class="table table-striped table-bordered table-hover">
+									
+										<tr>
+											<th class="center" >
+												Uso
+											</th>
+											<td class="center">
+												{{datos.0.uso}}
+											</td>
+										</tr>
+										<tr>
+											<th class="center" >
+												Muerto
+											</th>
+											<td class="center">
+												{{datos.0.muerto}}
+											</td>
+										</tr>
+										<tr>
+											<th class="center" >
+												Cant. Ciclos
+											</th>
+											<td class="center">
+												{{datos.0.ciclos}} 
+											</td>
+										</tr>
+										<tr>
+											<th class="center" >
+												Prom. Ciclos
+											</th>
+											<td class="center">
+												{{datos.0.prom}}
+											</td>
+											
+										</tr>
+									
+						</table>
+				</div>	<!-- /.col -->	
+				
 
+				
+					
+					
+		</div><!-- /.row -->
+	
+	
+	
+<!-- basic scripts -->
 
-								<!-- PAGE CONTENT ENDS -->
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content-area -->
-				</div><!-- /.page-content -->
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Ace</span>
-							Application &copy; 2013-2014
-						</span>
-
-						&nbsp; &nbsp;
-						<span class="action-buttons">
-							<a href="#">
-								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
-							</a>
-
-							<a href="#">
-								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
-							</a>
-
-							<a href="#">
-								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
-							</a>
-						</span>
-					</div>
-
-					<!-- /section:basics/footer -->
-				</div>
-			</div>
-
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
-		</div><!-- /.main-container -->
-
-		<!-- basic scripts -->
-
-		
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='{{ asset('bundles/eye3control/js/jquery.min.js') }}'>"+"<"+"/script>");
+		</script>
 
 		<!-- <![endif]-->
-
 		
-	
+<!-- page specific plugin scripts -->
 
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.pie.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
-
+		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
 		
+{# no compatibles con la el menu deslizable, asi que se desactivan , estaban para habilitar la seleccion del calendario con el icono 	
+	<!-- ace scripts -->
+		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}"></script>
+#}
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		
-			jQuery(function($) {
-			
+
+		jQuery(function($) {
 				$('.easy-pie-chart.percentage').each(function(){
 					var $box = $(this).closest('.infobox');
 					var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
@@ -250,37 +136,37 @@
 					});
 				})
 			
-				$('.sparkline').each(function(){
-					var $box = $(this).closest('.infobox');
-					var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
-					$(this).sparkline('html',
-									 {
-										tagValuesAttribute:'data-values',
-										type: 'bar',
-										barColor: barColor ,
-										chartRangeMin:$(this).data('min') || 0
-									 });
-				});
-			
+							
 			
 			  //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
 			  //but sometimes it brings up errors with normal resize event handlers
 			  $.resize.throttleWindow = false;
 			
-			  var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
-			  var data = [
-				{ label: "social networks",  data: 38.7, color: "#68BC31"},
-				{ label: "search engines",  data: 24.5, color: "#2091CF"},
-				{ label: "ad campaigns",  data: 8.2, color: "#AF4E96"},
-				{ label: "direct traffic",  data: 18.6, color: "#DA5430"},
-				{ label: "other",  data: 10, color: "#FEE074"}
-			  ]
+				{% set colores = ["#68BC31", "#2091CF", "#AF4E96" , "#DA5430", "#FEE074"] %}
+
+				{% set corte = 0 %}
+				{% set contador = 0 %}
+				
+			
+				  var placeholder1 = $('#piechart-placeholder1').css({'width':'90%' , 'min-height':'200px'});
+					
+				  var graficame1 = [
+				
+						{ label: "uso",  data: {{datos.0.uso}}, color: "#68BC31" } ,
+						{ label: "muerto",  data: {{datos.0.muerto}}, color: "#2091CF" } 
+						
+						
+				
+				  ]
+					
+			
+			  
+
 			  function drawPieChart(placeholder, data, position) {
 			 	  $.plot(placeholder, data, {
 					series: {
 						pie: {
 							show: true,
-							tilt:0.8,
 							highlight: {
 								opacity: 0.25
 							},
@@ -304,25 +190,20 @@
 					}
 				 })
 			 }
-			 drawPieChart(placeholder, data);
-			
-			 /**
-			 we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
-			 so that's not needed actually.
-			 */
-			 placeholder.data('chart', data);
-			 placeholder.data('draw', drawPieChart);
-			
 			
 			  //pie chart tooltip example
 			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
 			  var previousPoint = null;
+
+			  
+				 drawPieChart(placeholder1, graficame1);
 			
-			  placeholder.on('plothover', function (event, pos, item) {
+
+			placeholder1.on('plothover', function (event, pos, item) {
 				if(item) {
 					if (previousPoint != item.seriesIndex) {
 						previousPoint = item.seriesIndex;
-						var tip = item.series['label'] + " : " + item.series['percent']+'%';
+						var tip = item.series['label'] + " : " + Math.floor(item.series['percent']* 100) / 100 +'%';
 						$tooltip.show().children(0).text(tip);
 					}
 					$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
@@ -332,121 +213,31 @@
 				}
 				
 			 });
+			 
 			
 			
-			
-			
-			
-			
-				var d1 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.5) {
-					d1.push([i, Math.sin(i)]);
-				}
-			
-				var d2 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.5) {
-					d2.push([i, Math.cos(i)]);
-				}
-			
-				var d3 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.2) {
-					d3.push([i, Math.tan(i)]);
-				}
-				
-			
-				var sales_charts = $('#sales-charts').css({'width':'100%' , 'height':'220px'});
-				$.plot("#sales-charts", [
-					{ label: "Domains", data: d1 },
-					{ label: "Hosting", data: d2 },
-					{ label: "Services", data: d3 }
-				], {
-					hoverable: true,
-					shadowSize: 0,
-					series: {
-						lines: { show: true },
-						points: { show: true }
-					},
-					xaxis: {
-						tickLength: 0
-					},
-					yaxis: {
-						ticks: 10,
-						min: -2,
-						max: 2,
-						tickDecimals: 3
-					},
-					grid: {
-						backgroundColor: { colors: [ "#fff", "#fff" ] },
-						borderWidth: 1,
-						borderColor:'#555'
-					}
-				});
-			
-			
-				$('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
-				function tooltip_placement(context, source) {
-					var $source = $(source);
-					var $parent = $source.closest('.tab-content')
-					var off1 = $parent.offset();
-					var w1 = $parent.width();
-			
-					var off2 = $source.offset();
-					//var w2 = $source.width();
-			
-					if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
-					return 'left';
-				}
-			
-			
-				$('.dialogs,.comments').ace_scroll({
-					size: 300
-			    });
-				
-				
-				//Android's default browser somehow is confused when tapping on label which will lead to dragging the task
-				//so disable dragging when clicking on label
-				var agent = navigator.userAgent.toLowerCase();
-				if("ontouchstart" in document && /applewebkit/.test(agent) && /android/.test(agent))
-				  $('#tasks').on('touchstart', function(e){
-					var li = $(e.target).closest('#tasks li');
-					if(li.length == 0)return;
-					var label = li.find('label.inline').get(0);
-					if(label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation() ;
-				});
-			
-				$('#tasks').sortable({
-					opacity:0.8,
-					revert:true,
-					forceHelperSize:true,
-					placeholder: 'draggable-placeholder',
-					forcePlaceholderSize:true,
-					tolerance:'pointer',
-					stop: function( event, ui ) {
-						//just for Chrome!!!! so that dropdowns on items don't appear below other items after being moved
-						$(ui.item).css('z-index', 'auto');
-					}
-					}
-				);
-				$('#tasks').disableSelection();
-				$('#tasks input:checkbox').removeAttr('checked').on('click', function(){
-					if(this.checked) $(this).closest('li').addClass('selected');
-					else $(this).closest('li').removeClass('selected');
-				});
-			
-			
-				//show the dropdowns on top or bottom depending on window height and menu position
-				$('#task-tab .dropdown-hover').on('mouseenter', function(e) {
-					var offset = $(this).offset();
-			
-					var $w = $(window)
-					if (offset.top > $w.scrollTop() + $w.innerHeight() - 100) 
-						$(this).addClass('dropup');
-					else $(this).removeClass('dropup');
-				});
 			
 			})
+			
+			jQuery(function($) {
+				
+			
+				
+				//datepicker plugin
+				//link
+				$('.date-picker').datepicker({
+					autoclose: true,
+					todayHighlight: true
+				})
+				//show datepicker when clicking on the icon
+				.next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+			
+			
+			});
+				
 		</script>
-
-		
-	</body>
-</html>
+	
+{% endblock %}
+{# restricciones de la pagina, la base de datos debe contener datos('grua') y sus datos deben ser en formato "Grúa-x no siendo mayor a 9 unidades #}
