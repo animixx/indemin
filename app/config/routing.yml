@@ -16,3 +16,11 @@ logout:
 home_page:
     path: /
     defaults: { _controller: Eye3ControlBundle:Default:index }
+
+no_disponible:
+    path: /desactivado
+    defaults:
+        _controller:  FrameworkBundle:Template:template
+        template:     'Eye3ControlBundle:Reporte:index.html.twig'
+        maxAge:       86400
+        sharedAge:    86400

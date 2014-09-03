@@ -86,8 +86,25 @@
 									
 						</table>
 				</div>	<!-- /.col -->	
-				
+		</div><!-- /.row -->
+		
+		<div class="row">
 
+					<div class=" col-12 ">
+						<div class="widget-box">
+							
+
+							<div class="widget-body">
+								<div class="widget-main" style="display:flex;">
+									<!-- #section:plugins/charts.flotchart -->
+									<div id="placeholder-grua1" ></div>
+									<p id="choices1" style="float:right; width:85px;"></p>
+									
+									
+								</div><!-- /.widget-main -->
+							</div><!-- /.widget-body -->
+						</div><!-- /.widget-box -->
+					</div><!-- /.col -->
 				
 					
 					
@@ -108,7 +125,10 @@
 
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.pie.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.time.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.symbol.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.navigate.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
 		
 {# no compatibles con la el menu deslizable, asi que se desactivan , estaban para habilitar la seleccion del calendario con el icono 	
@@ -148,9 +168,9 @@
 				{% set contador = 0 %}
 				
 			
-				  var placeholder1 = $('#piechart-placeholder1').css({'width':'90%' , 'min-height':'200px'});
+				  var placeholderpie1 = $('#piechart-placeholder1').css({'width':'90%' , 'min-height':'170px'});
 					
-				  var graficame1 = [
+				  var graficopie1 = [
 				
 						{ label: "uso",  data: {{datos.0.uso}}, color: "#68BC31" } ,
 						{ label: "muerto",  data: {{datos.0.muerto}}, color: "#2091CF" } 
@@ -194,10 +214,10 @@
 			  var previousPoint = null;
 
 			  
-				 drawPieChart(placeholder1, graficame1);
+				 drawPieChart(placeholderpie1, graficopie1);
 			
 
-			placeholder1.on('plothover', function (event, pos, item) {
+			placeholderpie1.on('plothover', function (event, pos, item) {
 				if(item) {
 					if (previousPoint != item.seriesIndex) {
 						previousPoint = item.seriesIndex;
@@ -212,8 +232,149 @@
 				
 			 });
 			 
-			
-			
+ 
+	
+					  var placeholder1 = $('#placeholder-grua1').css({'width':'85%' , 'min-height':'230px'});
+					
+				  var graficame1 =  [
+																								
+																								
+																																						{
+														 "label": "Tren-1",
+														 "data": 
+														 [
+                 [Date.UTC(2013, 9, 24, 0, 30, 0), 1], 
+                [Date.UTC(2013, 9, 24, 0, 34, 0), 1],
+                [Date.UTC(2013, 9, 24, 0, 43, 0), 1],
+                [Date.UTC(2013, 9, 24, 0, 48, 0), 1],
+                [Date.UTC(2013, 9, 24, 0, 59, 0), 1],
+                [Date.UTC(2013, 9, 24, 1, 4, 0), 1],
+                [Date.UTC(2013, 9, 24, 1, 38, 0), 1],
+                [Date.UTC(2013, 9, 24, 1, 43, 0), 1],
+                [Date.UTC(2013, 9, 24, 1, 47, 0), 1],
+                [Date.UTC(2013, 9, 24, 1, 55, 0), 1],
+                [Date.UTC(2013, 9, 24, 2, 22, 0), 1],
+                [Date.UTC(2013, 9, 24, 2, 32, 0), 1]
+            ], "extra": 
+            ['camion-1','camion-2','camion-4',
+            'camion-5','camion-4','camion-1','camion-2','camion-3','camion-5','camion-2','camion-4','camion-1',]
+            , "extra2": 
+            ['04:44','03:30','03:56',
+            '04:10','04:43','02:44','02:42','04:35','02:56','04:46','04:12','04:11',]
+             }
+																		
+																																																																																										,
+																		{
+														 "label": "Tren-2",
+														 "data": 
+														 [
+               [Date.UTC(2013, 9, 24, 3, 21, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 26, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 30, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 38, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 44, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 49, 0), 2],
+                [Date.UTC(2013, 9, 24, 3, 57, 0), 2]
+            ], "extra":  ['camion-1','camion-2','camion-4',
+            'camion-5','camion-4','camion-1','camion-1']
+            , "extra2":  ['03:47','03:25','03:51',
+            '03:36','02:34','04:03','04:09']}
+
+
+
+
+																]; 
+																																												  
+				  
+																	
+					 
+					
+	 
+			 
+		var i = 0;
+		$.each(graficame1, function(key, val) {
+			val.color = i;
+			++i;
+		});
+
+		// insert checkboxes 
+		var choiceContainer1 = $("#choices1");
+		$.each(graficame1, function(key, val) {
+			choiceContainer1.append("<br/><input type='checkbox' name='" + key +
+				"' checked='checked' id='id" + key + "'></input>" +
+				"<label for='id" + key + "'>"
+				+ val.label + "</label>");
+		});
+
+		choiceContainer1.find("input").click(plotAccordingToChoices1);
+
+		function plotAccordingToChoices1() {
+
+			var graficos1 = [];
+
+			choiceContainer1.find("input:checked").each(function () {
+				var key = $(this).attr("name");
+				if (key && graficame1[key]) {
+					graficos1.push(graficame1[key]);
+				}
+			});
+
+			if (graficos1.length > 0) {
+			$.plot(placeholder1, graficos1, {
+										series: {
+					stack: true,
+					lines: {
+						show: true
+					},
+					points: {
+						show: true,
+						radius: 3,
+						symbol: "square" 
+					}
+				},
+										yaxis: {
+					min : 0,
+					max : 4,
+					 ticks: [[1,'tren-1'],[2,'tren-2']]
+                 
+                },
+										xaxis: {
+                mode: "time",
+				timezone: "UTC"
+			{#	min: Date.UTC(2013, 9, 24, 0, 0, 0) #}
+                
+                   
+                },
+										grid: {
+					hoverable: true,
+					clickable: true
+				},
+										legend: {
+											labelBoxBorderColor: "none"											
+										}
+									});
+			}
+		}
+
+		plotAccordingToChoices1();
+		
+			placeholder1.on('plothover', function (event, pos, item) {
+				if(item) {
+					if (previousPoint != item.seriesIndex) {
+						previousPoint = item.seriesIndex;
+						
+											
+						
+						var tip = item.series['label'] + " silo "+ (item.dataIndex+1)+" tomado por "+ item.series['extra'][item.dataIndex]+" quien demoró "+ item.series['extra2'][item.dataIndex];
+						$tooltip.show().children(0).text(tip);
+					}
+					$tooltip.css({top:pos.pageY + 2, left:pos.pageX + 2});
+				} else {
+					$tooltip.hide();
+					previousPoint = null;
+				}
+				
+			 });
 			
 			})
 			

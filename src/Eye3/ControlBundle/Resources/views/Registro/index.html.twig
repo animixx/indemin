@@ -1,28 +1,26 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Datos</h1>
-
-    <table class="records_list" border=1>
+	<div class="page-header"><h1>Datos</h1></div>
+	
+    <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Camion</th>
-                <th>Grua</th>
-                <th>Inicio</th>
-                <th>Duracion</th>
-                <th>Hit</th>
+                <th class="center">Id</th>
+                <th class="center">Camion</th>
+                <th class="center">Grua</th>
+                <th class="center">Inicio</th>
+                <th class="center">Duracion</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities|slice(0, 10) %}
             <tr>
-                <td>{{ entity.id }}</td>
-                <td>{{ entity.camion }}</td>
-                <td>{{ entity.grua }}</td>
-                <td>{% if entity.inicio %}{{ entity.inicio|date('Y-m-d H:i') }}{% endif %}</td>
-                <td>{{ entity.duracion|date('i:s') }}</td>
-                <td>{{ entity.hit }}</td>
+                <td class="center">{{ entity.id }}</td>
+                <td class="center">{{ entity.camion }}</td>
+                <td class="center">{{ entity.grua }}</td>
+                <td class="center">{% if entity.inicio %}{{ entity.inicio|date('Y-m-d H:i') }}{% endif %}</td>
+                <td class="center">{{ entity.duracion|date('i:s') }}</td>
             </tr>
         {% endfor %}
         </tbody>
