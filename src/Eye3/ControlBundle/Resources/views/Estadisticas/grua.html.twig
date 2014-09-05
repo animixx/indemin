@@ -52,7 +52,7 @@
 									
 										<tr>
 											<th class="center" >
-												Uso
+												Activo
 											</th>
 											<td class="center">
 												{{datos.0.uso|date("G:i:s", false)}}
@@ -60,7 +60,7 @@
 										</tr>
 										<tr>
 											<th class="center" >
-												Muerto
+												Inactivo
 											</th>
 											<td class="center">
 												{{datos.0.muerto|date("G:i:s", false)}}
@@ -172,8 +172,8 @@
 					
 				  var graficopie1 = [
 				
-						{ label: "uso",  data: {{datos.0.uso}}, color: "#68BC31" } ,
-						{ label: "muerto",  data: {{datos.0.muerto}}, color: "#2091CF" } 
+						{ label: "activo",  data: {{datos.0.uso}}, color: "#68BC31" } ,
+						{ label: "inactivo",  data: {{datos.0.muerto}}, color: "#2091CF" } 
 						
 						
 				
