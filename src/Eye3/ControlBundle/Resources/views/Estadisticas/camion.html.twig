@@ -39,7 +39,7 @@
 				</div><!-- /.row -->
 		{% else %}	
 		
-			{% set aux = 0 %}
+			 {% set aux = 0 %}
 			
 					<div class="row">
 						<div class="col-12">
@@ -84,23 +84,20 @@
 														{% set minimo = datos[pivote]['tiempo'] %}
 													{% endif %}
 													
-													{% if  datos|length > (pivote + datos[pivote]['cuantos'] + 1) %}
+													{% if datos|length > (pivote + datos[pivote]['cuantos'] + 1) %}
 														{% set pivote = pivote + datos[pivote]['cuantos'] + 1 %}
 													{% endif %}
-
 												{% endif %}
 												</td>
 											
-											{% endfor %}	{#<!-- /for de camiones -->#}	
+											{% endfor %} {#<!-- /for de camiones -->#}
 										</tr>
 									{% if loop.last %}
 										</tbody>	
 										{% set jumper = pivote %}
-										
-										
 									{% endif %}
 									
-								{% endfor %}	{#<!-- /for llenando las 5 columnas -->#}	
+								{% endfor %} {#<!-- /for llenando las 5 columnas -->#}
 								</table>
 						</div>	<!-- /.col -->	
 						
@@ -123,9 +120,10 @@
 							
 					</div><!-- /.row -->
 					
-			{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
-			{% set cant_gruas_validas = cant_gruas_validas| merge ([ aux ]) %}  
-			{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
+		{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
+		{% set cant_gruas_validas = cant_gruas_validas| merge ([ aux ]) %}  
+		{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
+		
 						
 		{% endif %}	{#<!-- /if correct grua -->#}	
 		
@@ -168,7 +166,6 @@
 	  //but sometimes it brings up errors with normal resize event handlers
 	  $.resize.throttleWindow = false;
 	
-
 	{% set corte = 0 %}
 	
 	
@@ -181,7 +178,7 @@
 												{% set llenado  = null %}
 												{% set extra  = null %}
 
-												{% for camion in datos|slice(corte, cant_gruas_validas[loop.index0]+1)  %}
+												{% for camion in datos|slice(corte, cant_gruas_validas[loop.index0])  %}
 													{% if loop.first %}
 													{
 														 "label": "{{camion.camion}}",
@@ -221,11 +218,11 @@
 												{% endfor %}
 				  
 				  
-					{% if datos|length > (corte + cant_gruas_validas[loop.index0]  )%}
+					{% if datos|length > (corte + cant_gruas_validas[loop.index0] )%}
 						{% set corte = corte + cant_gruas_validas[loop.index0]  %}
 					{% endif %}	
 	{% endfor %}
-		
+			
 							
 			// tooltip format
 			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
@@ -283,8 +280,6 @@
 															return minutes + ":"+ seconds;
 														}
 
-
-
 										},
 										xaxis: {
 											min : 0,
@@ -306,12 +301,7 @@
 			}
 		}
 
-
-
-
-
 		plotAccordingToChoices{{gruisima}}();
-
 		
 			placeholder{{gruisima}}.on('plothover', function (event, pos, item) {
 				if(item) {
@@ -338,7 +328,6 @@
 	{% endfor %}		 
 			})
 			
-	
 			jQuery(function($) {
 				
 			
