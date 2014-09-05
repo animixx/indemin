@@ -16,7 +16,7 @@
 			<!-- #section:plugins/date-time.datepicker -->
 				<form action="#" method="POST">
 			<div class="input-group">
-				<input class="form-control date-picker" name="fecha" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="{{fecha}}" value="{{fecha}}" />
+				<input class="form-control date-picker" name="fecha" id="id-date-picker-1" type="text"  placeholder="{{fecha}}" value="{{fecha}}" />
 				<span class="input-group-addon">
 					<i class="fa fa-calendar "></i>
 				</span>
@@ -267,8 +267,10 @@
 					weekStart: 1,
 					language: "es",
 					todayBtn: "linked",
+					format: "{{formato}}",
+					startDate: "{{inicio}}",
 					endDate: "today",
-					selectWeek:true,
+					{{adicional}}
 					todayHighlight: true
 				})
 				//show datepicker when clicking on the icon

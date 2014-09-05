@@ -42,7 +42,7 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function tiempo_dia($fecha = '2014-06-16%')
+		public function tiempo_dia($fecha)
 		{
 		// (SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where DATE(inicio) = '2014-06-16'  group by camion, grua ) 
 		// union
@@ -51,14 +51,57 @@ class DatosRepository extends EntityRepository
 //grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-16, 2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
 			
 			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
 		 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where inicio LIKE :fecha  group by camion, grua ) 
+					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where date(inicio) = :fecha  group by camion, grua ) 
 				 union
-					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where inicio LIKE :fecha GROUP BY grua) 
+					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where date(inicio) = :fecha GROUP BY grua) 
+					ORDER BY grua, camion'
+				);
+				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+			 
+		}
+		
+		public function tiempo_semana($fecha)
+		{
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
+		 
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where week(inicio) = week( :fecha ) and year(inicio) = year( :fecha ) group by camion, grua ) 
+				 union
+					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where week(inicio) = week( :fecha ) and year(inicio) = year( :fecha ) GROUP BY grua) 
+					ORDER BY grua, camion'
+				);
+				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+			 
+		}
+		
+		public function tiempo_mes($fecha)
+		{
+			
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[1]."-".$cuando[0]."-01";
+		 
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where month(inicio) = month( :fecha ) and year(inicio) = year( :fecha ) group by camion, grua ) 
+				 union
+					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where month(inicio) = month( :fecha ) and year(inicio) = year( :fecha ) GROUP BY grua) 
 					ORDER BY grua, camion'
 				);
 				$query->bindValue('fecha', $fecha );
