@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Eye3\ControlBundle\Entity\Datos;
+use Symfony\Component\HttpFoundation\Request;
 
 class EstadisticasController extends Controller
 {
@@ -13,14 +14,21 @@ class EstadisticasController extends Controller
      * @Route("/tiempo")
      * @Template()
      */
-    public function tiempoAction()
+    public function tiempoAction(Request $request)
     {
+		$fecha='16-06-2014';
+		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
+		 $fecha = $request->request->get('fecha');
+		
+		  }
+		 
 		$em = $this->getDoctrine()->getManager();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia($fecha);
 
         return array(
                 'datos' => $datos,
+				'fecha' => $fecha,
             );    
 			
 	}

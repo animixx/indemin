@@ -14,12 +14,15 @@
 		<div class="col-md-4 col-xs-2"></div>
 		<div class="col-md-3 col-xs-8">
 			<!-- #section:plugins/date-time.datepicker -->
+				<form action="#" method="POST">
 			<div class="input-group">
-				<input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="16-06-2014" />
+				<input class="form-control date-picker" name="fecha" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="{{fecha}}" value="{{fecha}}" />
 				<span class="input-group-addon">
-					<i class="fa fa-calendar bigger-110"></i>
+					<i class="fa fa-calendar "></i>
 				</span>
 			</div>
+				<input type="submit" value="ver">
+				</form>
 		</div>
 	</div>
 
@@ -28,99 +31,104 @@
 {% set gruas_validas =  {} %}
 
 {% for grua in 1..cantidad_gruas %}
-
-	{% if datos[jumper]['grua'][5:1] != grua %}
-			<div class="row">
-				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
-			</div><!-- /.row -->
-	{% else %}	
-	
-		{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
+	{% if datos is not empty %}
+		{% if datos[jumper]['grua'][5:1] != grua %}
+				<div class="row">
+					<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+				</div><!-- /.row -->
+		{% else %}	
 		
-			<div class="row">
-				<div class="col-12">
-					<div class="page-header"><h1>Grúa {{grua}} </h1></div>
-				</div>
-				<div class="col-xs-12 col-md-5">
-						<table class="table table-striped table-bordered table-hover">
-									<thead>
-										<tr>
-											<th class="center">
-												Cami&oacute;n
-											</th>
-											<th class="center">
-												Tiempo de Uso
-											</th>
-											<th class="center">
-												Promedio
-											</th>
-											<th class="center">
-												Veces
-											</th>
-											
-										</tr>
-									</thead>
-
-									<tbody>
-										{% for row in datos|slice(jumper+1, datos[jumper]['veces']) %}
-											<td class="center">
-												{{row.camion}}
-											</td>
-											<td class="center">
-												{{row.tiempo_total|date("G:i:s", false)}}
-											</td>
-											<td class="center">
-												{{row.prom }} 
-											</td>
-											<td class="center">
-												{{row.veces}}
-											</td>
-										</tr>
-											{% endfor %}
-										<tr>
-											<td class="center">
-												Total :
-											</td>
-											<td class="center">
-												{{datos[jumper]['tiempo_total']}} 
-											</td>
-										</tr>
-									</tbody>
-						</table>
-				</div>	<!-- /.col -->	
-				
-
-				<div class=" col-xs-12 col-md-6 ">
-					<div class="widget-box">
-						
-
-						<div class="widget-body">
-							<div class="widget-main">
-								<!-- #section:plugins/charts.flotchart -->
-								<div id="piechart-placeholder{{ grua }}">Gráfico Grúa {{ grua }}</div>
-
-								
-								
-							</div><!-- /.widget-main -->
-						</div><!-- /.widget-body -->
-					</div><!-- /.widget-box -->
-				</div><!-- /.col -->
-					
-					
-					
-			</div><!-- /.row -->
+			{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
 			
-	{% endif %}		
-	
-	{% if not loop.last %}		
-		<div class="hr hr32 hr-double"></div>		
-	{% endif %}		
-		
-{% if datos|length > (jumper + datos[jumper]['veces'] + 1)%}
-	{% set jumper = jumper + datos[jumper]['veces'] + 1 %}
-{% endif %}	
+				<div class="row">
+					<div class="col-12">
+						<div class="page-header"><h1>Grúa {{grua}} </h1></div>
+					</div>
+					<div class="col-xs-12 col-md-5">
+							<table class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th class="center">
+													Cami&oacute;n
+												</th>
+												<th class="center">
+													Tiempo de Uso
+												</th>
+												<th class="center">
+													Promedio
+												</th>
+												<th class="center">
+													Veces
+												</th>
+												
+											</tr>
+										</thead>
 
-{% endfor %}			
+										<tbody>
+											{% for row in datos|slice(jumper+1, datos[jumper]['veces']) %}
+												<td class="center">
+													{{row.camion}}
+												</td>
+												<td class="center">
+													{{row.tiempo_total|date("G:i:s", false)}}
+												</td>
+												<td class="center">
+													{{row.prom }} 
+												</td>
+												<td class="center">
+													{{row.veces}}
+												</td>
+											</tr>
+												{% endfor %}
+											<tr>
+												<td class="center">
+													Total :
+												</td>
+												<td class="center">
+													{{datos[jumper]['tiempo_total']}} 
+												</td>
+											</tr>
+										</tbody>
+							</table>
+					</div>	<!-- /.col -->	
+					
+
+					<div class=" col-xs-12 col-md-6 ">
+						<div class="widget-box">
+							
+
+							<div class="widget-body">
+								<div class="widget-main">
+									<!-- #section:plugins/charts.flotchart -->
+									<div id="piechart-placeholder{{ grua }}">Gráfico Grúa {{ grua }}</div>
+
+									
+									
+								</div><!-- /.widget-main -->
+							</div><!-- /.widget-body -->
+						</div><!-- /.widget-box -->
+					</div><!-- /.col -->
+						
+						
+						
+				</div><!-- /.row -->
+				
+		{% endif %}	{#<!-- /if correct grua -->#}
+		
+		{% if not loop.last %}		
+			<div class="hr hr32 hr-double"></div>		
+		{% endif %}		
+			
+		{% if datos|length > (jumper + datos[jumper]['veces'] + 1)%}
+			{% set jumper = jumper + datos[jumper]['veces'] + 1 %}
+		{% endif %}	{#<!-- /if datos.length -->#}
+	{% else %}
+		<div class="row">
+			<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+		</div><!-- /.row -->
+	{% endif %}	{#<!-- /if datos empty -->#}
+
+{% endfor %}{#<!-- /for each grua -->#}		
 	
 <!-- basic scripts -->
 
@@ -137,6 +145,7 @@
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.pie.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/locales/bootstrap-datepicker.es.js') }}"></script>
 		
 {# no compatibles con la el menu deslizable, asi que se desactivan , estaban para habilitar la seleccion del calendario con el icono 	
 	<!-- ace scripts -->
@@ -255,6 +264,11 @@
 				//link
 				$('.date-picker').datepicker({
 					autoclose: true,
+					weekStart: 1,
+					language: "es",
+					todayBtn: "linked",
+					endDate: "today",
+					selectWeek:true,
 					todayHighlight: true
 				})
 				//show datepicker when clicking on the icon

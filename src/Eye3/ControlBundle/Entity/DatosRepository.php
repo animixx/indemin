@@ -49,7 +49,10 @@ class DatosRepository extends EntityRepository
 		// (SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT (camion) )  , grua   FROM datos  where inicio LIKE '2014-06-16%' GROUP BY grua) 
 		// ORDER BY grua, camion
 //grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-16, 2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
-
+			
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+		 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
