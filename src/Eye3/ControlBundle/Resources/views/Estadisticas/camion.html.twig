@@ -13,12 +13,15 @@
 		<div class="col-md-4 col-xs-2"></div>
 		<div class="col-md-3 col-xs-8">
 			<!-- #section:plugins/date-time.datepicker -->
+				<form action="#" method="POST">
 			<div class="input-group">
-				<input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="16-06-2014" />
+				<input class="form-control date-picker" name="fecha" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" placeholder="{{fecha}}" value="{{fecha}}" />
 				<span class="input-group-addon">
 					<i class="fa fa-calendar bigger-110"></i>
 				</span>
 			</div>
+				<input type="submit" value="ver">
+				</form>
 		</div>
 	</div>
 
@@ -29,102 +32,108 @@
 {% set tiempo_min =  {} %}
 
 {% for grua in 1..cantidad_gruas %}
-
-	{% if datos[(jumper)]['grua'][5:1] != grua %}
-			<div class="row">
-				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
-			</div><!-- /.row -->
-	{% else %}	
-	
-		 
-		
+	{% if datos is not empty %}
+		{% if datos[(jumper)]['grua'][5:1] != grua %}
 				<div class="row">
-					<div class="col-12">
-						<div class="page-header"><h1>Camiones en Grúa {{grua}}</h1></div>
-					</div>
-					<div class="col-12 ">
-							<table class="table table-striped table-bordered table-hover">
-							{% set minimo = null %}
-							{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
-							{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
-							{% for row in 0..4 %}
-								{% if loop.first %}
-								<thead>
-									<tr>
-										<td >
-										&nbsp;
-										</td>
-										{% for camion in camiones %}
-										<td class="center">
-										{{camion.camion}}
-										</td>
-										{% endfor %}
-									</tr>
-								</thead>
-								<tbody>
-								{% endif %}
-									<tr>
-										<td class="center">
-										{{ cycle(titulos, loop.index )|raw }}
-										</td>
-										{% set pivote = 0 + jumper %}
-										{% for camion in camiones %}
-											<td class="center">
-											{% if camion.camion == datos[pivote]['camion'] %}
-												{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
-												
-												{% if minimo > datos[pivote]['tiempo'] or minimo is null %}
-													{% set minimo = datos[pivote]['tiempo'] %}
-												{% endif %}
-												
-												{% if datos|length > (pivote + datos[pivote]['inicio'] + 1) %}
-													{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
-												{% endif %}
-											{% endif %}
-											</td>
-										
-										{% endfor %}
-									</tr>
-								{% if loop.last %}
-									</tbody>	
-									{% set jumper = pivote %}
-								{% endif %}
-								
-							{% endfor %}
-							</table>
-					</div>	<!-- /.col -->	
-					
-
-					<div class=" col-12 ">
-						<div class="widget-box">
-							
-
-							<div class="widget-body">
-								<div class="widget-main" style="display:flex;">
-									<!-- #section:plugins/charts.flotchart -->
-									<div id="placeholder{{ grua }}" >{# Gráfico Grúa {grua} #}</div>
-									<p id="choices{{ grua }}" style="float:right; width:85px;"></p>
-									
-									
-								</div><!-- /.widget-main -->
-							</div><!-- /.widget-body -->
-						</div><!-- /.widget-box -->
-					</div><!-- /.col -->
-						
+					<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
 				</div><!-- /.row -->
-				
-	{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
-	{% set cant_gruas_validas = cant_gruas_validas| merge ([ jumper ]) %}  
-	{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
-	
-					
-	{% endif %}		
-	
-	{% if not loop.last %}		
-		<div class="hr hr32 hr-double"></div>		
-	{% endif %}		
+		{% else %}	
+		
+			 
+			
+					<div class="row">
+						<div class="col-12">
+							<div class="page-header"><h1>Camiones en Grúa {{grua}}</h1></div>
+						</div>
+						<div class="col-12 ">
+								<table class="table table-striped table-bordered table-hover">
+								{% set minimo = null %}
+								{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
+								{% set contenido = [ null,'inicio', 'max', 'tiempo' , 'prom', 'suma'] %} 
+								{% for row in 0..4 %}
+									{% if loop.first %}
+									<thead>
+										<tr>
+											<td >
+											&nbsp;
+											</td>
+											{% for camion in camiones %}
+											<td class="center">
+											{{camion.camion}}
+											</td>
+											{% endfor %}
+										</tr>
+									</thead>
+									<tbody>
+									{% endif %}
+										<tr>
+											<td class="center">
+											{{ cycle(titulos, loop.index )|raw }}
+											</td>
+											{% set pivote = 0 + jumper %}
+											{% for camion in camiones %}
+												<td class="center">
+												{% if camion.camion == datos[pivote]['camion'] %}
+													{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
+													
+													{% if minimo > datos[pivote]['tiempo'] or minimo is null %}
+														{% set minimo = datos[pivote]['tiempo'] %}
+													{% endif %}
+													
+													{% if datos|length > (pivote + datos[pivote]['inicio'] + 1) %}
+														{% set pivote = pivote + datos[pivote]['inicio'] + 1 %}
+													{% endif %}
+												{% endif %}
+												</td>
+											
+											{% endfor %}
+										</tr>
+									{% if loop.last %}
+										</tbody>	
+										{% set jumper = pivote %}
+									{% endif %}
+									
+								{% endfor %}
+								</table>
+						</div>	<!-- /.col -->	
+						
 
-{% endfor %}						
+						<div class=" col-12 ">
+							<div class="widget-box">
+								
+
+								<div class="widget-body">
+									<div class="widget-main" style="display:flex;">
+										<!-- #section:plugins/charts.flotchart -->
+										<div id="placeholder{{ grua }}" >{# Gráfico Grúa {grua} #}</div>
+										<p id="choices{{ grua }}" style="float:right; width:85px;"></p>
+										
+										
+									</div><!-- /.widget-main -->
+								</div><!-- /.widget-body -->
+							</div><!-- /.widget-box -->
+						</div><!-- /.col -->
+							
+					</div><!-- /.row -->
+					
+		{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
+		{% set cant_gruas_validas = cant_gruas_validas| merge ([ jumper ]) %}  
+		{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
+		
+						
+		{% endif %}	{#<!-- /if correct grua -->#}	
+		
+		{% if not loop.last %}		
+			<div class="hr hr32 hr-double"></div>		
+		{% endif %}		
+
+	{% else %}
+		<div class="row">
+			<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+		</div><!-- /.row -->
+	{% endif %}	{#<!-- /if datos empty -->#}
+
+{% endfor %}{#<!-- /for each grua -->#}						
 
 <!-- basic scripts -->
 
@@ -141,6 +150,7 @@
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.orderBars.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/locales/bootstrap-datepicker.es.js') }}"></script>
 		
 
 		<!-- inline scripts related to this page -->
@@ -322,6 +332,11 @@
 				//link
 				$('.date-picker').datepicker({
 					autoclose: true,
+					weekStart: 1,
+					language: "es",
+					todayBtn: "linked",
+					endDate: "today",
+					selectWeek:true,
 					todayHighlight: true
 				})
 				//show datepicker when clicking on the icon
@@ -329,14 +344,8 @@
 					$(this).prev().focus();
 				});
 			
-			
-			
-			
 			});
 			
-			
-				
 		</script>
-	
 	
 {% endblock %}

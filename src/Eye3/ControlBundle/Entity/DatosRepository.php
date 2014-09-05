@@ -76,6 +76,10 @@ class DatosRepository extends EntityRepository
 		// (SELECT camion,grua,inicio,DATE_FORMAT(duracion,"%i,%s"),null,null,null FROM datos WHERE  inicio like '2013-09-24%'  )
 		//  ORDER BY grua, camion,max desc  , inicio
 //grupo de pruebas solo grua 1 ->2013-09-24  , las 2 gruas -> (2014-06-16) , solo grua 2 -> 2014-06-07
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
@@ -97,6 +101,10 @@ class DatosRepository extends EntityRepository
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
 			//SELECT  SUM(TIME_TO_SEC(duracion))  as uso, TIME_TO_SEC(SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
 			//SELECT t1.camion as camion, t1.inicio as inicio, t1.duracion as duracion, SUBTIME(time(t2.inicio),time(t1.inicio)) as proximo  from datos as t1 , datos as t2 where t1.id+1 = t2.id and t1.inicio like '2013-09-24%'
+			
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(

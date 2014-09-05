@@ -37,16 +37,23 @@ class EstadisticasController extends Controller
      * @Route("/camion")
      * @Template()
      */
-    public function camionAction()
+    public function camionAction(Request $request)
     {
+		 $fecha='16-06-2014';
+		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
+		 $fecha = $request->request->get('fecha');
+		
+		  }
+		  
         $em = $this->getDoctrine()->getManager();
 
 		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia($fecha);
 
         return array(
                 'datos' => $datos,
                 'camiones' => $camiones,
+				'fecha' => $fecha,
             );    
 		
 	}
@@ -55,14 +62,21 @@ class EstadisticasController extends Controller
      * @Route("/grua")
      * @Template()
      */
-    public function gruaAction()
+    public function gruaAction(Request $request)
     {
+		 $fecha='16-06-2014';
+		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
+		 $fecha = $request->request->get('fecha');
+		
+		  }
+		  
         $em = $this->getDoctrine()->getManager();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->grua_dia();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->grua_dia($fecha);
 
         return array(
                 'datos' => $datos,
+				'fecha' => $fecha,
             ); 
      }
 
