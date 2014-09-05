@@ -99,7 +99,7 @@ class EstadisticasController extends Controller
 		 $fecha = $request->request->get('fecha');
 		
 		  }
-		  
+		
         $em = $this->getDoctrine()->getManager();
 
 		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
@@ -109,6 +109,7 @@ class EstadisticasController extends Controller
                 'datos' => $datos,
                 'camiones' => $camiones,
 				'fecha' => $fecha,
+				'domingo' => date_create($fecha)->modify('last Sunday'),
             );    
 	}
 	
