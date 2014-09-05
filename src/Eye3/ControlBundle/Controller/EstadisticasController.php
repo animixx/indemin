@@ -89,6 +89,30 @@ class EstadisticasController extends Controller
 	}
 
     /**
+     * @Route("/camion/semanal")
+     * @Template()
+     */
+    public function camionSemanaAction(Request $request)
+    {
+		 $fecha='16-06-2014';
+		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
+		 $fecha = $request->request->get('fecha');
+		
+		  }
+		  
+        $em = $this->getDoctrine()->getManager();
+
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_semana($fecha);
+
+        return array(
+                'datos' => $datos,
+                'camiones' => $camiones,
+				'fecha' => $fecha,
+            );    
+	}
+	
+    /**
      * @Route("/camion")
      * @Template()
      */

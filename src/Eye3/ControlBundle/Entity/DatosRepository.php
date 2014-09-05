@@ -139,6 +139,28 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
+		public function camion_semana($fecha = '2014-06-16%')
+		{
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+			
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'(SELECT camion,grua,DATE_FORMAT(inicio, "%Y,%m,%d") as dia, min(duracion) as min,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, null as dias FROM datos WHERE week(inicio) = week(:fecha) GROUP BY camion,grua ,date(inicio))
+						union
+					(SELECT camion,grua,null, min(duracion) ,max(duracion),SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) ,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) , count(*),count(distinct(date(inicio)))  FROM datos WHERE week(inicio) = week(:fecha) GROUP BY camion,grua )
+					 ORDER BY grua, camion, dia'
+
+			);
+				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}
+		
 		public function grua_dia($fecha = '2013-09-24%')
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
