@@ -140,7 +140,7 @@
 {% endfor %}{#<!-- /for each grua -->#}						
 
  <div class="row">
- {{primer|date_modify("last day of this month")|date("w")}}
+
  </div>
  
 <!-- basic scripts -->
@@ -293,7 +293,27 @@
 										    tickSize: 1,
 											tickDecimals: 0,
 											min:  {{primer|date_modify("first day of this month")|date("W")-1}},
-											max:  {{primer|date_modify("last day of this month")|date("W")+1}}
+											max:  {{primer|date_modify("last day of this month")|date("W")+1}},
+											ticks: [
+											{% set etiqueta = primer %}
+											{% for semana in (primer|date_modify("first day of this month")|date("W")-1)..(primer|date_modify("last day of this month")|date("W")+1) %}
+												{% if loop.first or loop.last %}
+													[{{semana}},'']
+												{% elseif loop.index == 2 and etiqueta|date("j") != 1 %}
+													[{{semana}},' 1 al {{etiqueta|date("j")-1}}']
+														
+												{% elseif etiqueta|date_modify("next Sunday")|date("n") != etiqueta|date("n") %}	
+													[{{semana}},'{{etiqueta|date("j")}} al {{etiqueta|date_modify("last day of this month")|date("j")}}']
+												{% else %}
+													[{{semana}},'{{etiqueta|date("j")}} al {{etiqueta|date_modify("next Sunday")|date("j")}}']
+													{% set etiqueta = etiqueta|date_modify("+7 days") %}
+													
+												{% endif %}
+												{% if not loop.last %}
+													,
+												{% endif %}
+											{% endfor %}
+											]
 											
 													
 										},

@@ -55,7 +55,7 @@ class EstadisticasController extends Controller
         return array(
                 'datos' => $datos,
 				'fecha' => $fecha,
-				'adicional' => '',
+				'adicional' => 'selectWeek:true,',
 				'formato' => 'dd-mm-yyyy',
 				'inicio' => '13-08-2013',
             );    
