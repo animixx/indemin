@@ -89,6 +89,31 @@ class EstadisticasController extends Controller
 	}
 
     /**
+     * @Route("/camion")
+     * @Template()
+     */
+    public function camionAction(Request $request)
+    {
+		 $fecha='16-06-2014';
+		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
+		 $fecha = $request->request->get('fecha');
+		
+		  }
+		  
+        $em = $this->getDoctrine()->getManager();
+
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia($fecha);
+
+        return array(
+                'datos' => $datos,
+                'camiones' => $camiones,
+				'fecha' => $fecha,
+            );    
+		
+	}
+	
+    /**
      * @Route("/camion/semanal")
      * @Template()
      */
@@ -113,30 +138,31 @@ class EstadisticasController extends Controller
             );    
 	}
 	
-    /**
-     * @Route("/camion")
+	/**
+     * @Route("/camion/mensual")
      * @Template()
      */
-    public function camionAction(Request $request)
+    public function camionMesAction(Request $request)
     {
-		 $fecha='16-06-2014';
+		 
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
-		
 		  }
-		  
+		  else $fecha='06-2014';
+		
         $em = $this->getDoctrine()->getManager();
 
 		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia($fecha);
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_mes($fecha);
 
         return array(
                 'datos' => $datos,
                 'camiones' => $camiones,
 				'fecha' => $fecha,
+				'primer' => date_create('01-'.$fecha)->modify('next Monday'),
             );    
-		
 	}
+	
 
     /**
      * @Route("/grua")
