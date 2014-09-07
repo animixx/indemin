@@ -13,7 +13,7 @@ use Symfony\Component\Templating\EngineInterface;
  *
  * @package Eye3\ControlBundle\Model
  *
- * @DataTable\Table(id="usuariosTable")
+ * @DataTable\Table(id="usuariosTable",sortable=true,searchable=false)
  */
 class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
@@ -28,28 +28,28 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 	
     /**
      * @var string
-     * @DataTable\Column(source="usuario.username", name="Usuario",sortable=false)
+     * @DataTable\Column(source="usuario.username",name="Usuario",sortable=false)
 	 * @DataTable\DefaultSort()
      */
     public $nombre;
 
    /**
      * @var string
-     * @DataTable\Column(source="usuario.nombre", name="Nombre")
+     * @DataTable\Column(source="usuario.nombre",name="Nombre",sortable=true)
      * @DataTable\DefaultSort()
      */
     public $login;
 	
    /**
      * @var string
-     * @DataTable\Column(source="usuario.tipo", name="Permisos")
+     * @DataTable\Column(searchable=false,source="usuario.tipo",name="Permisos")
      * @DataTable\DefaultSort()
      */
     public $rol;
 
 	/**
      * @var int
-     * @DataTable\Column(source="usuario.id", name="", sortable=false, searchable=false)
+     * @DataTable\Column(source="usuario.id", name="",sortable=false,searchable=false)
      * @DataTable\DefaultSort()
 	 * @DataTable\Format(dataFields={"id":"usuario.id"}, template="Eye3ControlBundle:Uso:modifica.html.twig")
      */
