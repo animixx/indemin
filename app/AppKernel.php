@@ -16,6 +16,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new Brown298\DataTablesBundle\Brown298DataTablesBundle(),
             new Eye3\ControlBundle\Eye3ControlBundle(),
         );
 

@@ -19,7 +19,7 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->createQuery(
 					'SELECT p FROM Eye3ControlBundle:Datos p'
-				)->setMaxResults(10);
+				)->setMaxResults(10000);
 
 			try {
 				return $query->getResult();

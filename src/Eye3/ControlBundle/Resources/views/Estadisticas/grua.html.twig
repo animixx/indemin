@@ -111,7 +111,8 @@
 		</div><!-- /.row -->
 	
 	
-	
+	{% block javascripts %}{% endblock %}
+
 <!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -120,6 +121,16 @@
 		</script>
 
 		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script type="text/javascript">
+		 window.jQuery || document.write("<script src='{{ asset('bundles/eye3control/js/jquery1x.min.js') }}'>"+"<"+"/script>");
+		</script>
+		<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('bundles/eye3control/js/jquery.mobile.custom.min.js') }}'>"+"<"+"/script>");
+		</script>
+		<script src="{{ asset('bundles/eye3control/js/bootstrap.min.js') }}"></script>
 		
 <!-- page specific plugin scripts -->
 
@@ -131,11 +142,10 @@
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.navigate.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}"></script>
 		
-{# no compatibles con la el menu deslizable, asi que se desactivan , estaban para habilitar la seleccion del calendario con el icono 	
 	<!-- ace scripts -->
 		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}"></script>
-#}
+		
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
 
