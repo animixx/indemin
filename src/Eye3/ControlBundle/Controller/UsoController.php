@@ -7,12 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Eye3\ControlBundle\Entity\Registro;
+use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * Uso controller.
  *
- * @Route("/uso")
+ * @Route("/")
  */
 class UsoController extends Controller
 {
@@ -20,17 +21,41 @@ class UsoController extends Controller
     /**
      * Lists all Registro entities.
      *
-     * @Route("/", name="uso_sistema")
+     * @Route("/uso", name="uso_sistema")
      * @Template()
+	 * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('Eye3ControlBundle:Registro')->findAll();
+        $dataTable = $this->get('data_tables.manager')->getTable('accesoTable');
+        if ($response = $dataTable->ProcessRequest($request)) {
+            return $response;
+        }
 
         return array(
-            'entities' => $entities,
+            'dataTable' => $dataTable,
+        );
+    }
+
+   
+    /**
+     * Lists all Users.
+     *
+     * @Route("/usuarios", name="usuarios")
+     * @Template("Eye3ControlBundle:Uso:user.html.twig")
+	 * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return array
+     */
+    public function userAction(Request $request)
+    {
+        $dataTable = $this->get('data_tables.manager')->getTable('usuariosTable');
+        if ($response = $dataTable->ProcessRequest($request)) {
+            return $response;
+        }
+
+        return array(
+            'dataTable' => $dataTable,
         );
     }
 

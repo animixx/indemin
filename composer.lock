@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c6524c0b5a64a96eb7df0e0ee8dbaaf7",
+    "hash": "d0d96dce07ad7cc895fe9ff4bdbe0c42",
     "packages": [
         {
             "name": "brown298/data-tables-bundle",

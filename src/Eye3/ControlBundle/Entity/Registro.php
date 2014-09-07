@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registro
  *
- * @ORM\Table(name="registro", indexes={@ORM\Index(name="fk_Registro_Usuario1_idx", columns={"Usuario_id"})})
+ * @ORM\Table(name="registro", indexes={@ORM\Index(name="fk_Registro_Usuario1_idx", columns={"Userid"})})
  * @ORM\Entity
  */
 class Registro
@@ -33,7 +33,7 @@ class Registro
      *
      * @ORM\ManyToOne(targetEntity="Usuario")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Usuario_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="Userid", referencedColumnName="id")
      * })
      *
      */

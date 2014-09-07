@@ -29,7 +29,7 @@ class RegistroController extends Controller
      */
     public function indexAction(Request $request)
     {
-       $dataTable = $this->get('data_tables.manager')->getTable('annotationTable');
+       $dataTable = $this->get('data_tables.manager')->getTable('registroTable');
         if ($response = $dataTable->ProcessRequest($request)) {
             return $response;
         }
