@@ -16,7 +16,6 @@ framework:
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
-    default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
@@ -32,9 +31,11 @@ twig:
 
 # Assetic Configuration
 assetic:
+    assets:
+        data_tables: ~
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [ ]
+    bundles:        [ Eye3ControlBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~

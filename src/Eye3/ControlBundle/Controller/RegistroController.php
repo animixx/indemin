@@ -4,15 +4,16 @@ namespace Eye3\ControlBundle\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Eye3\ControlBundle\Entity\Datos;
 
 /**
- * Registro controller.
+ * Class RegistroController
  *
  * @Route("/historial")
+ *
+ * @package Eye3\ControlBundle\Controller
  */
 class RegistroController extends Controller
 {
@@ -21,17 +22,20 @@ class RegistroController extends Controller
      * Lists all Datos entities.
      *
      * @Route("/", name="registro_historial")
-     * @Method("GET")
      * @Template()
+	 *
+	 * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('Eye3ControlBundle:Datos')->findall();
+       $dataTable = $this->get('data_tables.manager')->getTable('annotationTable');
+        if ($response = $dataTable->ProcessRequest($request)) {
+            return $response;
+        }
 
         return array(
-            'entities' => $entities,
+            'dataTable' => $dataTable,
         );
     }
 

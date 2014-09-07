@@ -1,0 +1,9 @@
+ymlDataTable:
+  entity: Eye3\ControlBundle\Entity\Datos
+  columns:
+    datos.id:
+      name: "Id"
+    datos.camion:
+      name: "Camion"
+    datos.grua:
+      name: "Grua"
