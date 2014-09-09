@@ -36,6 +36,10 @@
 		<script src="{{ asset('bundles/eye3control/js/html5shiv.js') }}"></script>
 		<script src="{{ asset('bundles/eye3control/js/respond.min.js') }}"></script>
 		<![endif]-->
+		
+		<!-- eye3 styles -->
+		<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/eye3.css') }}" />
+
 	</head>
 
 	<body class="login-layout">
@@ -61,7 +65,7 @@
 												Favor ingrese su informaci&oacute;n
 											</h4>
 {% if error %}
-    <div class"red" >Error : {{ error.message }}</div>
+    <div class="red" >Error : {{ error.message }}</div>
 {% endif %}
 											<div class="space-6"></div>
 

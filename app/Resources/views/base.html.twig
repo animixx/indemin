@@ -432,8 +432,10 @@
 			</a>
 		</div><!-- /.main-container -->
 
-{% block javascripts %}
-		<!-- basic scripts -->
+
+		
+{% block js %}
+<!-- basic scripts en base -->
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='{{ asset('bundles/eye3control/js/jquery.min.js') }}'>"+"<"+"/script>");
@@ -450,15 +452,16 @@
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('bundles/eye3control/js/jquery.mobile.custom.min.js') }}'>"+"<"+"/script>");
 		</script>
-		<script src="{{ asset('bundles/eye3control/js/bootstrap.min.js') }}"></script>
-
-		<!-- page specific plugin scripts -->
-
-		<!-- ace scripts -->
-		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}"></script>
-		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}"></script>
-		<!-- inline scripts related to this page -->
-{% endblock %}
+		
+        {% javascripts 
+            'bundles/eye3control/js/bootstrap.min.js' 
+            'bundles/eye3control/js/ace-elements.min.js' 
+			'bundles/eye3control/js/ace.min.js'
+            %}
+            <script src="{{ asset_url }}" type="text/javascript"></script>
+        {% endjavascripts %}
+    {% endblock %}
+	
 
 	</body>
 </html>
