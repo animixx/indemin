@@ -50,9 +50,8 @@
 						<div class="login-container">
 							<div class="center">
 								<h1>
-									<span class="white" id="id-text2">EYE3 - Monitoreo Online</span>
+									<span class="eye3color" id="id-text2">MONITOREO ONLINE</span>
 								</h1>
-								<h4 class="blue" id="id-company-text">&copy; eye3.cl</h4>
 							</div>
 
 							<div class="space-6"></div>
@@ -62,7 +61,7 @@
 									<div class="widget-body">
 										<div class="widget-main">
 											<h4 class="header blue lighter bigger">
-												Favor ingrese su informaci&oacute;n
+												Por favor ingrese sus datos
 											</h4>
 {% if error %}
     <div class="red" >Error : {{ error.message }}</div>
@@ -90,14 +89,13 @@
 													<div class="clearfix">
 													<!--	<label class="inline">
 															<input type="checkbox" class="ace" />
-															<span class="lbl"> Remember Me</span>
+															<span class="lbl"> Recordarme</span>
 														</label> -->
 														
 														 <input type="hidden" name="_target_path" value="/" />
 														 
-														<button type="submit" class="width-35 pull-right btn btn-sm btn-primary">
-															<i class="ace-icon fa fa-key"></i>
-															<span class="bigger-110">Ingreso</span>
+														<button type="submit" class="width-40 pull-right btn btn-sm btn-primary">
+															<span class="bigger-110">Iniciar Sesión</span>
 														</button>
 													</div>
 
@@ -114,7 +112,7 @@
 											<div>
 												<a href="#" data-target="#forgot-box" class="forgot-password-link">
 													<i class="ace-icon fa fa-arrow-left"></i>
-													Olvid&eacute; mi clave
+													Olvid&eacute; mi contrase&nacute;a
 												</a>
 											</div>
 
@@ -127,13 +125,12 @@
 									<div class="widget-body">
 										<div class="widget-main">
 											<h4 class="header red lighter bigger">
-												<i class="ace-icon fa fa-key"></i>
-												Retrieve Password
+												Recuperar contraseña
 											</h4>
 
 											<div class="space-6"></div>
 											<p>
-												Enter your email and to receive instructions
+												Ingresa tu email
 											</p>
 
 											<form>
@@ -147,8 +144,7 @@
 
 													<div class="clearfix">
 														<button type="button" class="width-35 pull-right btn btn-sm btn-danger">
-															<i class="ace-icon fa fa-lightbulb-o"></i>
-															<span class="bigger-110">Send Me!</span>
+															<span class="bigger-110">Enviar!</span>
 														</button>
 													</div>
 												</fieldset>
@@ -157,28 +153,30 @@
 
 										<div class="toolbar center">
 											<a href="#" data-target="#login-box" class="back-to-login-link">
-												Back to login
+												Volver
 												<i class="ace-icon fa fa-arrow-right"></i>
 											</a>
 										</div>
 									</div><!-- /.widget-body -->
 								</div><!-- /.forgot-box -->
+								
+								<div align="right">
+									<div>
+										<div>
+											<div>
+												<div>
+													<a href="http://www.eye3.cl" target="_blank">
+													<img src="{{ asset('bundles/eye3control/img/logo-eye3.png') }}" class="img-responsive login" alt="eye3" />
+													</a>
+												</div>
+											</div>
+										</div>
+	                				</div>
+                				</div>
+								
 							</div><!-- /.position-relative -->
 
-							<div class="navbar-fixed-top align-right">
-								<br />
-								&nbsp;
-								<a id="btn-login-dark" href="#">Oscuro</a>
-								&nbsp;
-								<span class="blue">/</span>
-								&nbsp;
-								<a id="btn-login-blur" href="#">Difuso</a>
-								&nbsp;
-								<span class="blue">/</span>
-								&nbsp;
-								<a id="btn-login-light" href="#">Claro</a>
-								&nbsp; &nbsp; &nbsp;
-							</div>
+							
 						</div>
 					</div><!-- /.col -->
 				</div><!-- /.row -->
@@ -216,31 +214,6 @@
 			
 			
 			
-			//you don't need this, just used for changing background
-			jQuery(function($) {
-			 $('#btn-login-dark').on('click', function(e) {
-				$('body').attr('class', 'login-layout');
-				$('#id-text2').attr('class', 'white');
-				$('#id-company-text').attr('class', 'blue');
-				
-				e.preventDefault();
-			 });
-			 $('#btn-login-light').on('click', function(e) {
-				$('body').attr('class', 'login-layout light-login');
-				$('#id-text2').attr('class', 'grey');
-				$('#id-company-text').attr('class', 'blue');
-				
-				e.preventDefault();
-			 });
-			 $('#btn-login-blur').on('click', function(e) {
-				$('body').attr('class', 'login-layout blur-login');
-				$('#id-text2').attr('class', 'white');
-				$('#id-company-text').attr('class', 'light-blue');
-				
-				e.preventDefault();
-			 });
-			 
-			});
 		</script>
 	</body>
 </html>
