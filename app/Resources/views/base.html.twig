@@ -93,7 +93,7 @@
 						<li class="light-blue">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<span class="user-info">
-									<small>Welcome,</small>
+									<small>Usuario,</small>
 									{{app.user.nombre}}
 								</span>
 
@@ -136,7 +136,7 @@
 
 				<ul class="nav nav-list">
 					
-					<li class="active open">
+					<li class="{% if app.request.attributes.get('_controller')|slice(30,12) == 'Estadisticas' %}active open{% endif %}">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-signal"></i>
 							<span class="menu-text"> Estadisticas </span>
@@ -148,7 +148,7 @@
 						
 						<ul class="submenu">
 						
-							<li class="">
+							<li class="{% if app.request.attributes.get('_controller')|slice(54,6) == 'tiempo' %}active open{% endif %}">
 									<a href="" class="dropdown-toggle">
 										<i class="menu-icon fa fa-caret-right"></i>
 
@@ -159,7 +159,7 @@
 									<b class="arrow"></b>
 
 									<ul class="submenu">
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,12) == 'tiempoAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_tiempo') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Diario
@@ -168,7 +168,7 @@
 											<b class="arrow"></b>
 										</li>
 
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,18) == 'tiempoSemanaAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_tiemposemana') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Semanal
@@ -177,7 +177,7 @@
 											<b class="arrow"></b>
 										</li>
 
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,15) == 'tiempoMesAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_tiempomes') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Mensual
@@ -189,7 +189,7 @@
 									</ul>
 								</li>
 								
-							<li class="">
+							<li class="{% if app.request.attributes.get('_controller')|slice(54,6) == 'camion' %}active open{% endif %}">
 									<a href="#" class="dropdown-toggle">
 										<i class="menu-icon fa fa-caret-right"></i>
 
@@ -200,7 +200,7 @@
 									<b class="arrow"></b>
 
 									<ul class="submenu">
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,12) == 'camionAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_camion') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Diario
@@ -209,7 +209,7 @@
 											<b class="arrow"></b>
 										</li>
 
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,18) == 'camionSemanaAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_camionsemana') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Semanal
@@ -218,7 +218,7 @@
 											<b class="arrow"></b>
 										</li>
 
-										<li class="">
+										<li class="{% if app.request.attributes.get('_controller')|slice(54,15) == 'camionMesAction' %}active {% endif %}">
 											<a href="{{ path('eye3_control_estadisticas_camionmes') }}">
 												<i class="menu-icon fa fa-caret-right"></i>
 												Mensual
@@ -229,7 +229,7 @@
 
 									</ul>
 								</li>
-							<li class="">
+							<li class="{% if app.request.attributes.get('_controller')|slice(54,4) == 'grua' %}active {% endif %}">
 									<a href="{{ path('eye3_control_estadisticas_grua') }}" class="">
 										<i class="menu-icon fa fa-caret-right"></i>
 
@@ -244,7 +244,7 @@
 
 					</li>
 
-					<li class="">
+					<li class="{% if app.request.attributes.get('_controller')|slice(30,8) == 'Registro' %}active open{% endif %}">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-list"></i>
 							<span class="menu-text"> Registro </span>
@@ -255,10 +255,19 @@
 						<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="">
+							<li class="{% if app.request.attributes.get('_route') == 'registro_historial' %}active {% endif %}">
 								<a href="{{path('registro_historial')}}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Historial
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+							<li class="">
+								<a href="#">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Descargas
 								</a>
 
 								<b class="arrow"></b>
@@ -267,7 +276,7 @@
 
 					</li>
 
-					<li class="">
+					<li class="{% if app.request.attributes.get('_controller')|slice(30,3) == 'Uso' %}active open{% endif %}">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-users"></i>
 							<span class="menu-text"> Control de Acceso </span>
@@ -278,7 +287,7 @@
 						<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="">
+							<li class="{% if app.request.attributes.get('_route') == 'usuarios' %}active {% endif %}">
 								<a href="{{ path('usuarios') }}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Gesti&oacute;n
@@ -287,7 +296,7 @@
 								<b class="arrow"></b>
 							</li>
 
-							<li class="">
+							<li class="{% if app.request.attributes.get('_route') == 'uso_sistema' %}active {% endif %}">
 								<a href="{{path('uso_sistema')}}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Ver uso del sistema
@@ -301,7 +310,7 @@
 					</li>
 
 					
-					<li class="">
+					<li class="{% if app.request.attributes.get('_controller')|slice(30,7) == 'Reporte' %}active open{% endif %}">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-calendar"></i>
 
@@ -313,8 +322,8 @@
 						<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="">
-								<a href="{{ path('no_disponible') }}">
+							<li class="{% if app.request.attributes.get('_route') == 'reporte_semanal' %}active {% endif %}">
+								<a href="{{ path('reporte_semanal') }}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Semanal
 								</a>
@@ -322,8 +331,8 @@
 								<b class="arrow"></b>
 							</li>
 							
-							<li class="">
-								<a href="{{ path('no_disponible') }}">
+							<li class="{% if app.request.attributes.get('_route') == 'usuarios' %}active {% endif %}">
+								<a href="{{ path('reporte_mensual') }}">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Mensual
 								</a>

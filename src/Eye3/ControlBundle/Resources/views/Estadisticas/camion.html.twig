@@ -39,72 +39,88 @@
 				</div><!-- /.row -->
 		{% else %}	
 		
-			 {% set aux = 0 %}
-			
 					<div class="row">
-						<div class="col-12">
-							<div class="page-header"><h1>Camiones en Grúa {{grua}}</h1></div>
-						</div>
-						<div class="col-12 ">
+						<div class="col-12"><!-- titulo -->
+							<div class="page-header"><h1>Camiones Diario - Grúa {{grua}}</h1></div>
+						</div><!-- /.titulo -->
+						<div class="col-12 "><!-- tabla -->
 								<table class="table table-striped table-bordered table-hover">
 								{% set minimo = null %}
-								{% set titulos = [null, "Cant Ciclos", "Ciclo &Delta;t Max.", "Ciclo &Delta;t Min." , "Duracion Promedio", "Total periodo:"] %} 
-								{% set contenido = [ null,'cuantos', 'max', 'tiempo' , 'prom', 'suma'] %} 
-								{% for row in 0..4 %}
-									{% if loop.first %}
 									<thead>
 										<tr>
 											<td >
 											&nbsp;
 											</td>
-											{% for camion in camiones %}
+											
 											<td class="center">
-											{{camion.camion}}
+												Cant Ciclos
 											</td>
-											{% endfor %}
+											<td class="center">
+												Ciclo &Delta;t Max.
+											</td>
+											<td class="center">
+												Ciclo &Delta;t Min.
+											</td>
+											<td class="center">
+												Duracion Promedio
+											</td>
+											<td class="center">
+												Total periodo
+											</td>
+											
 										</tr>
 									</thead>
 									<tbody>
-									{% endif %}
+
+									{% set saltador = 0 + jumper %}
+									{% for counter in camiones %}
 										<tr>
 											<td class="center">
-											{{ cycle(titulos, loop.index )|raw }}
+												{{ counter["camion"] }} 
 											</td>
-											{% set pivote = 0 + jumper %}
-											{% for camion in camiones %}
-												<td class="center">
-												{% if camion.camion == datos[pivote]['camion'] %}
-													{{ datos[pivote][ (cycle(contenido, loop.parent.loop.index ))] }} 
-													
-													{% if loop.parent.loop.first %}
-														{% set aux = aux + datos[pivote]['cuantos'] + 1 %}
-													{% endif %}
-													
-													{% if minimo > datos[pivote]['tiempo'] or minimo is null %}
-														{% set minimo = datos[pivote]['tiempo'] %}
-													{% endif %}
-													
-													{% if datos|length > (pivote + datos[pivote]['cuantos'] + 1) %}
-														{% set pivote = pivote + datos[pivote]['cuantos'] + 1 %}
-													{% endif %}
-												{% endif %}
-												</td>
+											<td class="center">
+												{% if counter["camion"]==datos[saltador]["camion"] %} {{ datos[saltador]["cuantos"] }} {% endif %} 
+											</td>
+											<td class="center">
+												{% if counter["camion"]==datos[saltador]["camion"] %} {{ datos[saltador]["max"] }} {% endif %} 
+											</td>
+											<td class="center">
+												{% if counter["camion"]==datos[saltador]["camion"] %} {{ datos[saltador]["tiempo"] }}
+													{% if minimo > datos[saltador]['tiempo'] or minimo is null %}
+														{% set minimo = datos[saltador]['tiempo'] %}
+													{% endif %} 
+												{% endif %} 
+											</td>
+											<td class="center">
+												{% if counter["camion"]==datos[saltador]["camion"] %} {{ datos[saltador]["prom"] }} {% endif %} 
+											</td>
+											<td class="center">
+												{% if counter["camion"]==datos[saltador]["camion"] %} {{ datos[saltador]["suma"] }} {% endif %} 
+											</td>
+										
 											
-											{% endfor %} {#<!-- /for de camiones -->#}
 										</tr>
-									{% if loop.last %}
-										</tbody>	
-										{% set jumper = pivote %}
-									{% endif %}
+										{% if counter["camion"]==datos[saltador]["camion"] %}
+												{% if datos|length > (saltador + datos[saltador]['cuantos'] + 1) %}
+													{% set saltador = saltador + datos[saltador]["cuantos"]+1 %}
+												{% else %}
+													{% set saltador = saltador + datos[saltador]["cuantos"] %}
+												{% endif %}
+										{% endif %} 
+									{% endfor %}
 									
-								{% endfor %} {#<!-- /for llenando las 5 columnas -->#}
+									</tbody>
+									
 								</table>
-						</div>	<!-- /.col -->	
+						</div><!-- /.tabla -->
 						
-
 						<div class=" col-12 ">
 							<div class="widget-box">
-								
+								<div class="widget-header widget-header-flat widget-header-small">
+									<h5 class="widget-title">
+										Operación Diaria - Grúa {{ grua }}
+									</h5>
+								</div>
 
 								<div class="widget-body">
 									<div class="widget-main" style="display:flex;">
@@ -117,14 +133,16 @@
 								</div><!-- /.widget-body -->
 							</div><!-- /.widget-box -->
 						</div><!-- /.col -->
-							
-					</div><!-- /.row -->
-					
-		{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
-		{% set cant_gruas_validas = cant_gruas_validas| merge ([ aux ]) %}  
-		{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
-		
 						
+					</div><!-- /.row -->
+		{% if (datos|length)-1 > saltador %}
+			{% set jumper = saltador %}	
+		{% else %}
+			{% set saltador = saltador + 1 %}			
+		{% endif %}
+		{% set gruas_validas = gruas_validas| merge ([ grua ]) %}  
+		{% set cant_gruas_validas = cant_gruas_validas| merge ([ saltador ]) %}  
+		{% set tiempo_min = tiempo_min| merge ([ minimo|split(':') ]) %}  
 		{% endif %}	{#<!-- /if correct grua -->#}	
 		
 		{% if not loop.last %}		
@@ -137,9 +155,8 @@
 		</div><!-- /.row -->
 	{% endif %}	{#<!-- /if datos empty -->#}
 
-{% endfor %}{#<!-- /for each grua -->#}						
+{% endfor %}{#<!-- /for each grua -->#}		
 
-	
 {% block js %}{% endblock %}
 <!-- basic scripts -->
 		<!--[if !IE]> -->
@@ -165,6 +182,7 @@
 		
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.orderBars.js') }}" type="text/javascript"></script>
+		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.axislabels.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/flot/jquery.flot.resize.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/bootstrap-datepicker.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/date-time/locales/bootstrap-datepicker.es.js') }}" type="text/javascript"></script>
@@ -284,8 +302,12 @@
 											
 											}
 										},
+										axisLabels: {
+											show: true
+										},
 										yaxis: {
 											  min : {{tiempo_min[loop.index0][1]*60+tiempo_min[loop.index0][2]-50}}, 
+											  axisLabel: 'Duración',
 											  tickFormatter: function (v, axis) {
 													  var minutes = Math.floor(v / 60);
 													  var seconds = v - minutes * 60;
@@ -296,6 +318,7 @@
 										},
 										xaxis: {
 											min : 0,
+											axisLabel: 'N° ciclo',
 											tickSize: 1,
 											tickDecimals: 0, 
 									
@@ -364,5 +387,5 @@
 			});
 			
 		</script>
-	
-{% endblock %}
+		
+	{% endblock %}

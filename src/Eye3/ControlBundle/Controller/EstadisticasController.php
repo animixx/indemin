@@ -27,6 +27,7 @@ class EstadisticasController extends Controller
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia($fecha);
 
         return array(
+				'titulo' => 'Diario',
                 'datos' => $datos,
 				'fecha' => $fecha,
 				'adicional' => '',
@@ -53,6 +54,7 @@ class EstadisticasController extends Controller
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_semana($fecha);
 
         return array(
+				'titulo' => 'Semanal',
                 'datos' => $datos,
 				'fecha' => $fecha,
 				'adicional' => 'selectWeek:true,',
@@ -79,6 +81,7 @@ class EstadisticasController extends Controller
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_mes($fecha);
 
         return array(
+				'titulo' => 'Mensual',
                 'datos' => $datos,
 				'fecha' => $fecha,
 				'adicional' => 'minViewMode: 1,',
