@@ -94,7 +94,7 @@
 														
 												</td>
 												<td class="center">
-													{% if counter["camion"]==datos[pivote]["camion"] %} {{ datos[pivote]["semana"] }} {% endif %} 
+													{% if counter["camion"]==datos[pivote]["camion"] %} {{ datos[pivote]["dias"] }} {% endif %} 
 												</td>
 												<td class="center">
 													{% if counter["camion"]==datos[pivote]["camion"] %} {{ datos[pivote]["suma"] }} {% endif %} 
@@ -162,7 +162,6 @@
 
 {% endfor %}{#<!-- /for each grua -->#}						
 
-
 {% block js %}{% endblock %}
 <!-- basic scripts -->
 		<!--[if !IE]> -->
@@ -210,48 +209,26 @@
 	{% for grua in gruas_validas %}
 				  var placeholder{{grua}} = $('#placeholder{{grua}}').css({'width':'85%' , 'min-height':'230px'});
 					
-				  var graficame{{grua}} =  [
-												{% set contador = 0   %}
-												
+				  var graficame{{grua}} =  [	{% set contador = 0   %}
 												{% set llenado  = null %}
 												{% set extra  = null %}
-
 												{% for camion in datos|slice(corte, cant_gruas_validas[loop.index0])  %}
 													{% if loop.first %}
-													{
-														 "label": "{{camion.camion}}",
-														 "data": 
-														 [
-																{% set temp = camion.semana    %}
+													{"label": "{{camion.camion}}","data": 
+														 [{% set temp = camion.semana    %}
 													{% elseif camion.selector is null %}
 																	{% set contador = contador +1 %}
-																	{% set llenado   %}
-																			{{ llenado}}['{{camion.semana}}', {{camion.suma}}]
-																				{% if contador != temp %},{% endif %}
-																	{% endset %}
-																	{% set extra   %}
-																			{{ extra}}'{{camion.dias}}'
-																				{% if contador != temp %},{% endif %}
-																	{% endset %}			
+																	{% set llenado   %}{{ llenado}}['{{camion.semana}}', {{camion.suma}}]{% if contador != temp %},{% endif %}{% endset %}
+																	{% set extra  %}{{ extra}}'{{camion.dias}}'{% if contador != temp %},{% endif %}{% endset %}			
 															{% if loop.last %}
-																	{{ llenado}}
-																	], "extra": [{{ extra}} ] }
-																]; 
+																	{{ llenado}}], "extra": [{{ extra}} ] }]; 
 															{% endif %}
 													{% else %}
-																		{{ llenado}}
-														], "extra": [{{ extra}} ] }
-																		
+																	{{ llenado}}], "extra": [{{ extra}}] }
 																		{% set contador  = 0  %}
 																		{% set llenado  = null %}
 																		{% set extra  = null %}
-																		{% set temp = camion.semana  %}
-																		,
-																		{
-														 "label": "{{camion.camion}}",
-														 "data": 
-														 [
-																	
+																		{% set temp = camion.semana  %},{"label": "{{camion.camion}}","data":[
 													{% endif %}
 												{% endfor %}
 				  
@@ -328,12 +305,34 @@
 										xaxis: {
 										    tickSize: 1,
 											tickDecimals: 0,
-											axisLabel: 'Semana',
-											min:  {{primer|date_modify("first day of this month")|date("W")-1}},
-											max:  {{primer|date_modify("last day of this month")|date("W")+1}},
+											{% set meses = [ 'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'] %}
+											axisLabel: 'Semanas de {{ meses[primer|date("n")-1] }}',
+											{% if (primer|date("n")) == 1 %}
+												{% set festivo=(primer|date_modify("first day of this month")|date_modify("this Monday")|date("W")) %}
+													{% if festivo == 1 %}
+														{% set desde = festivo - 1 %}
+													{% else %}
+														{% set desde = festivo - 2 %}
+													{% endif %}
+											{% else %}
+												{% set desde=(primer|date_modify("first day of this month")|date("W"))-1 %}
+											{% endif %}
+											{% if (primer|date("n")) == 12 %}
+												{% set festivo=(primer|date_modify("last day of this month")|date_modify("last Sunday")|date("W")) %}
+													{% if festivo == 31 %}
+														{% set hasta = festivo + 1 %}
+													{% else %}
+														{% set hasta = festivo + 2 %}
+													{% endif %}
+											{% else %}
+												{% set hasta=(primer|date_modify("last day of this month")|date("W"))+1 %}
+											{% endif %}
+											
+											min:  {{desde}},
+											max:  {{hasta}},
 											ticks: [
 											{% set etiqueta = primer %}
-											{% for semana in (primer|date_modify("first day of this month")|date("W")-1)..(primer|date_modify("last day of this month")|date("W")+1) %}
+											{% for semana in (desde)..(hasta) %}
 												{% if loop.first or loop.last %}
 													[{{semana}},'']
 												{% elseif loop.index == 2 and etiqueta|date("j") != 1 %}
@@ -350,9 +349,7 @@
 													,
 												{% endif %}
 											{% endfor %}
-											]
-											
-													
+											]													
 										},
 										grid: {
 											hoverable: true,
