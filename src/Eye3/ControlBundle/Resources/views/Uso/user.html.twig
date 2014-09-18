@@ -20,7 +20,7 @@
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('bundles/eye3control/js/jquery.mobile.custom.min.js') }}'>"+"<"+"/script>");
 		</script>
-		
+
  {% endjavascripts %}
 
 {% endblock %}
@@ -36,7 +36,7 @@
         {{ addDataTable(dataTable) }}
     </div>
 	
-	<div> <button class="btn btn-green" name="nuevo"><i class="ace-icon fa fa-plus"></i>Agregar Nuevo Usuario</button>
+	<div> <a class="btn btn-green" href="{{ path('nuevo_usuario') }}"><i class="ace-icon fa fa-plus"></i>Agregar Nuevo Usuario</a>
 	</div>
 	
 {% block js %}{% endblock %}
