@@ -17,7 +17,7 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
- 
+
     /**
      * @var datetime
      * @DataTable\Column(source="usuario.last_login", name="Ultimo Acceso")
@@ -39,6 +39,13 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
      * @DataTable\DefaultSort()
      */
     public $login;
+	
+   /**
+     * @var string
+     * @DataTable\Column(source="usuario.email",name="Email",sortable=true)
+     * @DataTable\DefaultSort()
+     */
+    public $email;
 	
    /**
      * @var string

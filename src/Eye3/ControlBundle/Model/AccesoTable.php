@@ -17,7 +17,7 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class AccesoTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
- 
+
     /**
      * @var datetime
      * @DataTable\Column(source="registro.fecha", name="Fecha")
@@ -34,7 +34,7 @@ class AccesoTable extends QueryBuilderDataTable implements QueryBuilderDataTable
 
    /**
      * @var string
-     * @DataTable\Column(source="registro.userid", name="Usuario")
+     * @DataTable\Column(source="registro.usuario.nombre", name="Usuario")
      * @DataTable\DefaultSort()
      */
     public $usuario;

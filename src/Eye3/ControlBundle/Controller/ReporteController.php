@@ -40,7 +40,7 @@ class ReporteController extends Controller
 
     /**
      * 
-     * @Route("/", name="reporte_mensual")
+     * @Route("/mensual", name="reporte_mensual")
      * @Template("Eye3ControlBundle:Reporte:index.html.twig")
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request
