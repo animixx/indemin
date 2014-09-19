@@ -26,7 +26,6 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
     /**
      * @var string
      * @DataTable\Column(source="datos.camion", name="Camion")
-     * @DataTable\DefaultSort()
      * @DataTable\Format(dataFields={"dato":"datos.camion"}, template="Eye3ControlBundle:Registro:show.html.twig")
 	*/
     public $camion;
@@ -34,7 +33,6 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
     /**
      * @var string
      * @DataTable\Column(source="datos.grua", name="Grua")
-     * @DataTable\DefaultSort()	 
 	 * @DataTable\Format(dataFields={"dato":"datos.grua"}, template="Eye3ControlBundle:Registro:show.html.twig")
      */
     public $grua;
@@ -42,7 +40,6 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 	/**
      * @var datetime
      * @DataTable\Column(source="datos.inicio", name="Inicio")
-     * @DataTable\DefaultSort()
 	 * @DataTable\Format(dataFields={"dato":"datos.inicio"}, template="Eye3ControlBundle:Registro:fecha.html.twig")
      */
     public $inicio;
@@ -50,7 +47,6 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 	/**
      * @var time
      * @DataTable\Column(source="datos.duracion", name="Duracion")
-     * @DataTable\DefaultSort()
 	 * @DataTable\Format(dataFields={"dato":"datos.duracion"}, template="Eye3ControlBundle:Registro:hora.html.twig")
      */
     public $duracion;

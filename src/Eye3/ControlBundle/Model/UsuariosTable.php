@@ -13,15 +13,14 @@ use Symfony\Component\Templating\EngineInterface;
  *
  * @package Eye3\ControlBundle\Model
  *
- * @DataTable\Table(id="usuariosTable")
+ * @DataTable\Table(id="usuariosTable",displayLength=10)
  */
 class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
 
     /**
      * @var datetime
-     * @DataTable\Column(source="usuario.last_login", name="Último Acceso")
-     * @DataTable\DefaultSort()
+     * @DataTable\Column(source="usuario.last_login", name="Último Acceso", stype="date-euro",sDefaultContent = "Nunca")
 	 * @DataTable\Format(dataFields={"dato":"usuario.last_login"}, template="Eye3ControlBundle:Registro:fecha.html.twig")
      */
     public $fecha; 
@@ -36,28 +35,24 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
    /**
      * @var string
      * @DataTable\Column(source="usuario.nombre",name="Nombre")
-     * @DataTable\DefaultSort()
      */
     public $login;
 	
    /**
      * @var string
      * @DataTable\Column(source="usuario.email",name="Email")
-     * @DataTable\DefaultSort()
      */
     public $email;
 	
    /**
      * @var string
-     * @DataTable\Column(searchable=false,source="usuario.tipo",name="Permisos")
-     * @DataTable\DefaultSort()
+     * @DataTable\Column(source="usuario.tipo",name="Permisos")
      */
     public $rol;
 
 	/**
      * @var int
      * @DataTable\Column(source="usuario.id", name="",sortable=false,searchable=false)
-     * @DataTable\DefaultSort()
 	 * @DataTable\Format(dataFields={"id":"usuario.id"}, template="Eye3ControlBundle:Uso:modifica.html.twig")
      */
     public $id;

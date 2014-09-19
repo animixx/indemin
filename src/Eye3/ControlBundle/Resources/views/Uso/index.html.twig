@@ -35,12 +35,9 @@
     <div class="table-bordered">
 		{{ addDataTable(dataTable, {
 									"info": false ,
-									 "table_class": "display dataTable table table-striped hover order-column",
-									 "infoEmpty": "Nada que mostrar",
-									'customParams': {	 "language.infoEmpty": "Nada que mostrar",
-														 "infoEmpty": "Nada que mostrar"
+								
 									
-									},
+									
 								}) 
 		}}
     </div>
@@ -49,6 +46,7 @@
 {% block js %}{% endblock %}
 		<script src="{{ asset('bundles/eye3control/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/jquery.dataTables.bootstrap.js') }}" type="text/javascript"></script>
+		<script src="{{ asset('bundles/eye3control/js/date-time/datatables-date-euro.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/bootstrap.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/ace-elements.min.js') }}" type="text/javascript"></script>
 		<script src="{{ asset('bundles/eye3control/js/ace.min.js') }}" type="text/javascript"></script>

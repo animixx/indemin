@@ -1,5 +1,3 @@
-{% if dato is null %}
-	Nunca
-{% else %}
-	{{ dato|date("d-m-Y H:i") }}
+{% if dato is not null %}
+	{{ dato|date("d/m/Y H:i:s") }}
 {% endif %}

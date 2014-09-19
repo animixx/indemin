@@ -13,18 +13,19 @@ use Symfony\Component\Templating\EngineInterface;
  *
  * @package Eye3\ControlBundle\Model
  *
- * @DataTable\Table(id="accesoTable")
+ * @DataTable\Table(id="accesoTable",displayLength=10, serverSideProcessing = false)
  */
 class AccesoTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
-
+	
     /**
-     * @var datetime
-     * @DataTable\Column(source="registro.fecha", name="Fecha")
-     * @DataTable\DefaultSort()
+     * @var date
+     * @DataTable\Column(source="registro.fecha", name="Fecha", stype="date-euro")
 	 * @DataTable\Format(dataFields={"dato":"registro.fecha"}, template="Eye3ControlBundle:Registro:fecha.html.twig")
+     * @DataTable\DefaultSort()
      */
     public $cuando; 
+	
 	
     /**
      * @var string
@@ -35,7 +36,6 @@ class AccesoTable extends QueryBuilderDataTable implements QueryBuilderDataTable
    /**
      * @var string
      * @DataTable\Column(source="registro.usuario.nombre", name="Usuario")
-     * @DataTable\DefaultSort()
      */
     public $usuario;
 
