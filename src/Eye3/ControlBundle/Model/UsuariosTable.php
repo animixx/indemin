@@ -20,7 +20,7 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 
     /**
      * @var datetime
-     * @DataTable\Column(source="usuario.last_login", name="Ultimo Acceso")
+     * @DataTable\Column(source="usuario.last_login", name="Último Acceso")
      * @DataTable\DefaultSort()
 	 * @DataTable\Format(dataFields={"dato":"usuario.last_login"}, template="Eye3ControlBundle:Registro:fecha.html.twig")
      */

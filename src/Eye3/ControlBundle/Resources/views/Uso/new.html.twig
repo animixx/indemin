@@ -18,52 +18,61 @@
 								<div class="space"></div>
 
 								<div class="form-group">
-									{{ form_label(form.nombre, '', { 'label_attr': { 'class': 'col-sm-4 control-label no-padding-right' }}) }}
+									{{ form_label(form.nombre, '', { 'label_attr': { 'class': 'col-sm-2 control-label no-padding-right' }}) }}
 
-										{{ form_widget(form.nombre, {'attr': {'class': 'col-xs-10 col-sm-5', 'placeholder': 'Nombre' }}) }}
-									<div class="col-sm-5">
+										{{ form_widget(form.nombre, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1', 'placeholder': 'Ingrese nombre' }}) }}
+									<div class="col-sm-3">
 										{{ form_errors(form.nombre) }}
+									</div>
+								</div>	
+								
+								<div class="form-group">
+									{{ form_label(form.username, '', { 'label_attr': { 'class': 'col-sm-2 control-label no-padding-right' }}) }}
+
+										{{ form_widget(form.username, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1', 'placeholder': 'Ingrese usuario' }}) }}
+									<div class="col-sm-3">
+										{{ form_errors(form.username) }}
 									</div>
 								</div>	
 
 								<div class="form-group">
-									{{ form_label(form.genero, '', { 'label_attr': { 'class': 'col-sm-4 control-label no-padding-right' }}) }}
+									{{ form_label(form.genero, '', { 'label_attr': { 'class': 'col-sm-2 control-label no-padding-right' }}) }}
 
-										{{ form_widget(form.genero, {'attr': {'class': 'col-xs-10 col-sm-5', 'placeholder': 'Nombre' }}) }}
-									<div class="col-sm-5">
+										{{ form_widget(form.genero, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1' }}) }}
+									<div class="col-sm-3">
 										{{ form_errors(form.genero) }}
 									</div>
 								</div>	
 								<div class="form-group">	
-									{{ form_label(form.password.first, '', {'label_attr':{'class':'col-sm-4 control-label no-padding-right'}}) }}
+									{{ form_label(form.password.first, '', {'label_attr':{'class':'col-sm-2 control-label no-padding-right'}}) }}
 
-										{{ form_widget(form.password.first) }}
-									<div class="col-sm-5">
-										{{ form_errors(form.password.first) }}
+										{{ form_widget(form.password.first, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1', 'placeholder': 'Ingrese contraseña' }}) }}
+									<div class="col-sm-3">
+										{{ form_errors(form.password.first) }} <br> {{ form_errors(form.password.second) }}
 									</div>
 								</div>
 								<div class="form-group">	
-									{{ form_label(form.password.second, '', {'label_attr':{'class':'col-sm-4 control-label no-padding-right', 'placeholder': 'Ingrese contraseña'}}) }}
+									{{ form_label(form.password.second, '', {'label_attr':{'class':'col-sm-2 control-label no-padding-right' }}) }}
 
-										{{ form_widget(form.password.second) }}
-									<div class="col-sm-5">
-										{{ form_errors(form.password.second) }}
+										{{ form_widget(form.password.second, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1', 'placeholder': 'Confirme contraseña' }}) }}
+									<div class="col-sm-3">
+										{{ form_errors(form.password.first) }} <br> {{ form_errors(form.password.second) }}
 									</div>
 								</div>
 								
 								<div class="form-group">
-									{{ form_label(form.email, '', { 'label_attr': { 'class': 'col-sm-4 control-label no-padding-right', 'placeholder': 'Confirme contraseña' }}) }}
+									{{ form_label(form.email, '', { 'label_attr': { 'class': 'col-sm-2 control-label no-padding-right' }}) }}
 
-										{{ form_widget(form.email, {'attr': {'class': 'col-xs-10 col-sm-5', 'placeholder': 'Email' }}) }}
-									<div class="col-sm-5">
+										{{ form_widget(form.email, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1', 'placeholder': 'Ingrese email' }}) }}
+									<div class="col-sm-3">
 										{{ form_errors(form.email) }}
 									</div>
 								</div>
 								<div class="form-group">
-									{{ form_label(form.tipo, '', { 'label_attr': { 'class': 'col-sm-4 control-label no-padding-right' }}) }}
+									{{ form_label(form.tipo, '', { 'label_attr': { 'class': 'col-sm-2 control-label no-padding-right' }}) }}
 
-										{{ form_widget(form.tipo, {'attr': {'class': 'col-xs-10 col-sm-5' }}) }}
-									<div class="col-sm-5">
+										{{ form_widget(form.tipo, {'attr': {'class': 'col-xs-10 col-sm-3 col-sm-offset-1' }}) }}
+									<div class="col-sm-3">
 										{{ form_errors(form.tipo) }}
 									</div>
 								</div>

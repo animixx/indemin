@@ -1,1 +1,5 @@
-{{ dato|date("d-m-Y H:i") }}
+{% if dato is null %}
+	Nunca
+{% else %}
+	{{ dato|date("d-m-Y H:i") }}
+{% endif %}

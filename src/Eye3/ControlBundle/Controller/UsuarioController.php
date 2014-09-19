@@ -9,6 +9,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Eye3\ControlBundle\Entity\Usuario;
 use Eye3\ControlBundle\Form\UsuarioType;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
+use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 
 /**
  * Usuario controller.
@@ -202,46 +206,5 @@ class UsuarioController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
-    /**
-     * Deletes a Usuario entity.
-     *
-     * @Route("/{id}", name="users_delete")
-     * @Method("DELETE")
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Eye3ControlBundle:Usuario')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Usuario entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('users'));
-    }
-
-    /**
-     * Creates a form to delete a Usuario entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('users_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
-    }
+    
 }

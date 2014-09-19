@@ -44,8 +44,7 @@ class Registro
      *
      * @ORM\Column(name="fecha", type="datetime", nullable=false)
      */
-    private $fecha = 'CURRENT_TIMESTAMP';
-
+    private $fecha ;
 
 
     /**
@@ -89,9 +88,9 @@ class Registro
      * @param \DateTime $fecha
      * @return Registro
      */
-    public function setFecha($fecha)
+    public function setFecha()
     {
-        $this->fecha = $fecha;
+        $this->fecha = new \DateTime('now');
 
         return $this;
     }
@@ -112,7 +111,7 @@ class Registro
      * @param \Eye3\ControlBundle\Entity\Usuario $usuario
      * @return Registro
      */
-    public function setUsuario(\Eye3\ControlBundle\Entity\Usuario $usuario = null)
+    public function setUsuario(\Eye3\ControlBundle\Entity\Usuario $usuario )
     {
         $this->usuario = $usuario;
 
