@@ -1,3 +1,5 @@
-{% if dato is not null %}
+{%- if dato is null -%}
+	{{dato}}
+{% else %}
 	{{ dato|date("d/m/Y H:i:s") }}
 {% endif %}

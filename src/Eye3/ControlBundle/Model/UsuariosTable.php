@@ -75,7 +75,8 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
     {
         $userRepository = $this->container->get('doctrine.orm.entity_manager')
             ->getRepository('Eye3\ControlBundle\Entity\Usuario');
-        $qb = $userRepository->createQueryBuilder('usuario');
+        $qb = $userRepository->createQueryBuilder('usuario')
+				->where('usuario.activo = true');
 
         return $qb;
     }

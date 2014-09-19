@@ -173,7 +173,13 @@ class UsoController extends Controller
                 throw $this->createNotFoundException('Unable to find Usuario entity.');
             }
 
-            $em->remove($entity);
+            $entity->setActivo(0);
+			$registry = new Registro();
+			$registry->setAccion("Eliminación");
+			$registry->setFecha();
+			$registry->setUsuario($entity);
+            $em->persist($registry);
+			$em->persist($entity);
             $em->flush();
         }
 

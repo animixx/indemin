@@ -78,7 +78,19 @@ class Usuario implements UserInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=150, nullable=false, unique=true)
      */
     private $email;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="activo", type="boolean",  nullable=false )
+     */
+    private $activo;
 
+	public function __construct()
+	{
+		$this->activo = true ;
+		$this->lastLogin = new \DateTime('now');
+	}
 	 /**
      * Get id
      *
@@ -309,5 +321,28 @@ class Usuario implements UserInterface, \Serializable
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set activo
+     *
+     * @param boolean $activo
+     * @return Usuario
+     */
+    public function setActivo($activo)
+    {
+        $this->activo = $activo;
+
+        return $this;
+    }
+
+    /**
+     * Get activo
+     *
+     * @return boolean 
+     */
+    public function getActivo()
+    {
+        return $this->activo;
     }
 }
