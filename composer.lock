@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://bitbucket.org/brown298/datatablesbundle.git",
-                "reference": "80c54ccb39c3ea9fc9e4d8c51575e2af07a700da"
+                "reference": "1e92dd1bb558e23e97cf6d73316dcd38e65b945d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/brown298/datatablesbundle/get/80c54ccb39c3ea9fc9e4d8c51575e2af07a700da.zip",
-                "reference": "80c54ccb39c3ea9fc9e4d8c51575e2af07a700da",
+                "url": "https://bitbucket.org/brown298/datatablesbundle/get/1e92dd1bb558e23e97cf6d73316dcd38e65b945d.zip",
+                "reference": "1e92dd1bb558e23e97cf6d73316dcd38e65b945d",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 "Symfony2",
                 "datatables"
             ],
-            "time": "2014-09-05 17:11:11"
+            "time": "2014-09-18 02:38:06"
         },
         {
             "name": "datatables/datatables",
@@ -1682,9 +1682,7 @@
             "time": "2014-04-28 14:01:06"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "brown298/data-tables-bundle": 20
@@ -1693,7 +1691,5 @@
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

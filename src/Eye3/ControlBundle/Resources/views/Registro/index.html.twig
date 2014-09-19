@@ -29,7 +29,16 @@
 			<div class="page-header"><h1>Datos almacenados </h1></div>
 		</div>
     <div class="table-bordered">
-        {{ addDataTable(dataTable) }}
+        {{ addDataTable(dataTable, {
+									"sInfoFiltered": false ,
+									 'bInfo': true ,
+									 "language.infoEmpty": "Nada que mostrar",
+									 "infoEmpty": "Nada que mostrar",
+									'customParams': {	 "sInfoFiltered": false ,
+														"info": false ,
+									
+									},
+								}) }}
     </div>
 	
 {% block js %}{% endblock %}	

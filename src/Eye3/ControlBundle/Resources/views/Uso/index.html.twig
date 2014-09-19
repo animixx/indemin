@@ -33,7 +33,16 @@
 </div>
 
     <div class="table-bordered">
-        {{ addDataTable(dataTable) }}
+		{{ addDataTable(dataTable, {
+									"info": false ,
+									 "table_class": "display dataTable table table-striped hover order-column",
+									 "infoEmpty": "Nada que mostrar",
+									'customParams': {	 "language.infoEmpty": "Nada que mostrar",
+														 "infoEmpty": "Nada que mostrar"
+									
+									},
+								}) 
+		}}
     </div>
 	
 	

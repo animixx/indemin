@@ -13,7 +13,7 @@ use Symfony\Component\Templating\EngineInterface;
  *
  * @package Eye3\ControlBundle\Model
  *
- * @DataTable\Table(id="usuariosTable",sortable=true,searchable=false)
+ * @DataTable\Table(id="usuariosTable")
  */
 class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
@@ -28,21 +28,21 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 	
     /**
      * @var string
-     * @DataTable\Column(source="usuario.username",name="Usuario",sortable=false)
+     * @DataTable\Column(source="usuario.username",name="Usuario" )
 	 * @DataTable\DefaultSort()
      */
     public $nombre;
 
    /**
      * @var string
-     * @DataTable\Column(source="usuario.nombre",name="Nombre",sortable=true)
+     * @DataTable\Column(source="usuario.nombre",name="Nombre")
      * @DataTable\DefaultSort()
      */
     public $login;
 	
    /**
      * @var string
-     * @DataTable\Column(source="usuario.email",name="Email",sortable=true)
+     * @DataTable\Column(source="usuario.email",name="Email")
      * @DataTable\DefaultSort()
      */
     public $email;
