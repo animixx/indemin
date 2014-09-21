@@ -5320,7 +5320,7 @@ class DisplayValue {
             // has already specified a text string we don't fo anything.
             if( $this->iFormCallback != '' ) {
                 $f = $this->iFormCallback;
-                $sval = call_user_func($f,$aVal);
+                $sval = call_user_func($f,$this->format,$aVal);
             }
             elseif( is_numeric($aVal) ) {
                 if( $aVal >= 0 ) {

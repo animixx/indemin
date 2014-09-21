@@ -14,8 +14,8 @@ $JPGraphSrc = '/home2/animixco/public_html/indemin/src/JPGraph/src';
 require_once ($JPGraphSrc.'/jpgraph.php');
 require_once ($JPGraphSrc.'/jpgraph_line.php');
 require_once ($JPGraphSrc.'/jpgraph_bar.php');
-require_once ($JPGraphSrc.'/jpgraph_date.php');
 require_once ($JPGraphSrc.'/jpgraph_pie.php');
+require_once ($JPGraphSrc.'/jpgraph_plotline.php');
 
 /**
  * Class RegistroController
@@ -85,26 +85,19 @@ class ReporteController extends Controller
 	 *
      * @return response
      */
-    public function graficaAction( $tipo, array $valores) {
-		  // $this->getResponse()->setContent('image/jpeg');
-		  // Some data
+    public function graficaAction( $tipo, array $valores,$fijo = 100) {
 	
-		  foreach ($valores as $key => $value)
+		
+		if ($tipo == "pie" )
+		{
+		     
+			foreach ($valores as $key => $value)
 			{
 			$data[]=$value;
 			$labels[]=$key[0].$key[7]."(%.1f%%)";
 			$leyenda[]=$key;
 			}
-		if ($tipo == "pie" )
-		{
-		   
-		  // Some data and the labels
-			// // $data   = array(19,12,4,7,3,12,3);
-			// // $labels = array("First\n(%.1f%%)",
-							// // "Second\n(%.1f%%)","Third\n(%.1f%%)",
-							// // "Fourth\n(%.1f%%)","Fifth\n(%.1f%%)",
-							// // "Sixth\n(%.1f%%)","Seventh\n(%.1f%%)");
-
+			
 			// Create the Pie Graph.
 			$graph = new \PieGraph(250,250);
 			$graph->SetShadow();
@@ -122,7 +115,7 @@ class ReporteController extends Controller
 			$p1 = new \PiePlot($data);
 			$p1->SetLegends($leyenda);
 			$p1->SetCenter(0.5,1);
-			$p1->SetSize(0.35);
+			$p1->SetSize(0.25);
 
 			// Setup the labels to be displayed
 			$p1->SetLabels($labels);
@@ -151,19 +144,72 @@ class ReporteController extends Controller
 		}
 		elseif ($tipo == "columnas")
 		{	
-		
-		   // $ydata = array(1,1,3,4,6,5,12,9,13,5,7);
-		  // $ydata = $datos;
-		  // print_r($ydata); print_r($valores);print_r($datos);print_r($nombres);exit;
-		
-			// Create the graph. These two calls are always required
-		  $graph = new \Graph(350,250);
-		  $graph->SetScale('textlin');
-		  // Create the linear plot
-		  $lineplot=new \LinePlot($data);
-		  $lineplot->SetColor('blue');
-		  // Add the plot to the graph
-		  $graph->Add($lineplot);
+			foreach ($valores as $key => $value)
+			{
+			$aux++;
+			$data[]=$value;
+			$etiquetas[]=$key[0].$key[7];
+			$temp+=$value;
+			$min=($value<$min || is_null($min))?$value:$min;
+			
+				
+			}
+			$prom= $temp/$aux;
+
+			// Create the graph. 
+			$graph = new \Graph(300,250);	
+			$graph->SetScale('textlin');
+
+			$graph->img->SetMargin(70,20,20,20);
+			$graph->SetShadow();
+
+			
+			$sline = new \PlotLine(HORIZONTAL,$prom,"red",2); 
+			$sline->SetLegend("Promedio Global"); 
+			$sline->SetLineStyle("longdashed"); 
+			$sline->SetColor("orange");
+			// $sline->value->Show();
+			// $sline->value->SetFormat('%d');
+			// $sline->value->SetColor("black");
+			
+
+			// Create the bar plot
+			$bplot = new \BarPlot($data);
+			
+			// $bplot->SetColor("white");
+			$bplot->SetFillGradient("#4B0082","white",GRAD_LEFT_REFLECTION);
+			$bplot->SetValuePos('center');
+			
+			
+			// $bplot->SetWidth(45);
+			// $bplot->SetLegend('Result');
+
+			$graph->yaxis->scale->SetAutoMin($min);
+			// Add the plots to the graph
+			
+			$graph->Add($sline);
+			$graph->Add($bplot);
+			$bplot->value->SetAngle(90);
+			$bplot->value->SetFormat('i:s');
+			$bplot->value->SetFormatCallback('gmdate');
+			$bplot->value->SetColor('red','darkred');
+			$bplot->value->Show();
+			$graph->legend->SetShadow('gray@0.4',5);
+			$graph->legend->SetPos(0,0.99,'right','bottom');
+
+			$graph->title->Set('Tiempo de ciclo promedio');
+			$graph->xaxis->SetTitle('Camiones','center');
+			$graph->yaxis->SetTitle('Tiempo','center');
+			$graph->yaxis->SetTitleMargin(45);
+
+			// $graph->title->SetFont(FF_FONT1,FS_BOLD);
+			// $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD);
+			// $graph->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
+
+			$graph->xaxis->SetTickLabels($etiquetas);
+			$graph->yaxis->SetLabelFormatString("i:s",true);
+			//$graph->xaxis->SetTextTickInterval(2);
+
 		
 		} 
 		  
