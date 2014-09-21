@@ -10,7 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Eye3\ControlBundle\Entity\Datos;
 
-$JPGraphSrc = '/home2/animixco/public_html/indemin/web/JPGraph/src';
+$JPGraphSrc = '/home2/animixco/public_html/indemin/src/JPGraph/src';
 require_once ($JPGraphSrc.'/jpgraph.php');
 require_once ($JPGraphSrc.'/jpgraph_line.php');
 require_once ($JPGraphSrc.'/jpgraph_bar.php');
@@ -93,6 +93,7 @@ class ReporteController extends Controller
 			{
 			$data[]=$value;
 			$labels[]=$key[0].$key[7]."(%.1f%%)";
+			$leyenda[]=$key;
 			}
 		if ($tipo == "pie" )
 		{
@@ -112,12 +113,16 @@ class ReporteController extends Controller
 			$graph->title->Set('Tiempo Total Operación');
 			// $graph->title->SetFont(FF_VERDANA,FS_BOLD,12);
 			$graph->title->SetColor('black');
-			$graph->legend->Pos(0.1,0.2);
+			$graph->legend->SetShadow('gray@0.4',5);
+			$graph->legend->SetColumns(2);
+			$graph->legend->SetPos(0,0.99,'right','bottom');
+			
 
 			// Create pie plot
 			$p1 = new \PiePlot($data);
+			$p1->SetLegends($leyenda);
 			$p1->SetCenter(0.5,1);
-			$p1->SetSize(0.4);
+			$p1->SetSize(0.35);
 
 			// Setup the labels to be displayed
 			$p1->SetLabels($labels);
