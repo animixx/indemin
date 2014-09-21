@@ -1,0 +1,296 @@
+<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/uncompressed/bootstrap.css') }}" />
+<link rel="stylesheet" href="{{ asset('bundles/eye3control/css/uncompressed/ace.css') }}" />
+{% set date = fecha|split('-') %}
+{% set meses = "Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre"|split(',') %}
+
+	<table  >
+		<tr>
+			<td>
+				<div class="col-sm-8"><h1>Eye3 Monitor Online</h1></div>
+			</td>
+			<td>
+				 <div class="green">Indemin<br>Faena Til-Til</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			
+				<h4>Reporte {{titulo}} - {{meses[(date.1)-1]}} {{date.2}}</h4>
+			</td>
+		</tr>
+	</table>
+	
+	<table border=1>
+		<tr>
+			<td>
+				<div class="red"><h5>Resumen</h5></div>
+			</td>
+		</tr>
+	</table>
+
+	<div class="blue"><h5>Principales indicadores por Camion </h5></div>
+		
+
+
+		
+	
+				<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th rowspan="2" class="center">
+										Cami&oacute;n
+									</th>
+									<th rowspan="2" colspan="2" class="center">
+										Tiempo prom
+									</th>
+									<th colspan="2" class="center">
+										cant ciclos
+									</th>
+									<th colspan="2" class="center">
+										dias activos
+									</th>
+									<th colspan="2" class="center">
+										Ciclo min
+									</th>
+									<th colspan="2" class="center">
+										Ciclo max
+									</th>
+									<th rowspan="2" class="center">
+										tiempo operacion total
+									</th>
+									
+								</tr>
+								<tr>
+									<th>
+									Grua 1
+									</th>
+									<th>
+									Grua 2
+									</th>
+									<th>
+									Grua 1
+									</th>
+									<th>
+									Grua 2
+									</th>
+									<th>
+									Grua 1
+									</th>
+									<th>
+									Grua 2
+									</th>
+									<th>
+									Grua 1
+									</th>
+									<th>
+									Grua 2
+									</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{% set mismo=1 %}
+								{% set total=0 %}
+								{% set promgrua1={} %}
+								{% set promgrua2={} %}
+								{% set ciclosgrua1={} %}
+								{% set ciclosgrua2={} %}
+								{% set operaciongrua1={} %}
+								{% set operaciongrua2={} %}
+								
+								{% for row in datos %}
+									{% if mismo %}
+										<tr>
+											<td class="center">
+												{{row.camion}}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-1" %}
+													{{row.prom|round|date("G:i:s", false)}}
+													{% set promgrua1 = promgrua1 | merge({(row.camion):(row.prom)})%}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-2" %}
+													{{row.prom|round|date("G:i:s", false)}}
+													{% set promgrua2 = promgrua2 | merge({(row.camion):(row.prom)})%}
+												{% elseif datos|length > loop.index %}
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{{datos[loop.index]["prom"]|round|date("G:i:s", false)}}
+														{% set promgrua2 = promgrua2 | merge({(datos[loop.index]["camion"]):(datos[loop.index]["prom"])} )%}
+													{% endif %}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-1" %}
+													{{row.veces}}
+													{% set ciclosgrua1 = ciclosgrua1 | merge({(row.camion):(row.veces)})%}
+												{% endif %}
+											</td>
+											<td class="center">	
+												{% if row.grua=="Grúa-2" %}
+													{{row.veces}}
+													{% set ciclosgrua2 = ciclosgrua2 | merge({(row.camion):(row.veces)})%}
+												{% elseif datos|length > loop.index  %}
+												
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{{datos[loop.index]["veces"]}}
+														{% set ciclosgrua2 = ciclosgrua2 | merge({(datos[loop.index]["camion"]):(datos[loop.index]["veces"])})%}
+													{% endif %}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-1" %}
+													{{row.dias}}
+												{% endif %}
+											</td>
+											<td class="center">	
+												{% if row.grua=="Grúa-2" %}
+													{{row.dias}}
+												{% elseif datos|length > loop.index  %}
+												
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{{datos[loop.index]["dias"]}}
+													{% endif %}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-1" %}
+													{{row.min|date("G:i:s", false)}}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-2" %}
+													{{row.min|date("G:i:s", false)}}
+												{% elseif datos|length > loop.index %}
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{{datos[loop.index]["min"]|date("G:i:s", false)}}
+													{% endif %}
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-1" %}
+													{{row.max|date("G:i:s", false)}}	
+												{% endif %}
+											</td>
+											<td class="center">
+												{% if row.grua=="Grúa-2" %}
+													{{row.max|date("G:i:s", false)}}	
+												{% elseif datos|length > loop.index %}
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{{datos[loop.index]["max"]|date("G:i:s", false)}}
+													{% endif %}
+												{% endif %}
+											</td>
+											<td class="center">
+												
+												{% if datos|length > loop.index %}
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
+														{% set aux = (datos[loop.index]["suma"]+row.suma) %}
+														{{(aux/3600)|round(0,'floor')~(aux-(aux/3600))|round(0,'floor')|date(":i:s", false)}}
+							<!-- revisar hora -->		{# aux|date("H:i:s", false)#}
+														{% set total = total + aux %}
+														{% set operaciongrua1 = operaciongrua1 | merge({(row.camion):(row.suma)})%}
+														{% set operaciongrua2 = operaciongrua2 | merge({(datos[loop.index]["camion"]):(datos[loop.index]["suma"])})%}
+													{% else %}
+							<!-- revisar hora -->		{#row.suma|date("H:i:s", false)#}
+														{{((row.suma)/3600)|round(0,'floor')~((row.suma)-((row.suma)/3600))|round(0,'floor')|date(":i:s", false)}}
+														{% set total = total + row.suma %}
+														{% set operaciongrua2 = operaciongrua2 | merge({(row.camion):(row.suma)})%}
+													{% endif %}
+												{% elseif row.grua=="Grúa-2" %}
+							<!-- revisar hora -->	{#row.suma|date("H:i:s", false)#}
+													{{((row.suma)/3600)|round(0,'ceil')~((row.suma)-((row.suma)/3600))|round(0,'ceil')|date(":i:s", false)}}
+													{% set total = total + row.suma %}
+													{% set operaciongrua2 = operaciongrua2 | merge({(row.camion):(row.suma)})%}
+												{% endif %}
+											</td>
+										</tr>
+									{% endif %}
+												{% if datos|length > loop.index %}
+													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"] != row.grua %}
+														{% set mismo = 0 %}
+													{% else %}
+														{% set mismo = 1 %}
+													{% endif %}
+												{% endif %}
+								{% endfor %}
+								<tr>
+									<td class="center">
+										Total :
+									</td>
+									<td class="center">
+										{% set sumatoria = 0 %}
+										{% for valores in promgrua1 %}
+										  {% set sumatoria = sumatoria + valores %}
+										{% endfor %}
+										{{  (sumatoria / promgrua1|length)|round|date("G:i:s", false) }}
+									</td>
+									<td class="center">
+										{% set sumatoria = 0 %}
+										{% for valores in promgrua2 %}
+										  {% set sumatoria = sumatoria + valores %}
+										{% endfor %}
+										{{  (sumatoria / promgrua2|length)|round|date("G:i:s", false) }}
+									</td>
+									<td colspan='8' class="">
+										
+									</td>
+									<td class="center">
+										{{(total/3600)|round(0,'floor')~(total-(total/3600))|round(0,'floor')|date(":i:s", false)}}
+				<!-- revisar hora -->	{#total|date("H:i:s", false)#}
+									</td>
+								</tr>
+							</tbody>
+				</table>
+
+	<table border=1>
+		<tr>
+			<td>
+				<div class="red"><h5>Gráficos</h5></div>
+			</td>
+		</tr>
+	</table>
+	
+	
+{% set cantidad_gruas = 2 %}
+{% set jumper = 0 %}
+{% for grua in 1..cantidad_gruas %}
+	{% if datos[jumper]['grua'][5:1] != grua %}
+		<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+	{% else %}	
+		<div class="blue"><h5>Grúa {{grua}} - Mes {{meses[(date.1)-1]}}</h5></div>
+		
+		{% set validador = (jumper ? operaciongrua2 : operaciongrua1 ) %}
+		{% set validador2 = (jumper ? ciclosgrua2 : ciclosgrua1 ) %}
+		{% set validador3 = (jumper ? promgrua2 : promgrua1 ) %}
+		
+		<table>
+			<tr>
+				<td>
+					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "pie", valores : validador  })) }}" /> 
+				</td>
+				<td>
+					<table border="1" >
+						<tr>
+							<th> id</th>
+							<th> cant ciclos </th>
+						</tr>
+						{% for camion,valor in validador2 %}
+						<tr>
+							<td> {{camion}} </td>
+							<td> {{valor}} </td>
+						</tr>
+						{% endfor %}
+					</table>
+				</td>
+				<td>
+					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "columnas", valores : validador3 })) }}" /> 
+				</td>
+			</tr>
+		</table>
+	{% endif %}
+	{% set jumper = 1 %}
+{% endfor %}
+
+

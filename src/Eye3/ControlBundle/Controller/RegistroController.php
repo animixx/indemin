@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Eye3\ControlBundle\Entity\Datos;
 
 /**
  * Class RegistroController
@@ -39,4 +40,27 @@ class RegistroController extends Controller
         );
     }
 
+	/**
+     * 
+     * @Route("/descargas", name="descargas")
+	 *
+	 * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return array
+     */
+    public function descargasAction(Request $request)
+    {
+	
+		$fecha='16-06-2014';
+		 
+		$em = $this->getDoctrine()->getManager();
+
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->reporte_mes($fecha);
+		
+		return $this->render('Eye3ControlBundle:Reporte:reporte.html.twig', array(
+								'titulo' => 'Mensual',
+								'datos' => $datos,
+								'fecha' => $fecha,
+													) );
+	
+    }
 }

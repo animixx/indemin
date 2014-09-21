@@ -183,6 +183,28 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
+		public function reporte_mes($fecha)
+		{
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-01";
+
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					' SELECT camion, grua, min( duracion ) AS min, max( duracion ) AS max, avg( TIME_TO_SEC( duracion ) ) AS prom, sum( TIME_TO_SEC( duracion ) ) AS suma, count( * ) AS veces, count( DISTINCT (
+					date( inicio ) ) ) AS dias FROM datos
+					WHERE DATE_FORMAT( inicio, "%m-%Y" ) = DATE_FORMAT( :fecha, "%m-%Y" )
+					GROUP BY grua, camion ORDER BY camion,grua'
+
+			);
+				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}
+		
 		public function grua_dia($fecha = '2013-09-24%')
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
