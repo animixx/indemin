@@ -28,6 +28,20 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
+		public function primer_dato()
+		{
+			$query = $this->getEntityManager()
+				->createQuery(
+					'SELECT dato.inicio FROM Eye3ControlBundle:Datos dato order by dato.inicio'
+				)->setMaxResults(1);
+
+			try {
+				return $query->getResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				return null;
+			}
+		}
+		
 		public function camiones()
 		{
 			$query = $this->getEntityManager()

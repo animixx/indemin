@@ -50,17 +50,13 @@ class RegistroController extends Controller
     public function descargasAction(Request $request)
     {
 	
-		$fecha='16-06-2014';
-		 
-		$em = $this->getDoctrine()->getManager();
+			$em = $this->getDoctrine()->getManager();
+            $viejito = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->reporte_mes($fecha);
-		
-		return $this->render('Eye3ControlBundle:Reporte:reporte.html.twig', array(
-								'titulo' => 'Mensual',
-								'datos' => $datos,
-								'fecha' => $fecha,
-													) );
+			return $this->render('Eye3ControlBundle:Registro:descargas.html.twig',
+													array(
+														'desde'         => $viejito[0]['inicio'],
+													));
 	
     }
 }

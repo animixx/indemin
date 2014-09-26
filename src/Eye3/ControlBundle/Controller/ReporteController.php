@@ -37,7 +37,7 @@ class ReporteController extends Controller
     public function semanalAction($fecha='4-09-2013')
     {
 		$date= date_create($fecha);
-		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre"];
+		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 		$semana= $date->modify('this Monday')->format('j')." al ".$date->modify('next Sunday')->format('j');
 		$em = $this->getDoctrine()->getManager();
 
@@ -83,7 +83,7 @@ class ReporteController extends Controller
     {
 		
 		$date= date_create($fecha);
-		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre"];
+		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 		
 		$em = $this->getDoctrine()->getManager();
 
