@@ -1,9 +1,7 @@
 <link rel="stylesheet" href="{{ asset('bundles/eye3control/css/uncompressed/bootstrap.css') }}" />
 <link rel="stylesheet" href="{{ asset('bundles/eye3control/css/uncompressed/ace.css') }}" />
-{% set date = fecha|split('-') %}
-{% set meses = "Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre"|split(',') %}
 
-	<table  >
+	<table border=1 >
 		<tr>
 			<td>
 				<div class="col-sm-8"><h1>Eye3 Monitor Online</h1></div>
@@ -15,7 +13,7 @@
 		<tr>
 			<td>
 			
-				<h4>Reporte {{titulo}} - {{meses[(date.1)-1]}} {{date.2}}</h4>
+				<h4>Reporte {{titulo}} </h4>
 			</td>
 		</tr>
 	</table>
@@ -190,19 +188,29 @@
 														{{(aux/3600)|round(0,'floor')~(aux-(aux/3600))|round(0,'floor')|date(":i:s", false)}}
 							<!-- revisar hora -->		{# aux|date("H:i:s", false)#}
 														{% set total = total + aux %}
-														{% set operaciongrua1 = operaciongrua1 | merge({(row.camion):(row.suma)})%}
-														{% set operaciongrua2 = operaciongrua2 | merge({(datos[loop.index]["camion"]):(datos[loop.index]["suma"])})%}
+														{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %}
+														{% set operaciongrua2 = operaciongrua2 + {(datos[loop.index]["camion"]):(datos[loop.index]["suma"])} %} 
 													{% else %}
 							<!-- revisar hora -->		{#row.suma|date("H:i:s", false)#}
 														{{((row.suma)/3600)|round(0,'floor')~((row.suma)-((row.suma)/3600))|round(0,'floor')|date(":i:s", false)}}
 														{% set total = total + row.suma %}
-														{% set operaciongrua2 = operaciongrua2 | merge({(row.camion):(row.suma)})%}
+															{% if row.grua=="Grúa-1" %}
+															{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %} 
+															{% endif %}
+															{% if row.grua=="Grúa-2" %}
+															{% set operaciongrua2 = operaciongrua2 + {(row.camion):(row.suma)} %} 
+															{% endif %}
 													{% endif %}
-												{% elseif row.grua=="Grúa-2" %}
+												{% else %}
 							<!-- revisar hora -->	{#row.suma|date("H:i:s", false)#}
 													{{((row.suma)/3600)|round(0,'ceil')~((row.suma)-((row.suma)/3600))|round(0,'ceil')|date(":i:s", false)}}
 													{% set total = total + row.suma %}
-													{% set operaciongrua2 = operaciongrua2 | merge({(row.camion):(row.suma)})%}
+														{% if row.grua=="Grúa-1" %}
+														{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %} 
+														{% endif %}
+														{% if row.grua=="Grúa-2" %}
+														{% set operaciongrua2 = operaciongrua2 + {(row.camion):(row.suma)} %} 
+														{% endif %}
 												{% endif %}
 											</td>
 										</tr>
@@ -220,18 +228,18 @@
 										Total :
 									</td>
 									<td class="center">
-										{% set sumatoria = 0 %}
+										{% set sumatoria1 = 0 %}
 										{% for valores in promgrua1 %}
-										  {% set sumatoria = sumatoria + valores %}
+										  {% set sumatoria1 = sumatoria1 + valores %}
 										{% endfor %}
-										{{  (sumatoria / promgrua1|length)|round|date("G:i:s", false) }}
+										{{  (sumatoria1 / promgrua1|length)|round|date("G:i:s", false) }}
 									</td>
 									<td class="center">
-										{% set sumatoria = 0 %}
+										{% set sumatoria2 = 0 %}
 										{% for valores in promgrua2 %}
-										  {% set sumatoria = sumatoria + valores %}
+										  {% set sumatoria2 = sumatoria2 + valores %}
 										{% endfor %}
-										{{  (sumatoria / promgrua2|length)|round|date("G:i:s", false) }}
+										{{  (sumatoria2 / promgrua2|length)|round|date("G:i:s", false) }}
 									</td>
 									<td colspan='8' class="">
 										
@@ -252,40 +260,47 @@
 		</tr>
 	</table>
 	
-	
 {% set cantidad_gruas = 2 %}
 {% set jumper = 0 %}
+
 {% for grua in 1..cantidad_gruas %}
-	{% if datos[jumper]['grua'][5:1] != grua %}
+
+	{% set validador = (jumper ? operaciongrua2 : operaciongrua1 ) %}
+	{% set validador2 = (jumper ? ciclosgrua2 : ciclosgrua1 ) %}
+	{% set validador3 = (jumper ? promgrua2 : promgrua1 ) %}
+	{% set validador4 = (jumper ? sumatoria2 : sumatoria1 ) %}
+
+	{% if validador|length == 0 %}
 		<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
 	{% else %}	
-		<div class="blue"><h5>Grúa {{grua}} - Mes {{meses[(date.1)-1]}}</h5></div>
+		<div class="blue"><h5>Grúa {{grua}} - {{graficos}} </h5></div>
 		
-		{% set validador = (jumper ? operaciongrua2 : operaciongrua1 ) %}
-		{% set validador2 = (jumper ? ciclosgrua2 : ciclosgrua1 ) %}
-		{% set validador3 = (jumper ? promgrua2 : promgrua1 ) %}
-		
-		<table border=1>
+		<table border=0>
 			<tr>
-				<td>
-					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "pie", valores : validador  })) }}" /> 
+				<td><div class="center">Tiempo Total Operación</div>
+					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "pie", valores : validador })) }}" /> 
+					<div class="center">Tiempo Total : {{validador4|round|date("G:i:s", false)}}</div>
 				</td>
-				<td>
+				<td><div class="center">Número Ciclos</div>
 					<table border="1" class="table table-striped table-bordered ">
 						<tr>
 							<th class="center"> id</th>
 							<th class="center"> cant ciclos </th>
 						</tr>
+						{% set sumador = 0 %}
 						{% for camion,valor in validador2 %}
 						<tr>
 							<td class="center"> {{camion}} </td>
 							<td class="center"> {{valor}} </td>
 						</tr>
+							{% set sumador = sumador + valor %}
 						{% endfor %}
 					</table>
+					<div class="center">Total ciclos: {{sumador}}</div>
 				</td>
-				<td>
-					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "columnas", valores : validador3 })) }}" /> 
+				<td><div class="center">Tiempo de ciclo promedio</div>
+					<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "columnas", valores : validador3  })) }}" /> 
+					<div class="center">ciclo promedio : {{  (validador4 / validador3|length)|round|date("G:i:s", false) }}</div>
 				</td>
 			</tr>
 		</table>

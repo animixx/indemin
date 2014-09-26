@@ -183,6 +183,27 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
+		public function reporte_semana($fecha)
+		{
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
+
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					' SELECT camion, grua, min( duracion ) as min,max( duracion ) as max, avg( TIME_TO_SEC( duracion )) as prom ,sum( TIME_TO_SEC( duracion )) as suma, count(*) as veces ,count(DISTINCT (DATE(inicio))) as dias FROM datos 
+					WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT(  :fecha,"%u-%Y" ) 
+					GROUP BY camion,grua'
+
+			);
+				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}		
+		
 		public function reporte_mes($fecha)
 		{
 
@@ -192,13 +213,56 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' SELECT camion, grua, min( duracion ) AS min, max( duracion ) AS max, avg( TIME_TO_SEC( duracion ) ) AS prom, sum( TIME_TO_SEC( duracion ) ) AS suma, count( * ) AS veces, count( DISTINCT (
-					date( inicio ) ) ) AS dias FROM datos
+					' SELECT camion, grua, min( duracion ) AS min, max( duracion ) AS max, avg( TIME_TO_SEC( duracion ) ) AS prom, sum( TIME_TO_SEC( duracion ) ) AS suma, count( * ) AS veces, count( DISTINCT (date( inicio ) ) ) AS dias FROM datos
 					WHERE DATE_FORMAT( inicio, "%m-%Y" ) = DATE_FORMAT( :fecha, "%m-%Y" )
-					GROUP BY grua, camion ORDER BY camion,grua'
+					GROUP BY camion,grua'
 
 			);
 				$query->bindValue('fecha', $fecha );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}
+		
+		public function reporte_semana2($fecha,$grua = "Grúa-1")
+		{
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
+
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					' SELECT camion,grua, min(duracion) as min ,max(duracion) as max ,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, DATE_FORMAT(inicio,"%w") as dia FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT(  :fecha ,"%u-%Y" ) and grua = :grua 
+					GROUP BY camion,date(inicio)
+					 ORDER BY  camion, dia'
+
+			);
+				$query->bindValue('fecha', $fecha );
+				$query->bindValue('grua', $grua );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}
+		
+		public function reporte_mes2($fecha,$grua = "Grúa-1")
+		{
+
+			$cuando = explode("-",$fecha);
+			$fecha = $cuando[2]."-".$cuando[1]."-01";
+
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					' (SELECT camion,week(inicio,1) as semana, min(duracion) as min,max(duracion) as max,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, count(distinct(date(inicio))) as dias  FROM datos WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha,"%m-%Y" ) and grua = :grua GROUP BY camion ,week(inicio,1))
+						
+					 ORDER BY camion,semana'
+
+			);
+				$query->bindValue('fecha', $fecha );
+				$query->bindValue('grua', $grua );
 
 			 $query->execute();
 			 

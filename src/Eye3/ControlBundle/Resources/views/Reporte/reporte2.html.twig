@@ -1,0 +1,73 @@
+{% set ordena = {} %}
+{% set temp = {} %}
+{% if (primer|date("N")) == 1 %}
+	{% set desde=(primer|date("W")) %}	
+{% else %}
+	{% set desde=(primer|date("W"))-1 %}
+{% endif %}
+
+{% if (primer|date_modify("last day of this month")|date("N")) == 7 %}
+	{% set hasta=(primer|date_modify("last day of this month")|date("W")) %}
+{% else %}
+	{% set hasta=(primer|date_modify("last day of this month")|date("W"))+1 %}
+{% endif %}
+
+{% set cantidad_gruas = 2 %}
+{% set jumper = 0 %}
+{% for grua in 1..cantidad_gruas %}
+{% set validador = (jumper ? datos2 : datos1 ) %}
+		{% set aux = 0 %}
+		{% for each in validador %}
+			{% if each.semana == (desde + aux) %}
+				{% set temp = temp+{(each.semana):(each.prom)} %}
+			{% elseif each.semana > (desde + aux) %}
+				{% for relleno in (desde+(temp|length))..(each.semana-1) %}
+					{% set temp = temp+{(relleno):null} %}
+				{% endfor %}
+				{% set temp = temp+{(each.semana):(each.prom)} %}
+			{% endif %}	
+			
+
+			{% if validador|length  > loop.index %}
+				{% set aux = aux + 1 %}
+				{% if validador[loop.index]["camion"] !=  each.camion %}
+					{% if each.semana < hasta %}
+						{% for relleno in (each.semana+1)..(hasta) %}
+							{% set temp = temp+{(relleno):null} %}
+						{% endfor %}
+						{% set temp = temp+{(each.semana):(each.prom)} %}
+					{% endif %}	
+					{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
+					{% set aux = 0 %}
+					{% set temp = {} %}
+				{% endif %}
+			{% elseif loop.last %}
+				{% if each.semana < hasta %}
+						{% for relleno in (each.semana+1)..(hasta) %}
+							{% set temp = temp+{(relleno):null} %}
+						{% endfor %}
+						{% set temp = temp+{(each.semana):(each.prom)} %}
+				{% endif %}	
+				{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
+
+			{% endif %}
+		{% endfor %}
+
+		{#desde}}-{{hasta}}
+		{dump(validador)#}
+
+
+
+			{% if validador is null %}
+				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+			{% else %}	
+				<div class="blue"><h5>Grúa {{grua}} - {{graficos}}</h5></div>
+				
+				
+				<div class="center">Tiempo Total Operación</div>
+				
+				<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "multiple", valores : ordena, fecha: primer,titulo : graficos })) }}" /> 
+					
+			{% endif %}
+{% set jumper = 1 %}
+{% endfor %}
