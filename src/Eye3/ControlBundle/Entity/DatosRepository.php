@@ -234,7 +234,7 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' SELECT camion,grua, min(duracion) as min ,max(duracion) as max ,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, DATE_FORMAT(inicio,"%w") as dia FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT(  :fecha ,"%u-%Y" ) and grua = :grua 
+					' SELECT camion,grua, min(duracion) as min ,max(duracion) as max ,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, DATE_FORMAT(inicio,"%w") as ndia, date(inicio) as dia FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT(  :fecha ,"%u-%Y" ) and grua = :grua 
 					GROUP BY camion,date(inicio)
 					 ORDER BY  camion, dia'
 

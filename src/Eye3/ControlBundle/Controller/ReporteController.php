@@ -34,7 +34,7 @@ class ReporteController extends Controller
 	 * @param \Symfony\Component\HttpFoundation\Request $request
      * @return array
      */
-    public function semanalAction($fecha='16-06-2014')
+    public function semanalAction($fecha='4-09-2013')
     {
 		$date= date_create($fecha);
 		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre"];
@@ -247,7 +247,6 @@ class ReporteController extends Controller
 		elseif ($tipo == "multiple")
 		{	
 			
-			print_r($valores);exit;
 			
 			foreach ($valores as $camiones=>$datos)
 			{
@@ -266,17 +265,22 @@ class ReporteController extends Controller
 				$bplot[] = $plot;
 				
 			}
-
-			foreach ($etiquetas as $semanas)
-			{
-				if ($etiqueta_full == null )
-					$etiqueta_full[]= "1 al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
-				elseif ($semanas == end($etiquetas))
-					$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date("d", strtotime("last day of this month",$fecha->getTimestamp()));
-				else
-					$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
-			}
-		
+			
+			if ($titulo[0]=="m")
+				foreach ($etiquetas as $semanas)
+				{
+					if ($etiqueta_full == null )
+						$etiqueta_full[]= "1 al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
+					elseif ($semanas == end($etiquetas))
+						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date("d", strtotime("last day of this month",$fecha->getTimestamp()));
+					else
+						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
+				}
+			elseif ($titulo[0]=="s")
+				for($counter=0;$counter<7;$counter++)
+					{
+						$etiqueta_full[]=date("d",$fecha->modify('+1 day')->getTimestamp())-1;
+					}
 
 			// Create the graph. 
 			$graph = new \Graph(600,450);	
@@ -295,7 +299,7 @@ class ReporteController extends Controller
 			$graph->Add($gbplot);
 
 			$graph->title->Set('Operacion camiones / '.$titulo);
-			$graph->xaxis->SetTitle('Semanas','center');
+			$graph->xaxis->SetTitle((($titulo[0]=="m")?'Semanas':'Dias'),'center');
 			$graph->yaxis->SetTitle('Promedio Operacion','center');
 			$graph->yaxis->SetTitleMargin(45);
 

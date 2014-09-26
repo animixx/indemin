@@ -228,18 +228,22 @@
 										Total :
 									</td>
 									<td class="center">
+									{% if promgrua1|length > 0 %}
 										{% set sumatoria1 = 0 %}
 										{% for valores in promgrua1 %}
 										  {% set sumatoria1 = sumatoria1 + valores %}
 										{% endfor %}
 										{{  (sumatoria1 / promgrua1|length)|round|date("G:i:s", false) }}
+									{% endif %}
 									</td>
 									<td class="center">
+									{% if promgrua2|length > 0 %}
 										{% set sumatoria2 = 0 %}
 										{% for valores in promgrua2 %}
 										  {% set sumatoria2 = sumatoria2 + valores %}
 										{% endfor %}
 										{{  (sumatoria2 / promgrua2|length)|round|date("G:i:s", false) }}
+									{% endif %}
 									</td>
 									<td colspan='8' class="">
 										
@@ -266,13 +270,15 @@
 {% for grua in 1..cantidad_gruas %}
 
 	{% set validador = (jumper ? operaciongrua2 : operaciongrua1 ) %}
+	
+	{% if validador|length == 0 %}
+		<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+	{% else %}	
+	
 	{% set validador2 = (jumper ? ciclosgrua2 : ciclosgrua1 ) %}
 	{% set validador3 = (jumper ? promgrua2 : promgrua1 ) %}
 	{% set validador4 = (jumper ? sumatoria2 : sumatoria1 ) %}
 
-	{% if validador|length == 0 %}
-		<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
-	{% else %}	
 		<div class="blue"><h5>Grúa {{grua}} - {{graficos}} </h5></div>
 		
 		<table border=0>

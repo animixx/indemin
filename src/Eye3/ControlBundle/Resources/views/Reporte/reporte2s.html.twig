@@ -6,64 +6,60 @@
 {% for grua in 1..cantidad_gruas %}
 {% set validador = (jumper ? datos2 : datos1 ) %}
 		{% set aux = 1 %}
-
 		{% for each in validador %}
-			{% if each.dia == 0 %}
+			{% if each.ndia == 0 %}
 				{% set dia = 7 %}
 			{% else %}	
-				{% set dia = each.dia %}
+				{% set dia = each.ndia %}
 			{% endif %}
-			
 			{% if dia == aux %}
-				{% set temp = temp+[(each.prom)] %}
-			{% elseif dia > (1 + aux) %}
-				{% for relleno in (1+(temp|length))..(dia-1) %}
-					{% set temp = temp+[null] %}
+				{% set temp = temp| merge([(each.prom)]) %}
+			{% elseif dia >  aux %}
+				{% for relleno in (temp|length)..(dia-1) %}
+					{% set temp = temp| merge([(null)]) %}
 				{% endfor %}
-				{% set temp = temp+[(each.prom)] %}
+				{% set temp = temp| merge([(each.prom)]) %}
+				{% set aux = aux + 1 %}
 			{% endif %}	
 			
-
 			{% if validador|length  > loop.index %}
 				{% set aux = aux + 1 %}
 				{% if validador[loop.index]["camion"] !=  each.camion %}
 					{% if dia < 7 %}
 						{% for relleno in (dia+1)..(7) %}
-							{% set temp = temp+[null] %}
+							{% set temp = temp| merge([null]) %}
 						{% endfor %}
-						{% set temp = temp+[(each.prom)] %}
 					{% endif %}	
-					{% set ordena = ordena | merge([(temp)]) %} 
+					{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
 					{% set aux = 1 %}
 					{% set temp = {} %}
 				{% endif %}
 			{% elseif loop.last %}
 				{% if dia < 7 %}
 						{% for relleno in (dia+1)..(7) %}
-							{% set temp = temp+[null] %}
+							{% set temp = temp| merge([null]) %}
 						{% endfor %}
-						{% set temp = temp+[(each.prom)] %}
 				{% endif %}	
-				{% set ordena = ordena | merge([(temp)]) %} 
+				{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
 
 			{% endif %}
 		{% endfor %}
 
 		{#desde}}-{{hasta}}
-		{dump(validador)#}
+		{{validador}#}
 
 
 
-			{% if validador is null %}
-				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
-			{% else %}	
+			{% if validador|length > 0 %}
+				
 				<div class="blue"><h5>Grúa {{grua}} - {{graficos}}</h5></div>
 				
 				
 				<div class="center">Tiempo Total Operación</div>
 				
-				<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "multiple", valores : ordena, fecha: primer,titulo : graficos })) }}" /> 
-					
+				<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "multiple", valores : ordena, fecha: primer|date_modify("last Monday") ,titulo : graficos })) }}" /> 
+			{% else %}		
+				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
 			{% endif %}
 {% set jumper = 1 %}
 {% endfor %}
