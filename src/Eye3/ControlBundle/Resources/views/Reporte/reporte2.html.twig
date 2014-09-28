@@ -19,12 +19,12 @@
 		{% set aux = 0 %}
 		{% for each in validador %}
 			{% if each.semana == (desde + aux) %}
-				{% set temp = temp+{(each.semana):(each.prom)} %}
+				{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 			{% elseif each.semana > (desde + aux) %}
 				{% for relleno in (desde+(temp|length))..(each.semana-1) %}
 					{% set temp = temp+{(relleno):null} %}
 				{% endfor %}
-				{% set temp = temp+{(each.semana):(each.prom)} %}
+				{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 			{% endif %}	
 			
 
@@ -35,7 +35,8 @@
 						{% for relleno in (each.semana+1)..(hasta) %}
 							{% set temp = temp+{(relleno):null} %}
 						{% endfor %}
-						{% set temp = temp+{(each.semana):(each.prom)} %}
+						{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
+		temp = {{dump(temp)}}
 					{% endif %}	
 					{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
 					{% set aux = 0 %}
@@ -46,19 +47,14 @@
 						{% for relleno in (each.semana+1)..(hasta) %}
 							{% set temp = temp+{(relleno):null} %}
 						{% endfor %}
-						{% set temp = temp+{(each.semana):(each.prom)} %}
+						{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 				{% endif %}	
 				{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
 
 			{% endif %}
 		{% endfor %}
 
-		{#desde}}-{{hasta}}
-		{dump(validador)#}
-
-
-
-			{% if validador is null %}
+			{% if validador|length < 1 %}
 				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
 			{% else %}	
 				<div class="blue"><h5>Grúa {{grua}} - {{graficos}}</h5></div>

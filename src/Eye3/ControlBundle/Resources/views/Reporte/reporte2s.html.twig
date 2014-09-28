@@ -12,16 +12,16 @@
 			{% else %}	
 				{% set dia = each.ndia %}
 			{% endif %}
+			
 			{% if dia == aux %}
 				{% set temp = temp| merge([(each.prom)]) %}
 			{% elseif dia >  aux %}
-				{% for relleno in (temp|length)..(dia-1) %}
+				{% for relleno in (temp|length)..(dia-2) %}
 					{% set temp = temp| merge([(null)]) %}
+					{% set aux = aux + 1 %}
 				{% endfor %}
 				{% set temp = temp| merge([(each.prom)]) %}
-				{% set aux = aux + 1 %}
 			{% endif %}	
-			
 			{% if validador|length  > loop.index %}
 				{% set aux = aux + 1 %}
 				{% if validador[loop.index]["camion"] !=  each.camion %}
@@ -41,7 +41,7 @@
 						{% endfor %}
 				{% endif %}	
 				{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
-
+				{% set temp = {} %}
 			{% endif %}
 		{% endfor %}
 

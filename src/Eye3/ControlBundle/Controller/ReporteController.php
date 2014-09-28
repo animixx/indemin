@@ -29,16 +29,17 @@ class ReporteController extends Controller
 
     /**
      * 
-     * @Route("/", name="reporte_semanal")
+     * @Route("/{fecha}/{descarga}", requirements={"fecha" = "[0-9]{4}W0*([1-9]|[1-4][0-9]|5[0-2])","descarga"="[ID]"}, name="reporte_semanal")
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request
      * @return array
      */
-    public function semanalAction($fecha='4-09-2013')
+    public function semanalAction($fecha='2013W36',$descarga="I")
     {
 		$date= date_create($fecha);
-		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-		$semana= $date->modify('this Monday')->format('j')." al ".$date->modify('next Sunday')->format('j');
+		// print_r($date);exit;
+		// $meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+		$semana= $date->modify('this Monday')->format('j/m')." al ".$date->modify('next Sunday')->format('j/m');
 		$em = $this->getDoctrine()->getManager();
 
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->reporte_semana($fecha);
@@ -46,7 +47,7 @@ class ReporteController extends Controller
         $detalleG2 = $em->getRepository('Eye3ControlBundle:Datos')->reporte_semana2($fecha,"Grúa-2");
 		
 		$mpdfService = $this->get('tfox.mpdfport');
-		$mPDF = $mpdfService->getMpdf( array( '','', 0, '', 45, 15, 16, 16, 9, 39, 'L' ));
+		$mPDF = $mpdfService->getMpdf( array( '','Letter-L'));
 	
 		$stylesheet = file_get_contents('bundles/eye3control/css/uncompressed/bootstrap.css');
 		$stylesheet2 = file_get_contents('bundles/eye3control/css/uncompressed/ace.css');
@@ -54,35 +55,37 @@ class ReporteController extends Controller
 		$mPDF->WriteHTML($stylesheet,1);
 		$mPDF->WriteHTML($stylesheet2,1);
 		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte.html.twig', array(
-								'titulo' => 'semanal - '.$semana.' '.$meses[($date->format('n'))-1]." ".$date->format('Y'),
+								'titulo' => 'semanal - '.$semana.' '." del ".$date->format('Y'),
 								'graficos' => 'semana '.$semana,
 								'datos' => $datos,
 													) ), 2);
-		$mPDF->AddPage();
-		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte2s.html.twig', array(
+		if (count($datos)>0)
+		{
+			$mPDF->AddPage();
+			$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte2s.html.twig', array(
 								'datos1' => $detalleG1,
 								'datos2' => $detalleG2,
 								'graficos' => 'semana '.$semana,
 								'primer' => $date,
 													) ), 2);
-
-		$mPDF->Output();
+		}
+		$mPDF->Output(preg_replace('/\s+/', '','Reporte'.$semana."'".$date->format('y').'-indemin.pdf'),'I');
 
 
     }
 
     /**
      * 
-     * @Route("/mensual", name="reporte_mensual")
+     * @Route("/mensual/{fecha}/{descarga}", requirements={"fecha" = "[0-9]{4}/[0-9]{1,2}","descarga"="[ID]"}, name="reporte_mensual")
      * @Template("Eye3ControlBundle:Reporte:index.html.twig")
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request
      * @return array
      */
-    public function mensualAction($fecha='01-06-2014')
+    public function mensualAction($fecha='2014/6',$descarga="I")
     {
+		$date= date_create($fecha."/1");
 		
-		$date= date_create($fecha);
 		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 		
 		$em = $this->getDoctrine()->getManager();
@@ -92,11 +95,11 @@ class ReporteController extends Controller
         $detalleG2 = $em->getRepository('Eye3ControlBundle:Datos')->reporte_mes2($fecha,"Grúa-2");
 		
 		$mpdfService = $this->get('tfox.mpdfport');
-		$mPDF = $mpdfService->getMpdf( array( '','', 0, '', 15, 45, 16, 16, 9, 39, 'L' ));
+		$mPDF = $mpdfService->getMpdf( array( '','Letter-L' ));
 	
 		$stylesheet = file_get_contents('bundles/eye3control/css/uncompressed/bootstrap.css');
 		$stylesheet2 = file_get_contents('bundles/eye3control/css/uncompressed/ace.css');
-						
+		
 		$mPDF->WriteHTML($stylesheet,1);
 		$mPDF->WriteHTML($stylesheet2,1);
 		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte.html.twig', array(
@@ -105,15 +108,18 @@ class ReporteController extends Controller
 								'datos' => $datos,
 													) ), 2);
 	
-		$mPDF->AddPage();
-		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte2.html.twig', array(
-								'datos1' => $detalleG1,
-								'datos2' => $detalleG2,
-								'graficos' => 'mes '.$meses[($date->format('n'))-1],
-								'primer' => $date->modify('first day of this month')->modify('next Monday'),
-													) ), 2);
-
-		$mPDF->Output();
+		if (count($datos)>0)
+		{
+			$mPDF->AddPage();
+			
+			$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte2.html.twig', array(
+									'datos1' => $detalleG1,
+									'datos2' => $detalleG2,
+									'graficos' => 'mes '.$meses[($date->format('n'))-1],
+									'primer' => $date->modify('first Monday of this month'),
+														) ), 2);
+		}
+		$mPDF->Output('Reporte'.$meses[($date->format('n'))-1].$date->format('Y').'-indemin.pdf',$descarga);
 		
     }
 	
@@ -184,13 +190,11 @@ class ReporteController extends Controller
 		{	
 			foreach ($valores as $key => $value)
 			{
-			$aux++;
-			$data[]=round($value);
+			$dirije="data".++$aux;
+			$$dirije=array(($aux-1)=>round($value));
 			$etiquetas[]=$key[0].$key[7];
 			$temp+=$value;
 			$min=($value<$min || is_null($min))?$value:$min;
-			
-				
 			}
 			$prom= $temp/$aux;
 
@@ -211,21 +215,24 @@ class ReporteController extends Controller
 			// $sline->value->SetColor("black");
 			
 
-			// Create the bar plot
-			$bplot = new \BarPlot($data);
-			
-			$bplot->SetValuePos('center');
-			
-			$graph->yaxis->scale->SetAutoMin($min);
-			
-			// Add the plots to the graph
 			$graph->Add($sline);
-			$graph->Add($bplot);
-			$bplot->value->SetAngle(90);
-			$bplot->value->SetFormat('i:s');
-			$bplot->value->SetFormatCallback('gmdate');
-			$bplot->value->SetColor('red');
-			$bplot->value->Show();
+			for ($cuenta=1;$cuenta<=$aux;$cuenta++ )
+			{
+				$barras="bplot".$cuenta;
+				$datografico="data".$cuenta;
+				$$datografico=array_replace( array_fill(0,$aux,null),$$datografico);
+				
+				// Create the bar plots
+				$$barras = new \BarPlot($$datografico);
+				$$barras->SetValuePos('center');
+				$graph->Add($$barras);
+				$$barras->value->SetAngle(90);
+				$$barras->value->SetFormatCallback('gmdate');
+				$$barras->value->SetColor('red');
+				$$barras->value->SetFormat('i:s');
+				$$barras->value->Show();
+			}	
+			$graph->yaxis->scale->SetAutoMin($min-5);
 			$graph->legend->SetShadow('gray@0.4',5);
 			$graph->legend->SetPos(0,0.99,'right','bottom');
 
@@ -261,11 +268,13 @@ class ReporteController extends Controller
 					}
 				$plot = new \BarPlot($data);
 				$plot->SetLegend($camiones);
-				$plot->value->Show();
 				$bplot[] = $plot;
 				
 			}
-			
+	// print_r($data);exit;		
+			//verifica si el grafico a mostrar es mensual o semanal
+				//mensual, partiendo de un arreglo vacio en la semana coloca "1 al 'domingo de esa semana'", ó(si) es el ultimo item del arreglo coloca el "'lunes de la semana' al 'ultimo dia del mes'" , ó coloca el "'lunes de la semana' al 'domingo de la semana'"
+				//semanal, genera un arreglo con los 7 dias
 			if ($titulo[0]=="m")
 				foreach ($etiquetas as $semanas)
 				{
@@ -279,7 +288,8 @@ class ReporteController extends Controller
 			elseif ($titulo[0]=="s")
 				for($counter=0;$counter<7;$counter++)
 					{
-						$etiqueta_full[]=date("d",$fecha->modify('+1 day')->getTimestamp())-1;
+						$etiqueta_full[]=date("d/m",$fecha->getTimestamp());
+						$fecha->modify('+1 day');
 					}
 
 			// Create the graph. 
@@ -304,13 +314,13 @@ class ReporteController extends Controller
 			$graph->yaxis->SetTitleMargin(45);
 
 			$graph->xgrid->Show(); 
-		
 						
 			// $bplot->value->SetAngle(90);
 			// $bplot->value->SetFormat('i:s');
 			// $bplot->value->SetFormatCallback('gmdate');
 			// $bplot->value->SetColor('red','darkred');
-			// $bplot->value->Show();
+			$bplot[0]->value->Show();
+	// print_r($gbplot);exit;
 			$graph->legend->SetShadow('gray@0.4',5);
 			$graph->legend->SetPos(0,0.99,'right','bottom');
 

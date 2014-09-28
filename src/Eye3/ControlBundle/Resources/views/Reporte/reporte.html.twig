@@ -185,14 +185,14 @@
 												{% if datos|length > loop.index %}
 													{% if datos[loop.index]["camion"]==row.camion and datos[loop.index]["grua"]=="Grúa-2" %}
 														{% set aux = (datos[loop.index]["suma"]+row.suma) %}
-														{{(aux/3600)|round(0,'floor')~(aux-(aux/3600))|round(0,'floor')|date(":i:s", false)}}
+														{{(aux/3600)|round(0,'floor')~(aux-(aux/3600))|round(0,'ceil')|date(":i:s", false)}}
 							<!-- revisar hora -->		{# aux|date("H:i:s", false)#}
 														{% set total = total + aux %}
 														{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %}
 														{% set operaciongrua2 = operaciongrua2 + {(datos[loop.index]["camion"]):(datos[loop.index]["suma"])} %} 
 													{% else %}
 							<!-- revisar hora -->		{#row.suma|date("H:i:s", false)#}
-														{{((row.suma)/3600)|round(0,'floor')~((row.suma)-((row.suma)/3600))|round(0,'floor')|date(":i:s", false)}}
+														{{((row.suma)/3600)|round(0,'floor')~((row.suma)-((row.suma)/3600))|round(0,'ceil')|date(":i:s", false)}}
 														{% set total = total + row.suma %}
 															{% if row.grua=="Grúa-1" %}
 															{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %} 
@@ -203,7 +203,7 @@
 													{% endif %}
 												{% else %}
 							<!-- revisar hora -->	{#row.suma|date("H:i:s", false)#}
-													{{((row.suma)/3600)|round(0,'ceil')~((row.suma)-((row.suma)/3600))|round(0,'ceil')|date(":i:s", false)}}
+													{{((row.suma)/3600)|round(0,'floor')~((row.suma)-((row.suma)/3600))|round(0,'ceil')|date(":i:s", false)}}
 													{% set total = total + row.suma %}
 														{% if row.grua=="Grúa-1" %}
 														{% set operaciongrua1 = operaciongrua1 + {(row.camion):(row.suma)} %} 
@@ -249,7 +249,7 @@
 										
 									</td>
 									<td class="center">
-										{{(total/3600)|round(0,'floor')~(total-(total/3600))|round(0,'floor')|date(":i:s", false)}}
+										{{(total/3600)|round(0,'floor')~(total-(total/3600))|round(0,'ceil')|date(":i:s", false)}}
 				<!-- revisar hora -->	{#total|date("H:i:s", false)#}
 									</td>
 								</tr>

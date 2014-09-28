@@ -23,18 +23,26 @@
 							</tr>
 						</thead>
 						<tbody>
+						{% set pasasemana = "now" %}
 						{% for anyo in ("now"|date("Y"))..(desde|date("Y")) %}
-							<tr>
-								<td class="center">
-									fecha{{anyo}}
-								</td>
-								<td class="center">
-									excel
-								</td>
-								<td class="center">
-									pdf
-								</td>
-							</tr>
+						{% set comienzo = ((loop.first)?("now"|date("W"))-1:52)%}
+						{% set termino = ((loop.last)?(desde|date("W")):1)%}
+							{% for innersemana in comienzo..termino %}
+								<tr>
+									<td class="center">
+										{% set arreglasemana = ((innersemana<10)?0)%}
+										W{{arreglasemana}}{{innersemana}}
+										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("this Monday")|date("d/m" )}} al 
+										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("next Sunday")|date("d/m" )}}
+									</td>
+									<td class="center">
+										<a class="green" href={{path('reporte_semanal')}}><i class="fa fa-file-excel-o fa-2x"></i></a>
+									</td>
+									<td class="center">
+										<a class="red" href={{path('reporte_semanal',{'fecha':anyo~'W'~arreglasemana~innersemana,'descarga':'D'})}}><i class="fa fa-file-pdf-o fa-2x"></i></a>
+									</td>
+								</tr>
+							{% endfor %}
 						{% endfor %}
 						</tbody>
 				</table>
@@ -66,10 +74,10 @@
 										{{meses[(innermes-1)]}}-{{anyo}}
 									</td>
 									<td class="center">
-										<a href={{path('reporte_mensual')}}>excel</a>
+										<a class="green" href={{path('reporte_mensual')}}><i class="fa fa-file-excel-o fa-2x"></i></a>
 									</td>
 									<td class="center">
-										<a href={{path('reporte_mensual')}}>pdf</a>
+										<a class="red" href={{path('reporte_mensual',{'fecha':anyo~'/'~innermes,'descarga':'D'})}}><i class="fa fa-file-pdf-o fa-2x"></i></a>
 									</td>
 								</tr>
 							{% endfor %}
