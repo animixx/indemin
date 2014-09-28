@@ -355,5 +355,145 @@ class ReporteController extends Controller
 			
 			
     }
+	
+   /**
+     * 
+     * @Route("/excel/{fecha}",requirements={"fecha" = "[0-9]{4}W0*([1-9]|[1-4][0-9]|5[0-2])"}, name="genera_excel")
+	 *
+     * @return response
+     */
+    public function excelAction($fecha = "2013W36"  ) {
+	
+		$date= date_create($fecha);
+		$hasta = $date->modify('next Monday')->format('Y-m-d');
+		$domingo = $date->modify('last Sunday')->format('j/m');
+		$desde = $date->modify('last Monday')->format('Y-m-d');
+		
+		$semana= $date->format('j/m')." al ".$domingo;
+		
+		
+		$em = $this->getDoctrine()->getManager();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->historial_excel($desde,$hasta);
+		
+
+
+		 // ask the service for a Excel5
+		$phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+
+		$phpExcelObject->getProperties()->setCreator("Eye3")
+			->setLastModifiedBy("Eye3 Online Monitor")
+			->setTitle("Office 2005 XLSX Test Document")
+			->setSubject("Office 2005 XLSX Test Document")
+			->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+			->setKeywords("office 2005 openxml php")
+			->setCategory("Test result file");
+		$phpExcelObject->setActiveSheetIndex(0)
+			->setCellValue('A1', 'ID')
+			->setCellValue('B1', 'Camión')
+			->setCellValue('C1', 'Grúa')
+			->setCellValue('D1', 'Inicio')
+			->setCellValue('E1', 'Duración');
+		$phpExcelObject->getActiveSheet()->getStyle("A1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("B1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("C1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("D1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("E1")->getFont()->setBold(true);
+				$aux=2;
+				foreach ($datos as $llenado)
+						{	
+							
+							 $phpExcelObject->getActiveSheet()->setCellValue('A'.$aux, $llenado['id'])
+							->setCellValue('B'.$aux, $llenado['camion'])
+							->setCellValue('C'.$aux, $llenado['grua'])
+							->setCellValue('D'.$aux, $llenado['inicio'])
+							->setCellValue('E'.$aux++, $llenado['duracion']);
+						}
+		   
+		$phpExcelObject->getActiveSheet()->setTitle('Historial');
+		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+		$phpExcelObject->setActiveSheetIndex(0);
+
+		// create the writer
+		$writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel2007');
+		// create the response
+		$response = $this->get('phpexcel')->createStreamedResponse($writer);
+		// adding headers
+		$response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+		$response->headers->set('Content-Disposition', 'attachment;filename='.preg_replace('/\s+/', '','Historial'.$semana."'".$date->format('y').'-indemin.xlsx'));
+		$response->headers->set('Pragma', 'public');
+		$response->headers->set('Cache-Control', 'maxage=1');
+
+		return $response;
+			
+    }
+	
+   /**
+     * 
+     * @Route("/excel/mensual/{fecha}", requirements={"fecha" = "[0-9]{4}/[0-9]{1,2}"}, name="genera_excel_mes")
+	 *
+     * @return response
+     */
+    public function excelMensualAction($fecha = "2014/6"  ) {
+		
+		$date= date_create($fecha."/1");
+		$hasta = $date->modify('first day of next month')->format('Y-m-d');
+		$desde = $date->modify('first day of last month')->format('Y-m-d');
+		
+		$meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+		
+		$em = $this->getDoctrine()->getManager();
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->historial_excel($desde,$hasta);
+		
+
+
+		 // ask the service for a Excel5
+		$phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+
+		$phpExcelObject->getProperties()->setCreator("Eye3")
+			->setLastModifiedBy("Eye3 Online Monitor")
+			->setTitle("Office 2005 XLSX Test Document")
+			->setSubject("Office 2005 XLSX Test Document")
+			->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+			->setKeywords("office 2005 openxml php")
+			->setCategory("Test result file");
+		$phpExcelObject->setActiveSheetIndex(0)
+			->setCellValue('A1', 'ID')
+			->setCellValue('B1', 'Camión')
+			->setCellValue('C1', 'Grúa')
+			->setCellValue('D1', 'Inicio')
+			->setCellValue('E1', 'Duración');
+		$phpExcelObject->getActiveSheet()->getStyle("A1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("B1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("C1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("D1")->getFont()->setBold(true);
+		$phpExcelObject->getActiveSheet()->getStyle("E1")->getFont()->setBold(true);
+				$aux=2;
+				foreach ($datos as $llenado)
+						{	
+							
+							 $phpExcelObject->getActiveSheet()->setCellValue('A'.$aux, $llenado['id'])
+							->setCellValue('B'.$aux, $llenado['camion'])
+							->setCellValue('C'.$aux, $llenado['grua'])
+							->setCellValue('D'.$aux, $llenado['inicio'])
+							->setCellValue('E'.$aux++, $llenado['duracion']);
+						}
+		   
+		$phpExcelObject->getActiveSheet()->setTitle('Historial');
+		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+		$phpExcelObject->setActiveSheetIndex(0);
+
+		// create the writer
+		$writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel2007');
+		// create the response
+		$response = $this->get('phpexcel')->createStreamedResponse($writer);
+		// adding headers
+		$response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+		$response->headers->set('Content-Disposition', 'attachment;filename=Historial'.$meses[($date->format('n'))-1].$date->format('Y').'-indemin.xlsx');
+		$response->headers->set('Pragma', 'public');
+		$response->headers->set('Cache-Control', 'maxage=1');
+
+		return $response;
+			
+    }
 
 }

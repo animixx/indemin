@@ -36,7 +36,7 @@
 										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("next Sunday")|date("d/m" )}}
 									</td>
 									<td class="center">
-										<a class="green" href={{path('reporte_semanal')}}><i class="fa fa-file-excel-o fa-2x"></i></a>
+										<a class="green" href={{path('genera_excel',{'fecha':anyo~'W'~arreglasemana~innersemana})}}><i class="fa fa-file-excel-o fa-2x"></i></a>
 									</td>
 									<td class="center">
 										<a class="red" href={{path('reporte_semanal',{'fecha':anyo~'W'~arreglasemana~innersemana,'descarga':'D'})}}><i class="fa fa-file-pdf-o fa-2x"></i></a>
@@ -74,7 +74,7 @@
 										{{meses[(innermes-1)]}}-{{anyo}}
 									</td>
 									<td class="center">
-										<a class="green" href={{path('reporte_mensual')}}><i class="fa fa-file-excel-o fa-2x"></i></a>
+										<a class="green" href={{path('genera_excel_mes',{'fecha':anyo~'/'~innermes})}}><i class="fa fa-file-excel-o fa-2x"></i></a>
 									</td>
 									<td class="center">
 										<a class="red" href={{path('reporte_mensual',{'fecha':anyo~'/'~innermes,'descarga':'D'})}}><i class="fa fa-file-pdf-o fa-2x"></i></a>

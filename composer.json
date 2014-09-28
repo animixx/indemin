@@ -18,6 +18,7 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "tfox/mpdf-port-bundle": "1.2.*",
+        "liuggio/excelbundle": "~2.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "brown298/data-tables-bundle": "dev-master",
         "symfony/icu": "1.1.*"

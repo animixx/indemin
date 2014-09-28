@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Brown298\DataTablesBundle\Brown298DataTablesBundle(),
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new Eye3\ControlBundle\Eye3ControlBundle(),
         );
 

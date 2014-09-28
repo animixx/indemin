@@ -278,6 +278,26 @@ class DatosRepository extends EntityRepository
 			 $query->execute();
 			 
 			 return $query->fetchAll();
+		}	
+		
+		//formato fecha desde y hasta "yyyy-mm-dd"
+		public function historial_excel($desde = "2013-08-15" ,$hasta = "2013-08-16")
+		{
+
+		// print_r($desde);
+		// print_r($hasta);exit;
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'SELECT * FROM datos WHERE  inicio BETWEEN :desde and :hasta'
+
+			);
+				$query->bindValue('desde', $desde );
+				$query->bindValue('hasta', $hasta );
+
+			 $query->execute();
+			 
+			 return $query->fetchAll();
 		}
 		
 		public function grua_dia($fecha = '2013-09-24%')
