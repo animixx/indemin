@@ -55,7 +55,7 @@
 												Activo
 											</th>
 											<td class="center">
-												{{datos.0.uso|date("G:i:s", false)}}
+												{{datos.pie.0.uso|date("G:i:s", false)}}
 											</td>
 										</tr>
 										<tr>
@@ -63,7 +63,7 @@
 												Inactivo
 											</th>
 											<td class="center">
-												{{datos.0.muerto|date("G:i:s", false)}}
+												{{datos.pie.0.muerto|date("G:i:s", false)}}
 											</td>
 										</tr>
 										<tr>
@@ -71,7 +71,7 @@
 												Cant. Ciclos
 											</th>
 											<td class="center">
-												{{datos.0.ciclos}} 
+												{{datos.pie.0.ciclos}} 
 											</td>
 										</tr>
 										<tr>
@@ -79,7 +79,7 @@
 												Prom. Ciclos
 											</th>
 											<td class="center">
-												{{datos.0.prom}}
+												{{datos.pie.0.prom}}
 											</td>
 											
 										</tr>
@@ -182,8 +182,8 @@
 					
 				  var graficopie1 = [
 				
-						{ label: "activo",  data: {{datos.0.uso}}, color: "#68BC31" } ,
-						{ label: "inactivo",  data: {{datos.0.muerto}}, color: "#2091CF" } 
+						{ label: "activo",  data: {{datos.pie.0.uso}}, color: "#68BC31" } ,
+						{ label: "inactivo",  data: {{datos.pie.0.muerto}}, color: "#2091CF" } 
 						
 						
 				

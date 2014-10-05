@@ -284,8 +284,6 @@ class DatosRepository extends EntityRepository
 		public function historial_excel($desde = "2013-08-15" ,$hasta = "2013-08-16")
 		{
 
-		// print_r($desde);
-		// print_r($hasta);exit;
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
@@ -304,7 +302,7 @@ class DatosRepository extends EntityRepository
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
 			//SELECT  SUM(TIME_TO_SEC(duracion))  as uso, TIME_TO_SEC(SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
-			//SELECT t1.camion as camion, t1.inicio as inicio, t1.duracion as duracion, SUBTIME(time(t2.inicio),time(t1.inicio)) as proximo  from datos as t1 , datos as t2 where t1.id+1 = t2.id and t1.inicio like '2013-09-24%'
+			//select id ,(select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua ,(select grua from datos where id=next) as 'p-grua', inicio, (select inicio from datos where id=next) as 'p-inicio',duracion ,TIMEDIFF((select inicio from datos where id=next),inicio) as proximo from datos as t1 where inicio like  '2013-09-24%' order by grua,inicio
 			
 			$cuando = explode("-",$fecha);
 			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
@@ -316,11 +314,25 @@ class DatosRepository extends EntityRepository
 				
 
 			);
-				$query->bindValue('fecha', $fecha );
+				
+			$query2 = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'select (select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua , inicio, duracion ,TIMEDIFF((select inicio from datos where id=next),inicio) as proximo from datos as t1 where inicio like :fecha order by grua,inicio'
+				
 
-			 $query->execute();
+			);
+			
+			$query->bindValue('fecha', $fecha );
+			$query2->bindValue('fecha', $fecha );
+
+			$query->execute();
+			$query2->execute();
 			 
-			 return $query->fetchAll();
+			return array(
+				'pie' => $query->fetchAll(),
+				'trenes' => $query2->fetchAll(),
+			 );
 		}
 
 }

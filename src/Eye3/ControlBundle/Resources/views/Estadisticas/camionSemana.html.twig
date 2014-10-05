@@ -205,7 +205,9 @@
 	
 	
 	{% set corte = 0 %}
-	
+	{% set contacolor  = 0  %}
+	{% set colores = ["#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2", "#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33"] %}
+
 	
 	{% for grua in gruas_validas %}
 				  var placeholder{{grua}} = $('#placeholder{{grua}}').css({'width':'85%' , 'min-height':'230px'});
@@ -235,13 +237,14 @@
 																	{% endset %}			
 															{% if loop.last %}
 																	{{ llenado}}
-																	], "extra": [{{ extra}} ] }
+																	], "color": "{{ cycle(colores, contacolor ) }}", "extra": [{{ extra}} ] }
+																	{% set contacolor  = contacolor + 1  %}
 																]; 
 															{% endif %}
 													{% else %}
 																		{{ llenado}}
-														], "extra": [{{ extra}} ] }
-																		
+														], "color": "{{ cycle(colores, contacolor ) }}", "extra": [{{ extra}} ] }
+																		{% set contacolor  = contacolor + 1  %}
 																		{% set contador  = 0  %}
 																		{% set llenado  = null %}
 																		{% set extra  = null %}
@@ -270,12 +273,7 @@
 			
 	{% for gruisima in gruas_validas %} 
 			 
-		var i = 0;
-		$.each(graficame{{gruisima}}, function(key, val) {
-			val.color = i;
-			++i;
-		});
-
+	
 		// insert checkboxes 
 		var choiceContainer{{gruisima}} = $("#choices{{gruisima}}");
 		$.each(graficame{{gruisima}}, function(key, val) {
