@@ -1,0 +1,73 @@
+
+		body {  font-size: 11pt; color: #707070; }
+		p { 	text-align: justify; /* margin-bottom: 4pt; margin-top:0pt; */  }
+
+		table { font-size: 9pt; 
+			/* margin-top: 2pt; margin-bottom: 5pt; */
+			border-collapse: collapse; }
+
+		thead tr th { font-weight: bold; vertical-align: middle; text-align: center; background-color: #f1f1f1; }
+
+
+		td {	
+			vertical-align: top; 
+			text-align: justify;
+		 }
+
+		table.centered td, .centered {
+			text-align: center;
+			vertical-align: middle; 
+			color: #707070;
+		}
+		
+		table.bordered th , table.bordered td {
+			color: #707070;
+			border:1pt solid #dcdcdb;
+		}
+
+		hr {	width: 70%; height: 1px; 
+			text-align: center; color: #999999; 
+			margin-top: 8pt; margin-bottom: 8pt; }
+
+		a {	color: #000066; font-style: normal; text-decoration: underline; 
+			font-weight: normal; }
+
+		ul {	text-indent: 5mm; margin-bottom: 9pt; }
+		ol {	text-indent: 5mm; margin-bottom: 9pt; }
+
+		pre {  font-size: 9pt; margin-top: 5pt; margin-bottom: 5pt; }
+
+		h1 {	font-weight: bold; font-size: 24pt; color: #707070; 
+			text-align: ; page-break-after:avoid; }
+		h3 {	font-family: opensans-mod ; font-weight: bold; font-size: 11pt; color: #707070; 
+			text-align: ; page-break-after:avoid; }
+		h4 {	font-family: opensans-mod ; font-weight: normal ; font-style: italic ; font-size: 10pt; color: #707070; 
+			/* margin-top: 10pt; margin-bottom: 7pt; font-variant: small-caps;  */
+			text-align: ;  margin-collapse:collapse; page-break-after:avoid; }
+		h5 {	font-weight: normal;  font-size: 11,25pt; color: cyan; 
+				border: 0px; margin: 0px; padding: 0px; vertical-align: middle;
+			 }
+		h6 {	font-weight: bold;  
+			padding-left: 5mm;
+			text-align: ;  page-break-after:avoid; }
+
+		.linea {
+			border-top:1px solid #e2e2e1;
+			margin-bottom: 0.212cm;
+		}
+		
+		.doblelinea {
+			border-bottom:1pt double #e2e2e1;
+			margin-top: 0.5782cm;
+		}
+		.titulo {
+			border-top:1pt solid #dcdcdb;
+			border-bottom:1pt solid #e2e2e1;
+			background-color: #f1f1f1;
+			margin-bottom: 0.5424cm;
+		}
+		
+
+
+
+

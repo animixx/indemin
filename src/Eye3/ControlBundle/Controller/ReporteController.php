@@ -47,13 +47,13 @@ class ReporteController extends Controller
         $detalleG2 = $em->getRepository('Eye3ControlBundle:Datos')->reporte_semana2($fecha,"Grúa-2");
 		
 		$mpdfService = $this->get('tfox.mpdfport');
-		$mPDF = $mpdfService->getMpdf( array( '','Letter-L'));
+		$mPDF = $mpdfService->getMpdf( array( '','Letter',0,'opensans',15, 15, 15, 15, 0, 0));
 	
-		$stylesheet = file_get_contents('bundles/eye3control/css/uncompressed/bootstrap.css');
-		$stylesheet2 = file_get_contents('bundles/eye3control/css/uncompressed/ace.css');
+		// $stylesheet = file_get_contents('bundles/eye3control/css/uncompressed/bootstrap.css');
+		$stylesheet = file_get_contents('bundles/eye3control/css/pdf-tables.css');
 						
 		$mPDF->WriteHTML($stylesheet,1);
-		$mPDF->WriteHTML($stylesheet2,1);
+		// $mPDF->WriteHTML($stylesheet2,1);
 		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte.html.twig', array(
 								'titulo' => 'semanal - '.$semana.' '." del ".$date->format('Y'),
 								'graficos' => 'semana '.$semana,
@@ -69,7 +69,7 @@ class ReporteController extends Controller
 								'primer' => $date,
 													) ), 2);
 		}
-		$mPDF->Output(preg_replace('/\s+/', '','Reporte'.$semana."'".$date->format('y').'-indemin.pdf'),'I');
+		$mPDF->Output(preg_replace('/\s+/', '','Reporte'.$semana."'".$date->format('y').'-indemin.pdf'),$descarga);
 
 
     }
@@ -95,13 +95,11 @@ class ReporteController extends Controller
         $detalleG2 = $em->getRepository('Eye3ControlBundle:Datos')->reporte_mes2($fecha,"Grúa-2");
 		
 		$mpdfService = $this->get('tfox.mpdfport');
-		$mPDF = $mpdfService->getMpdf( array( '','Letter-L' ));
+		$mPDF = $mpdfService->getMpdf( array( '','Letter',0,'opensans',15, 15, 15, 15, 0, 0));
 	
-		$stylesheet = file_get_contents('bundles/eye3control/css/uncompressed/bootstrap.css');
-		$stylesheet2 = file_get_contents('bundles/eye3control/css/uncompressed/ace.css');
-		
+		$stylesheet = file_get_contents('bundles/eye3control/css/pdf-tables.css');
+						
 		$mPDF->WriteHTML($stylesheet,1);
-		$mPDF->WriteHTML($stylesheet2,1);
 		$mPDF->WriteHTML($this->renderView('Eye3ControlBundle:Reporte:reporte.html.twig', array(
 								'titulo' => 'mensual - '.$meses[($date->format('n'))-1]." ".$date->format('Y'),
 								'graficos' => 'mes '.$meses[($date->format('n'))-1],
@@ -143,43 +141,35 @@ class ReporteController extends Controller
 			}
 			
 			// Create the Pie Graph.
-			$graph = new \PieGraph(250,250);
+			$graph = new \PieGraph(250,180);
 			$graph->SetShadow();
-
-			// Set A title for the plot
-			$graph->title->Set('Tiempo Total Operación');
-			// $graph->title->SetFont(FF_VERDANA,FS_BOLD,12);
-			$graph->title->SetColor('black');
-			$graph->legend->SetShadow('gray@0.4',5);
-			$graph->legend->SetColumns(2);
-			$graph->legend->SetPos(0,0.99,'right','bottom');
-			
 
 			// Create pie plot
 			$p1 = new \PiePlot($data);
-			$p1->SetLegends($leyenda);
-			$p1->SetCenter(0.5,1);
-			$p1->SetSize(0.25);
+			$p1->SetSize(0.35);
+
+
 
 			// Setup the labels to be displayed
 			$p1->SetLabels($labels);
 
-			// This method adjust the position of the labels. This is given as fractions
-			// of the radius of the Pie. A value < 1 will put the center of the label
-			// inside the Pie and a value >= 1 will pout the center of the label outside the
-			// Pie. By default the label is positioned at 0.5, in the middle of each slice.
-			$p1->SetLabelPos(0.6);
+
 			
 			// Enable and set policy for guide-lines. Make labels line up vertically
 			$p1->SetGuideLines(true,false);
 			$p1->SetGuideLinesAdjust(1.1);
-
+			
+			$p1->SetLegends($leyenda);
+			$graph->legend->SetShadow('gray@0.4',5);
+			$graph->legend->SetColumns(1);
+			$graph->legend->SetPos(0,0,'left','top');
 			// Setup the label formats and what value we want to be shown (The absolute)
 			// or the percentage.
 			$p1->SetLabelType(PIE_VALUE_PER);
 			$p1->value->Show();
+			$p1->SetCenter(0.1,0.1);
 			// $p1->value->SetFont(FF_ARIAL,FS_NORMAL,9);
-			$p1->value->SetColor('darkgray');
+			$p1->value->SetColor('black');
 
 			// Add and stroke
 			$graph->Add($p1);
@@ -199,7 +189,7 @@ class ReporteController extends Controller
 			$prom= $temp/$aux;
 
 			// Create the graph. 
-			$graph = new \Graph(300,250);	
+			$graph = new \Graph(250,180);	
 			$graph->SetScale('textlin');
 
 			$graph->img->SetMargin(70,20,20,20);
@@ -236,7 +226,6 @@ class ReporteController extends Controller
 			$graph->legend->SetShadow('gray@0.4',5);
 			$graph->legend->SetPos(0,0.99,'right','bottom');
 
-			$graph->title->Set('Tiempo de ciclo promedio');
 			$graph->xaxis->SetTitle('Camiones','center');
 			$graph->yaxis->SetTitle('Tiempo','center');
 			$graph->yaxis->SetTitleMargin(45);

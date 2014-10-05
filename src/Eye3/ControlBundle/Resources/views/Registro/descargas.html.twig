@@ -6,11 +6,13 @@
 		</div>
 		<div class="col-12">
 			<div class="col-md-5 col-xs-12">
-					<table class="table table-striped table-bordered table-hover">
+					<table id="semanal" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
+								<th>contador</th>
 								<th class="center">
-									Semana (Lun-Dom)
+									Semana/Año &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									(Lun-Dom)
 								</th>
 								<th class="center">
 									Historial
@@ -23,17 +25,19 @@
 							</tr>
 						</thead>
 						<tbody>
+						{% set contador = 1 %}
 						{% set pasasemana = "now" %}
 						{% for anyo in ("now"|date("Y"))..(desde|date("Y")) %}
 						{% set comienzo = ((loop.first)?("now"|date("W"))-1:52)%}
 						{% set termino = ((loop.last)?(desde|date("W")):1)%}
 							{% for innersemana in comienzo..termino %}
 								<tr>
+									<td> {{contador}}{% set contador = contador + 1 %} </td>
 									<td class="center">
 										{% set arreglasemana = ((innersemana<10)?0)%}
-										W{{arreglasemana}}{{innersemana}}
-										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("this Monday")|date("d/m" )}} al 
-										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("next Sunday")|date("d/m" )}}
+										{{arreglasemana}}{{innersemana}}/{{anyo}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("this Monday")|date("d/m" )}} - 
+										{{"#{anyo}W#{arreglasemana}#{innersemana}"|date_modify("next Sunday")|date("d/m" )}} 
 									</td>
 									<td class="center">
 										<a class="green" href={{path('genera_excel',{'fecha':anyo~'W'~arreglasemana~innersemana})}}><i class="fa fa-file-excel-o fa-2x"></i></a>
@@ -48,9 +52,10 @@
 				</table>
 			</div>
 			<div class="col-md-5 col-xs-12">
-					<table class="table table-striped table-bordered table-hover">
+					<table id="mensual" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
+								<th>contador</th>
 								<th class="center">
 									Mes
 								</th>
@@ -65,11 +70,13 @@
 							</tr>
 						</thead>
 						<tbody>
+						{% set contador = 1 %}
 						{% for anyo in ("now"|date("Y"))..(desde|date("Y")) %}
 						{% set comienzo = ((loop.first)?("now"|date("n"))-1:12)%}
 						{% set termino = ((loop.last)?(desde|date("n")):1)%}
 							{% for innermes in comienzo..termino %}
 								<tr>
+									<td> {{contador}}{% set contador = contador + 1 %} </td>
 									<td class="center">
 										{{meses[(innermes-1)]}}-{{anyo}}
 									</td>
@@ -86,6 +93,78 @@
 				</table>
 			</div>
 		</div>
+	
+<!-- basic scripts en base -->
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='{{ asset('bundles/eye3control/js/jquery.min.js') }}'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script type="text/javascript">
+		 window.jQuery || document.write("<script src='{{ asset('bundles/eye3control/js/jquery1x.min.js') }}'>"+"<"+"/script>");
+		</script>
+		<![endif]-->
 		
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('bundles/eye3control/js/jquery.mobile.custom.min.js') }}'>"+"<"+"/script>");
+		</script>
+			
+			
+		 {% javascripts 
+            'bundles/eye3control/js/bootstrap.min.js' 
+			'bundles/eye3control/js/jquery.dataTables.min.js'
+			'bundles/eye3control/js/jquery.dataTables.bootstrap.js'
+            %}
+            <script src="{{ asset_url }}" type="text/javascript"></script>
+        {% endjavascripts %}
+		
+		
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".showinfo").tooltip();
+	
+	 $('#semanal').dataTable({ 
+							"dom": '<"row"<"col-xs-6"l><"col-xs-6"f>>rt<"row"p>',
+							 "columnDefs": [
+												{
+													"targets": [ 0 ],
+													"visible": false,
+													"searchable": false
+												},
+												{
+													"targets": [ 1 ],
+													orderData: [ 0 ],
+												},
+												{
+													"targets": [ 2,3 ],
+													"searchable": false,
+													"sortable": false
+												}
+											],
+							"info":     false});
+	 $('#mensual').dataTable({
+							"dom": '<"row"<"col-xs-6"l><"col-xs-6"f>>rt<"row"p>',
+							"columnDefs": [
+												{
+													"targets": [ 0 ],
+													"visible": false,
+													"searchable": false
+												},
+												{
+													"targets": [ 1 ],
+													orderData: [ 0 ],
+												},
+												{
+													"targets": [ 2,3 ],
+													"searchable": false,
+													"sortable": false
+												}
+											],
+							"info":     false});
+});
+</script>		
 
 {% endblock %}
