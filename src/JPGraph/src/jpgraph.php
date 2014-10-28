@@ -5241,6 +5241,7 @@ class DisplayValue {
     public $format='%.1f',$negformat='';
     private $ff=FF_DEFAULT,$fs=FS_NORMAL,$fsize=8;
     private $iFormCallback='';
+    private $iFormCallbackorder='';
     private $angle=0;
     private $color='navy',$negcolor='';
     private $iHideZero=false;
@@ -5320,7 +5321,13 @@ class DisplayValue {
             // has already specified a text string we don't fo anything.
             if( $this->iFormCallback != '' ) {
                 $f = $this->iFormCallback;
-                $sval = call_user_func($f,$this->format,$aVal);
+				if( $this->negformat=='inv' ) {
+                    $sval = call_user_func($f,$aVal,$this->format);
+				}
+				 else {
+					$sval = call_user_func($f,$this->format,$aVal);
+                }
+                
             }
             elseif( is_numeric($aVal) ) {
                 if( $aVal >= 0 ) {

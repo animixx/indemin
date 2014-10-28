@@ -27,7 +27,7 @@ class SecurityController extends Controller
         } elseif (null !== $session && $session->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
             $error = $session->get(SecurityContextInterface::AUTHENTICATION_ERROR);
             $session->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
-			 $em = $this->getDoctrine()->getManager();
+			$em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('Eye3ControlBundle:Usuario')->findOneByUsername($lastUsername);
 			if ($entity) {
 				$registry = new Registro();
@@ -39,16 +39,7 @@ class SecurityController extends Controller
 				}
         } else {
             $error = '';
-			 $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Eye3ControlBundle:Usuario')->findOneByUsername($lastUsername);
-			if ($entity) {
-				$registry = new Registro();
-				$registry->setAccion("ingreso");
-				$registry->setFecha();
-				$registry->setUsuario($entity);
-				$em->persist($registry);
-				$em->flush();
-				}
+			
         }
 
         

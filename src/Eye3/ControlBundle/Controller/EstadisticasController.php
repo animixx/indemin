@@ -173,7 +173,7 @@ class EstadisticasController extends Controller
      */
     public function gruaAction(Request $request)
     {
-		 $fecha='16-06-2014';
+		 $fecha='24-09-2013';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
 		

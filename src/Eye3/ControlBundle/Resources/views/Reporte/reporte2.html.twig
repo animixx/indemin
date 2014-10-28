@@ -1,42 +1,38 @@
 {% set ordena = {} %}
 {% set temp = {} %}
-{% if (primer|date("N")) == 1 %}
+{% if (primer|date("j")) == 1 %}
 	{% set desde=(primer|date("W")) %}	
 {% else %}
 	{% set desde=(primer|date("W"))-1 %}
 {% endif %}
 
-{% if (primer|date_modify("last day of this month")|date("N")) == 7 %}
-	{% set hasta=(primer|date_modify("last day of this month")|date("W")) %}
-{% else %}
-	{% set hasta=(primer|date_modify("last day of this month")|date("W"))+1 %}
-{% endif %}
-
+{% set hasta=(primer|date_modify("last day of this month")|date("W")) %}
+{{dump(primer|date("W"))}}{{dump(desde)}}{{dump(hasta)}}
 {% set cantidad_gruas = 2 %}
 {% set jumper = 0 %}
 {% for grua in 1..cantidad_gruas %}
 {% set validador = (jumper ? datos2 : datos1 ) %}
 		{% set aux = 0 %}
 		{% for each in validador %}
+		{% set rellenando = 0 %}
 			{% if each.semana == (desde + aux) %}
 				{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 			{% elseif each.semana > (desde + aux) %}
 				{% for relleno in (desde+(temp|length))..(each.semana-1) %}
 					{% set temp = temp+{(relleno):null} %}
+					{% set rellenando = rellenando + 1 %}
 				{% endfor %}
 				{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 			{% endif %}	
 			
-
 			{% if validador|length  > loop.index %}
-				{% set aux = aux + 1 %}
+				{% set aux = aux + 1 + rellenando %}
 				{% if validador[loop.index]["camion"] !=  each.camion %}
 					{% if each.semana < hasta %}
 						{% for relleno in (each.semana+1)..(hasta) %}
 							{% set temp = temp+{(relleno):null} %}
 						{% endfor %}
 						{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
-		temp = {{dump(temp)}}
 					{% endif %}	
 					{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
 					{% set aux = 0 %}
@@ -50,6 +46,7 @@
 						{% set temp = temp+{(each.semana):(each.prom~each.dias)} %}
 				{% endif %}	
 				{% set ordena = ordena | merge({(each.camion):(temp)}) %} 
+				{% set temp = {} %}
 
 			{% endif %}
 		{% endfor %}

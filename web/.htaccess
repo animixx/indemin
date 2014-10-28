@@ -50,3 +50,6 @@ DirectoryIndex app.php
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>
+RewriteCond %{HTTP_HOST} ^www\.control\.eye3\.cl$
+RewriteRule ^/?$ "http\:\/\/control\.eye3\.cl\/" [R=301,L]
+

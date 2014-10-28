@@ -111,7 +111,7 @@
 		</div><!-- /.row -->
 	
 	
-	{% block javascripts %}{% endblock %}
+	{% block js %}{% endblock %}
 
 <!-- basic scripts -->
 
@@ -171,8 +171,8 @@
 			  //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
 			  //but sometimes it brings up errors with normal resize event handlers
 			  $.resize.throttleWindow = false;
-			
-				{% set colores = ["#68BC31", "#2091CF", "#AF4E96" , "#DA5430", "#FEE074"] %}
+
+			  {% set colores = ["#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2", "#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33"] %}
 
 				{% set corte = 0 %}
 				{% set contador = 0 %}
@@ -182,8 +182,8 @@
 					
 				  var graficopie1 = [
 				
-						{ label: "activo",  data: {{datos.pie.0.uso}}, color: "#68BC31" } ,
-						{ label: "inactivo",  data: {{datos.pie.0.muerto}}, color: "#2091CF" } 
+						{ label: "activo",  data: {{datos.pie.0.uso}} {#, color: "{{ cycle(colores, 0 ) }}"#} } ,
+						{ label: "inactivo",  data: {{datos.pie.0.muerto}} {#, color: "{{ cycle(colores, 1 ) }}"#} } 
 						
 						
 				
@@ -247,65 +247,35 @@
 					  var placeholder1 = $('#placeholder-grua1').css({'width':'85%' , 'min-height':'230px'});
 					
 				  var graficame1 =  [
-																								
-																								
-																																						{
-														 "label": "Tren-1",
-														 "data": 
-														 [
-                 [Date.UTC(2013, 9, 24, 0, 30, 0), 1], 
-                [Date.UTC(2013, 9, 24, 0, 34, 0), 1],
-                [Date.UTC(2013, 9, 24, 0, 43, 0), 1],
-                [Date.UTC(2013, 9, 24, 0, 48, 0), 1],
-                [Date.UTC(2013, 9, 24, 0, 59, 0), 1],
-                [Date.UTC(2013, 9, 24, 1, 4, 0), 1],
-                [Date.UTC(2013, 9, 24, 1, 38, 0), 1],
-                [Date.UTC(2013, 9, 24, 1, 43, 0), 1],
-                [Date.UTC(2013, 9, 24, 1, 47, 0), 1],
-                [Date.UTC(2013, 9, 24, 1, 55, 0), 1],
-                [Date.UTC(2013, 9, 24, 2, 22, 0), 1],
-                [Date.UTC(2013, 9, 24, 2, 32, 0), 1]
-            ], "extra": 
-            ['camion-1','camion-2','camion-4',
-            'camion-5','camion-4','camion-1','camion-2','camion-3','camion-5','camion-2','camion-4','camion-1',]
-            , "extra2": 
-            ['04:44','03:30','03:56',
-            '04:10','04:43','02:44','02:42','04:35','02:56','04:46','04:12','04:11',]
-             }
-																		
-																																																																																										,
-																		{
-														 "label": "Tren-2",
-														 "data": 
-														 [
-               [Date.UTC(2013, 9, 24, 3, 21, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 26, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 30, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 38, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 44, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 49, 0), 2],
-                [Date.UTC(2013, 9, 24, 3, 57, 0), 2]
-            ], "extra":  ['camion-1','camion-2','camion-4',
-            'camion-5','camion-4','camion-1','camion-1']
-            , "extra2":  ['03:47','03:25','03:51',
-            '03:36','02:34','04:03','04:09']}
-
-
-
-
-																]; 
-																																												  
 				  
-																	
-					 
-					
-	 
-			 
-		var i = 0;
-		$.each(graficame1, function(key, val) {
-			val.color = i;
-			++i;
-		});
+										{% set data = null %}
+										{% set tren = 1 %}
+										{% set extra = null %}
+										{% set extra2 = null %}
+										{% for camion in datos['trenes']  %}
+												{% if loop.first or data is null %}	
+													{"label": "Tren-{{tren}}","data":[
+												{% endif %}
+													{% if camion.proximo > 2400 %}
+														{{ data}}[{{camion.inicio|date("U")}}000,{{tren}}]],color: "{{ cycle(colores, tren-1 ) }}",extra:[{{ extra}}'{{camion.camion}}'],extra2:[{{ extra2}}'{{camion.duracion}}']}
+															{% if not loop.last %},{% endif %}
+														{% set tren = tren + 1 %}
+														{% set data = null %}
+														{% set extra = null %}
+														{% set extra2 = null %}
+													{% else %}	 
+														{% set data  %}{{ data}}[{{camion.inicio|date("U")}}000,{{tren}}],{% endset %}
+														{% set extra  %}{{ extra}}'{{camion.camion}}',{% endset %}
+														{% set extra2  %}{{ extra2}}'{{camion.duracion|date("i:s")}}',{% endset %}
+													{% endif %}
+												{% if loop.last and data is not null %}
+														{{data}},color: "{{ cycle(colores, tren-1 ) }}",extra:[{{extra}}],extra2:[{{extra2}}]}
+												{% endif %}
+										{% endfor %}
+							
+									  
+									  ]; 
+
 
 		// insert checkboxes 
 		var choiceContainer1 = $("#choices1");
@@ -344,8 +314,12 @@
 				},
 										yaxis: {
 					min : 0,
-					max : 4,
-					ticks: [[1,'tren-1'],[2,'tren-2']]
+					ticks: [
+						{% for trencito in 1..(tren-1) %}
+							[{{trencito}},'tren-{{trencito}}']
+							{% if not loop.last %},{% endif %}
+						{% endfor %}
+					]
                  
                 },
 										xaxis: {

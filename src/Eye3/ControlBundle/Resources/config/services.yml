@@ -1,7 +1,13 @@
 parameters:
 #    eye3_control.example.class: Eye3\ControlBundle\Example
 
-services:
+#services:
 #    eye3_control.example:
 #        class: %eye3_control.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+services:
+    login_listener:
+        class: 'Eye3\ControlBundle\Listener\LoginListener'
+        arguments: ['@security.context', '@doctrine.orm.entity_manager']
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }

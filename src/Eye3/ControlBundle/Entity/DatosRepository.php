@@ -298,7 +298,7 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
-		public function grua_dia($fecha = '2013-09-24%')
+		public function grua_dia($fecha = '24-09-2013')
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
 			//SELECT  SUM(TIME_TO_SEC(duracion))  as uso, TIME_TO_SEC(SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
@@ -318,7 +318,7 @@ class DatosRepository extends EntityRepository
 			$query2 = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'select (select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua , inicio, duracion ,TIMEDIFF((select inicio from datos where id=next),inicio) as proximo from datos as t1 where inicio like :fecha order by grua,inicio'
+					'select (select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua , inicio, duracion ,TIME_TO_SEC(TIMEDIFF((select inicio from datos where id=next),inicio)) as proximo from datos as t1 where inicio like :fecha order by grua,inicio'
 				
 
 			);

@@ -268,11 +268,11 @@ class ReporteController extends Controller
 				foreach ($etiquetas as $semanas)
 				{
 					if ($etiqueta_full == null )
-						$etiqueta_full[]= "1 al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
+						$etiqueta_full[]= "1 al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas)."7") );
 					elseif ($semanas == end($etiquetas))
-						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date("d", strtotime("last day of this month",$fecha->getTimestamp()));
+						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas)."1") )." al ".date("d", strtotime("last day of this month",$fecha->getTimestamp()));
 					else
-						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."1") )." al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas-1)."7") );
+						$etiqueta_full[]= date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas)."1") )." al ".date( "j", strtotime((date("Y",$fecha->getTimestamp()))."W".($semanas)."7") );
 				}
 			elseif ($titulo[0]=="s")
 				for($counter=0;$counter<7;$counter++)
@@ -282,7 +282,7 @@ class ReporteController extends Controller
 					}
 
 			// Create the graph. 
-			$graph = new \Graph(600,450);	
+			$graph = new \Graph(600,400);	
 			$graph->SetScale("textlin");
 			$graph->SetShadow();
 
@@ -303,13 +303,16 @@ class ReporteController extends Controller
 			$graph->yaxis->SetTitleMargin(45);
 
 			$graph->xgrid->Show(); 
-						
-			// $bplot->value->SetAngle(90);
-			// $bplot->value->SetFormat('i:s');
-			// $bplot->value->SetFormatCallback('gmdate');
-			// $bplot->value->SetColor('red','darkred');
-			$bplot[0]->value->Show();
-	// print_r($gbplot);exit;
+				
+			for ($cuenta=0;$cuenta<=(count($bplot)-1);$cuenta++ )
+			{
+				// $bplot->value->SetAngle(90);
+				// $bplot->value->SetColor('red','darkred');
+				$bplot[$cuenta]->value->SetFormatCallback('substr');
+				$bplot[$cuenta]->value->SetFormat('-1','inv');
+				$bplot[$cuenta]->value->Show();
+			}
+
 			$graph->legend->SetShadow('gray@0.4',5);
 			$graph->legend->SetPos(0,0.99,'right','bottom');
 
