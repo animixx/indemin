@@ -22,11 +22,15 @@ class Datos
     private $id;
 
     /**
-     * @var string
+     * @var \Camiones
      *
-     * @ORM\Column(name="camion", type="string", length=50, nullable=false)
+     * @ORM\ManyToOne(targetEntity="Camiones")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_tag_camiones", referencedColumnName="id")
+     * })
+     *
      */
-    private $camion;
+    private $idcamion;	
 
     /**
      * @var string
@@ -41,6 +45,13 @@ class Datos
      * @ORM\Column(name="inicio", type="datetime", nullable=false)
      */
     private $inicio;
+	
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="final", type="datetime", nullable=false)
+     */
+    private $final;
 
     /**
      * @var \DateTime
@@ -52,7 +63,7 @@ class Datos
     /**
      * @var integer
      *
-     * @ORM\Column(name="hit", type="integer", nullable=false)
+     * @ORM\Column(name="cuenta", type="integer", nullable=false)
      */
     private $hit;
 

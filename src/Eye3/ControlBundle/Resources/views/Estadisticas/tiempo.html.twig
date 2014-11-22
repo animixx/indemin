@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block body %}
-
 	<div class="row" >
 		<div class="col-md-4 col-xs-2"></div>
 		<div class="col-md-3 col-xs-8">
@@ -27,7 +26,6 @@
 		</div>
 	</div>
 
-{% set cantidad_gruas = 2 %}
 {% set jumper = 0 %}
 {% set gruas_validas =  {} %}
 
@@ -72,7 +70,7 @@
 													{{row.camion}}
 												</td>
 												<td class="center">
-													{{row.tiempo_total|date("G:i:s", false)}}
+													{{(row.tiempo_total/3600)|round(0,'floor')~(row.tiempo_total-(row.tiempo_total/3600))|round(0,'ceil')|date(":i:s", false)}}
 												</td>
 												<td class="center">
 													{{row.prom }} 
@@ -107,9 +105,7 @@
 							<div class="widget-body">
 								<div class="widget-main">
 									<!-- #section:plugins/charts.flotchart -->
-									<div id="piechart-placeholder{{ grua }}"> </div>
-
-									
+									<div id="piechart-placeholder{{ grua }}" > </div>
 									
 								</div><!-- /.widget-main -->
 							</div><!-- /.widget-body -->
@@ -194,10 +190,11 @@
 			  //but sometimes it brings up errors with normal resize event handlers
 			  $.resize.throttleWindow = false;
 			
-			  {% set colores = ["#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2", "#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33"] %}
+			  {% set colores = ["#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33", "#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2" ] %}
 
 				{% set corte = 0 %}
 				{% set contador = 0 %}
+				{% set cantidades = {} %}
 				
 			{% for grua in gruas_validas %}
 				  var placeholder{{grua}} = $('#piechart-placeholder{{grua}}').css({'width':'90%' , 'min-height':'200px'});
@@ -212,10 +209,10 @@
 					{% if datos|length > (corte + datos[corte]['veces'] + 1)%}
 						{% set corte = corte + datos[corte]['veces'] + 1 %}
 					{% endif %}	
+				
 			{% endfor %}
 			  
-
-			  function drawPieChart(placeholder, data, position) {
+			  function drawPieChart(placeholder, data , position) { 
 			 	  $.plot(placeholder, data, {
 					series: {
 						pie: {
@@ -233,8 +230,10 @@
 					legend: {
 						show: true,
 						position: position || "ne", 
+						noColumns: Math.ceil(data.length/10),
+						sorted: false,
 						labelBoxBorderColor: null,
-						margin:[-30,15]
+						margin:[-40,0]
 					}
 					,
 					grid: {
@@ -249,7 +248,7 @@
 			  var previousPoint = null;
 
 			  {% for grua in gruas_validas %}
-				 drawPieChart(placeholder{{grua}}, graficame{{grua}});
+				 drawPieChart(placeholder{{grua}}, graficame{{grua}} );
 			
 
 			placeholder{{grua}}.on('plothover', function (event, pos, item) {

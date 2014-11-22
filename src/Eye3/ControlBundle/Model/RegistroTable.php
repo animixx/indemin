@@ -13,7 +13,7 @@ use Symfony\Component\Templating\EngineInterface;
  *
  * @package Eye3\ControlBundle\Model
  *
- * @DataTable\Table(id="registroTable",displayLength=10,serverSideProcessing=true)
+ * @DataTable\Table(id="registroTable",displayLength=10,serverSideProcessing=false)
  */
 class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
@@ -25,8 +25,8 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
 
     /**
      * @var string
-     * @DataTable\Column(source="datos.camion", name="Camion")
-     * @DataTable\Format(dataFields={"dato":"datos.camion"}, template="Eye3ControlBundle:Registro:show.html.twig")
+     * @DataTable\Column(source="datos.idcamion", name="Camion")
+     * @DataTable\Format(dataFields={"dato":"datos.idcamion.camion"}, template="Eye3ControlBundle:Registro:show.html.twig")
 	*/
     public $camion;
 
@@ -38,14 +38,15 @@ class RegistroTable extends QueryBuilderDataTable implements QueryBuilderDataTab
     public $grua;
 
 	/**
-     * @var datetime
-     * @DataTable\Column(source="datos.inicio", name="Inicio")
+     * @var date
+     * @DataTable\Column(source="datos.inicio", name="Inicio", stype="date-euro")
 	 * @DataTable\Format(dataFields={"dato":"datos.inicio"}, template="Eye3ControlBundle:Registro:fecha.html.twig")
+     * @DataTable\DefaultSort()
      */
     public $inicio;
 	
 	/**
-     * @var time
+     * @var float
      * @DataTable\Column(source="datos.duracion", name="Duracion")
 	 * @DataTable\Format(dataFields={"dato":"datos.duracion"}, template="Eye3ControlBundle:Registro:hora.html.twig")
      */

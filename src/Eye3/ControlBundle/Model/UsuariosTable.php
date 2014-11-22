@@ -47,6 +47,7 @@ class UsuariosTable extends QueryBuilderDataTable implements QueryBuilderDataTab
    /**
      * @var string
      * @DataTable\Column(source="usuario.tipo",name="Permisos")
+	 * @DataTable\Format(dataFields={"dato":"usuario.tipo"}, template="Eye3ControlBundle:Uso:permisos.html.twig")
      */
     public $rol;
 

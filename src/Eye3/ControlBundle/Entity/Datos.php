@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Datos
  *
- * @ORM\Table(name="datos")
+ * @ORM\Table(name="datos", indexes={@ORM\Index(name="fk_Datos_Camiones1_idx", columns={"id"})})
  * @ORM\Entity(repositoryClass="Eye3\ControlBundle\Entity\DatosRepository")
  */
 class Datos
@@ -22,11 +22,15 @@ class Datos
     private $id;
 
     /**
-     * @var string
+     * @var \Camiones
      *
-     * @ORM\Column(name="camion", type="string", length=50, nullable=false)
+     * @ORM\ManyToOne(targetEntity="Camiones")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_tag_camiones", referencedColumnName="id")
+     * })
+     *
      */
-    private $camion;
+    private $idcamion;	
 
     /**
      * @var string
@@ -41,18 +45,25 @@ class Datos
      * @ORM\Column(name="inicio", type="datetime", nullable=false)
      */
     private $inicio;
-
+	
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="duracion", type="time", nullable=false)
+     * @ORM\Column(name="final", type="datetime", nullable=false)
+     */
+    private $final;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="duracion", type="float", nullable=false)
      */
     private $duracion;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="hit", type="integer", nullable=false)
+     * @ORM\Column(name="cuenta", type="integer", nullable=false)
      */
     private $hit;
 
@@ -181,5 +192,51 @@ class Datos
     public function getHit()
     {
         return $this->hit;
+    }
+
+    /**
+     * Set final
+     *
+     * @param \DateTime $final
+     * @return Datos
+     */
+    public function setFinal($final)
+    {
+        $this->final = $final;
+
+        return $this;
+    }
+
+    /**
+     * Get final
+     *
+     * @return \DateTime 
+     */
+    public function getFinal()
+    {
+        return $this->final;
+    }
+
+    /**
+     * Set idcamion
+     *
+     * @param \Eye3\ControlBundle\Entity\Camiones $idcamion
+     * @return Datos
+     */
+    public function setIdcamion(\Eye3\ControlBundle\Entity\Camiones $idcamion = null)
+    {
+        $this->idcamion = $idcamion;
+
+        return $this;
+    }
+
+    /**
+     * Get idcamion
+     *
+     * @return \Eye3\ControlBundle\Entity\Camiones 
+     */
+    public function getIdcamion()
+    {
+        return $this->idcamion;
     }
 }

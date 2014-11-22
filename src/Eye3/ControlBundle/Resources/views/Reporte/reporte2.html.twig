@@ -7,10 +7,14 @@
 {% endif %}
 
 {% set hasta=(primer|date_modify("last day of this month")|date("W")) %}
-{{dump(primer|date("W"))}}{{dump(desde)}}{{dump(hasta)}}
-{% set cantidad_gruas = 2 %}
+
 {% set jumper = 0 %}
 {% for grua in 1..cantidad_gruas %}
+
+{% if not loop.first %}
+		<pagebreak orientation="landscape" />
+{% endif %}
+	
 {% set validador = (jumper ? datos2 : datos1 ) %}
 		{% set aux = 0 %}
 		{% for each in validador %}
@@ -52,15 +56,20 @@
 		{% endfor %}
 
 			{% if validador|length < 1 %}
-				<div class="page-header"><h1>Sin datos para la Grúa {{grua}} </h1></div>
+				<div style="height: 1.1044cm" class="titulo" ><h6>Sin datos para la Grúa {{grua}} </h6></div>
 			{% else %}	
-				<div class="blue"><h5>Grúa {{grua}} - {{graficos}}</h5></div>
+				<div style="height: 1.1044cm" class="titulo" ><h6>Grua {{grua}} - {{graficos}} </h6></div>
 				
-				
-				<div class="center">Tiempo Total Operación</div>
-				
-				<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "multiple", valores : ordena, fecha: primer,titulo : graficos })) }}" /> 
-					
+				<table class="bordered" style="margin-bottom: 0.5424cm;width:100%;" >
+					<tr>
+						<td class="centered" style="height: 0.6169cm;font-weight: bold;">Tiempo total Operación</td>
+					</tr>
+					<tr>
+						<td class="centered" >
+							<img src="data:image/png;base64, {{ render(controller('Eye3ControlBundle:Reporte:grafica',{ tipo : "multiple", valores : ordena, fecha: primer,titulo : graficos })) }}" /> 
+						</td>	
+					</tr>
+				</table>
 			{% endif %}
 {% set jumper = 1 %}
 {% endfor %}

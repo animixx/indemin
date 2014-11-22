@@ -28,52 +28,47 @@ class DatosRepository extends EntityRepository
 			}
 		}
 		
-		public function primer_dato()
+		public function primer_dato($formato = "%d-%m-%Y")
 		{
 			$query = $this->getEntityManager()
-				->createQuery(
-					'SELECT dato.inicio FROM Eye3ControlBundle:Datos dato order by dato.inicio'
-				)->setMaxResults(1);
-
-			try {
-				return $query->getResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				return null;
-			}
-		}
-		
-		public function camiones()
-		{
-			$query = $this->getEntityManager()
-				->createQuery(
-					'SELECT DISTINCT p.camion FROM Eye3ControlBundle:Datos p ORDER BY p.camion'
+				->getConnection()
+				->prepare(
+					'SELECT date_format(min(dato.inicio),"'.$formato.'") as inicio FROM datos dato order by dato.inicio limit 1'
 				);
 
-			try {
-				return $query->getResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				return null;
-			}
+			$query->execute();
+			 
+			return $query->fetchAll();
+			 
 		}
 		
+		public function camiones($where = '', $fecha = null )
+		{
+			$query = $this->getEntityManager()
+				->getConnection()
+				->prepare(
+					'SELECT DISTINCT id_tag_camiones as tag,(select nombre_camion from camiones where id= id_tag_camiones) as camion FROM datos '.$where
+				);
+			 if ($fecha) $query->bindValue('fecha', $fecha );
+				
+			 $query->execute();
+			 
+			 return $query->fetchAll();
+		}
+		
+		//formato fecha llegada "Y-m-d"
 		public function tiempo_dia($fecha)
 		{
-		// (SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where DATE(inicio) = '2014-06-16'  group by camion, grua ) 
-		// union
-		// (SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT (camion) )  , grua   FROM datos  where inicio LIKE '2014-06-16%' GROUP BY grua) 
-		// ORDER BY grua, camion
 //grupo de pruebas solo grua 1 ->2013-08-15  , las 2 gruas -> (2014-06-16, 2014-06-12 ,2014-07-10) , solo grua 2 -> 2014-06-07
 			
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
 		 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where date(inicio) = :fecha  group by camion, grua ) 
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones, SUM(duracion) as tiempo_total, SEC_TO_TIME(avg(duracion)) as prom, count(*) as veces, grua FROM datos where date(inicio) = :fecha  group by camion, grua ) 
 				 union
-					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where date(inicio) = :fecha GROUP BY grua) 
-					ORDER BY grua, camion'
+					(SELECT null,null, SEC_TO_TIME(SUM(duracion)) , null, COUNT(DISTINCT(id_tag_camiones)) , grua FROM datos  where date(inicio) = :fecha GROUP BY grua) 
+					 ORDER BY grua, id_tag_camiones'
 				);
 				$query->bindValue('fecha', $fecha );
 
@@ -83,18 +78,17 @@ class DatosRepository extends EntityRepository
 			 
 		}
 		
+		//formato fecha llegada "Y-m-d"
 		public function tiempo_semana($fecha)
 		{
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
 		 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) group by camion, grua ) 
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones, SUM(duracion) as tiempo_total, SEC_TO_TIME(avg(duracion)) as prom, count(*) as veces, grua FROM datos where DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) group by camion, grua ) 
 				 union
-					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY grua) 
-					ORDER BY grua, camion'
+					(SELECT null,null, SEC_TO_TIME(SUM(duracion)) , null, COUNT(DISTINCT(id_tag_camiones)) , grua FROM datos  where DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY grua) 
+					ORDER BY grua, id_tag_camiones'
 				);
 				$query->bindValue('fecha', $fecha );
 
@@ -104,19 +98,17 @@ class DatosRepository extends EntityRepository
 			 
 		}
 		
+		//formato fecha llegada "Y-m-d"
 		public function tiempo_mes($fecha)
 		{
 			
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[1]."-".$cuando[0]."-01";
-		 
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion, SUM( TIME_TO_SEC(duracion)) as tiempo_total, SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom, count(*) as veces, grua FROM datos where  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) group by camion, grua ) 
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones, SUM(duracion) as tiempo_total, SEC_TO_TIME(avg(duracion)) as prom, count(*) as veces, grua FROM datos where  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) group by camion, grua ) 
 				 union
-					(SELECT null, SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))) , null, COUNT(DISTINCT(camion)) , grua FROM datos  where  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY grua) 
-					ORDER BY grua, camion'
+					(SELECT null,null, SEC_TO_TIME(SUM(duracion)) , null, COUNT(DISTINCT(id_tag_camiones)) , grua FROM datos  where  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY grua) 
+					ORDER BY grua, id_tag_camiones'
 				);
 				$query->bindValue('fecha', $fecha );
 
@@ -126,24 +118,23 @@ class DatosRepository extends EntityRepository
 			 
 		}
 		
+		//formato fecha llegada "Y-m-d" 
 		public function camion_dia($fecha )
 		{
-		// (SELECT camion,grua,null as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma, count(*) as cuantos FROM datos WHERE date(inicio) = '2013-09-24'  GROUP BY camion,grua )
+		// (SELECT camion,grua,null as inicio,SEC_TO_TIME(min(duracion)) as tiempo,SEC_TO_TIME(max(duracion)) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma, count(*) as cuantos FROM datos WHERE date(inicio) = '2014-10-27'  GROUP BY camion,grua )
 		// union
-		// (SELECT camion,grua,inicio,DATE_FORMAT(duracion,"%i,%s"),null,null,null,null FROM datos WHERE  date(inicio) = '2013-09-24'  )
+		// (SELECT camion,grua,inicio,DATE_FORMAT(duracion,"%i,%s"),null,null,null,null FROM datos WHERE  date(inicio) = '2014-11-03'  )
 		//  ORDER BY grua, camion,max desc  , inicio
 //grupo de pruebas solo grua 1 ->2013-09-24  , las 2 gruas -> (2014-06-16) , solo grua 2 -> 2014-06-07
 
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
 			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion,grua,null as inicio,min(duracion) as tiempo,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) as suma, count(*) as cuantos FROM datos WHERE date(inicio) = :fecha GROUP BY camion,grua )
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones,grua,null as inicio,SEC_TO_TIME(min(duracion)) as tiempo,SEC_TO_TIME(max(duracion)) as max,SEC_TO_TIME(avg(duracion)) as prom,SEC_TO_TIME(sum(duracion)) as suma, count(*) as cuantos FROM datos WHERE DATE_FORMAT(inicio,"%d-%m-%Y") = DATE_FORMAT(:fecha,"%d-%m-%Y") GROUP BY camion,grua )
 				union
-					 (SELECT camion,grua,inicio,TIME_TO_SEC(duracion),null,null,null,null FROM datos WHERE date(inicio) = :fecha )
-					 ORDER BY grua, camion, max desc , inicio'
+					 (SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones,grua,inicio, round(duracion) ,null,null,null,null FROM datos WHERE DATE_FORMAT(inicio,"%d-%m-%Y") = DATE_FORMAT(:fecha,"%d-%m-%Y") )
+					 ORDER BY grua, id_tag_camiones, max desc , inicio'
 
 			);
 				$query->bindValue('fecha', $fecha );
@@ -153,19 +144,18 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
+		//formato fecha llegada "Y-m-d" 
 		public function camion_semana($fecha)
 		{
 
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0];
 			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion,grua,DATE(inicio) as dia, min(duracion) as min,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, null as dias FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY camion,grua ,date(inicio))
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion, id_tag_camiones,grua,DATE(inicio) as dia, SEC_TO_TIME(min(duracion)) as min,SEC_TO_TIME(max(duracion)) as max,SEC_TO_TIME(avg(duracion)) as prom ,round(sum(duracion)) as suma, count(*) as veces, null as dias FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY camion,grua ,date(inicio))
 						union
-					(SELECT camion,grua,null, min(duracion) ,max(duracion),SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) ,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) , count(*),count(distinct(date(inicio)))  FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY camion,grua )
-					 ORDER BY grua, camion, dia'
+					(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion, id_tag_camiones,grua,null, SEC_TO_TIME(min(duracion)) ,SEC_TO_TIME(max(duracion)),SEC_TO_TIME(avg(duracion)) ,SEC_TO_TIME(sum(duracion)) , count(*),count(distinct(date(inicio)))  FROM datos WHERE  DATE_FORMAT(inicio,"%u-%Y") = DATE_FORMAT( :fecha ,"%u-%Y" ) GROUP BY camion,grua )
+					 ORDER BY grua,  id_tag_camiones, dia'
 
 			);
 				$query->bindValue('fecha', $fecha );
@@ -175,19 +165,18 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
+		//formato fecha llegada "Y-m-d" 
 		public function camion_mes($fecha)
 		{
 
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[1]."-".$cuando[0]."-01";
 			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'(SELECT camion,grua,week(inicio,1) as semana, min(duracion) as min,max(duracion) as max,SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, count(distinct(date(inicio))) as dias, null as selector FROM datos WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY camion,grua ,week(inicio,1))
+					'(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion, id_tag_camiones,grua,week(inicio,1) as semana, SEC_TO_TIME(min(duracion)) as min,SEC_TO_TIME(max(duracion)) as max,SEC_TO_TIME(avg(duracion)) as prom ,round(sum(duracion)) as suma, count(*) as veces, count(distinct(date(inicio))) as dias, null as selector FROM datos WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY camion,grua ,week(inicio,1))
 						union
-					(SELECT camion,grua,count(distinct(week(inicio,1))), min(duracion) ,max(duracion),SEC_TO_TIME(avg(TIME_TO_SEC(duracion))) ,SEC_TO_TIME(sum(TIME_TO_SEC(duracion))) , count(*),count(distinct(date(inicio))),1  FROM datos WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY camion,grua )
-					 ORDER BY grua, camion, selector desc, semana'
+					(SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion, id_tag_camiones,grua,count(distinct(week(inicio,1))), SEC_TO_TIME(min(duracion)) ,SEC_TO_TIME(max(duracion)),SEC_TO_TIME(avg(duracion)) ,SEC_TO_TIME(sum(duracion)) , count(*),count(distinct(date(inicio))),1  FROM datos WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha ,"%m-%Y" ) GROUP BY camion,grua )
+					 ORDER BY grua,  id_tag_camiones, selector desc, semana'
 
 			);
 				$query->bindValue('fecha', $fecha );
@@ -206,9 +195,9 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' SELECT camion, grua, min( duracion ) as min,max( duracion ) as max, avg( TIME_TO_SEC( duracion )) as prom ,sum( TIME_TO_SEC( duracion )) as suma, count(*) as veces ,count(DISTINCT (DATE(inicio))) as dias FROM datos 
+					' SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones, grua, min( duracion ) as min,max( duracion ) as max, avg( duracion ) as prom ,sum( duracion ) as suma, count(*) as veces ,count(DISTINCT (DATE(inicio))) as dias FROM datos 
 					WHERE '.$corrigesql.' DATE_FORMAT(inicio,"%YW%u") = :fecha 
-					GROUP BY camion,grua'
+					GROUP BY id_tag_camiones,grua'
 
 			);
 				$query->bindValue('fecha', $fecha );
@@ -225,9 +214,9 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' SELECT camion, grua, min( duracion ) AS min, max( duracion ) AS max, avg( TIME_TO_SEC( duracion ) ) AS prom, sum( TIME_TO_SEC( duracion ) ) AS suma, count( * ) AS veces, count( DISTINCT (date( inicio ) ) ) AS dias FROM datos
+					' SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones, grua, min( duracion ) AS min, max( duracion ) AS max, avg( duracion ) AS prom, sum( duracion ) AS suma, count( * ) AS veces, count( DISTINCT (date( inicio ) ) ) AS dias FROM datos
 					WHERE DATE_FORMAT( inicio, "%m-%Y" ) = DATE_FORMAT( :fecha, "%m-%Y" )
-					GROUP BY camion,grua'
+					GROUP BY id_tag_camiones,grua'
 
 			);
 				$query->bindValue('fecha', $fecha."/1" );
@@ -246,11 +235,10 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' SELECT camion,grua, min(duracion) as min ,max(duracion) as max ,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, DATE_FORMAT(inicio,"%w") as ndia, date(inicio) as dia FROM datos 
+					' SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones,grua, min(duracion) as min ,max(duracion) as max ,avg(duracion) as prom ,sum(duracion) as suma, count(*) as veces, DATE_FORMAT(inicio,"%w") as ndia, date(inicio) as dia FROM datos 
 					WHERE ('.$corrigesql.' DATE_FORMAT(inicio,"%YW%u") = :fecha ) and grua = :grua 
 					GROUP BY camion,date(inicio)
-					 ORDER BY  camion, dia'
-
+					 ORDER BY  id_tag_camiones, dia'
 			);
 				$query->bindValue('fecha', $fecha );
 				$query->bindValue('grua', $grua );
@@ -267,9 +255,9 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					' (SELECT camion,week(inicio,1) as semana, min(duracion) as min,max(duracion) as max,avg(TIME_TO_SEC(duracion)) as prom ,sum(TIME_TO_SEC(duracion)) as suma, count(*) as veces, count(distinct(date(inicio))) as dias  FROM datos 
+					' (SELECT (select nombre_camion from camiones where id= id_tag_camiones) as camion,id_tag_camiones,week(inicio,1) as semana, min(duracion) as min,max(duracion) as max,avg(duracion) as prom ,sum(duracion) as suma, count(*) as veces, count(distinct(date(inicio))) as dias  FROM datos 
 					WHERE  DATE_FORMAT(inicio,"%m-%Y") = DATE_FORMAT( :fecha,"%m-%Y" ) and grua = :grua GROUP BY camion ,week(inicio,1))
-					 ORDER BY camion,semana'
+					 ORDER BY id_tag_camiones,semana'
 
 			);
 				$query->bindValue('fecha', $fecha."/1" );
@@ -287,7 +275,7 @@ class DatosRepository extends EntityRepository
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT * FROM datos WHERE  inicio BETWEEN :desde and :hasta'
+					'SELECT * FROM datos d join camiones c on d.id_tag_camiones=c.id WHERE  inicio BETWEEN :desde and :hasta order by id'
 
 			);
 				$query->bindValue('desde', $desde );
@@ -298,19 +286,19 @@ class DatosRepository extends EntityRepository
 			 return $query->fetchAll();
 		}
 		
-		public function grua_dia($fecha = '24-09-2013')
+		//formato fecha llegada "Y-m-d"
+		public function grua_dia($fecha )
 		{
 			//SELECT * FROM datos p WHERE p.inicio like '2013-09-24%' ORDER BY p.grua, p.inicio
 			//SELECT  SUM(TIME_TO_SEC(duracion))  as uso, TIME_TO_SEC(SUBTIME('24:00:00', SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion)))  as prom, grua   FROM datos  where inicio LIKE  '2013-09-24%' GROUP BY grua
 			//select id ,(select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua ,(select grua from datos where id=next) as 'p-grua', inicio, (select inicio from datos where id=next) as 'p-inicio',duracion ,TIMEDIFF((select inicio from datos where id=next),inicio) as proximo from datos as t1 where inicio like  '2013-09-24%' order by grua,inicio
 			
-			$cuando = explode("-",$fecha);
-			$fecha = $cuando[2]."-".$cuando[1]."-".$cuando[0]."%";
+			$fecha += "%";
 			
 			$query = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'SELECT SUM(TIME_TO_SEC(duracion)) as uso, TIME_TO_SEC(SUBTIME("24:00:00", SEC_TO_TIME(SUM(TIME_TO_SEC(duracion))))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(TIME_TO_SEC(duracion))) as prom, grua FROM datos where inicio LIKE :fecha GROUP BY grua'
+					'SELECT SUM(TIME_TO_SEC(duracion)) as uso, TIME_TO_SEC(SUBTIME("24:00:00", SEC_TO_TIME(SUM(duracion)))) as muerto,  count(*) as ciclos, SEC_TO_TIME(AVG(duracion)) as prom, grua FROM datos where inicio LIKE :fecha GROUP BY grua'
 				
 
 			);
@@ -318,7 +306,7 @@ class DatosRepository extends EntityRepository
 			$query2 = $this->getEntityManager()
 				->getConnection()
 				->prepare(
-					'select (select min(id) from datos where id>t1.id and grua=t1.grua ) as next, camion, grua , inicio, duracion ,TIME_TO_SEC(TIMEDIFF((select inicio from datos where id=next),inicio)) as proximo from datos as t1 where inicio like :fecha order by grua,inicio'
+					'select (select min(id) from datos where id>t1.id and grua=t1.grua ) as next, (select nombre_camion from camiones where id= id_tag_camiones) as camion, grua , inicio, duracion ,TIME_TO_SEC(TIMEDIFF((select inicio from datos where id=next),inicio)) as proximo from datos as t1 where inicio like :fecha order by grua,inicio'
 				
 
 			);

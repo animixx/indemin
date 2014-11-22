@@ -85,8 +85,8 @@ class UsoController extends Controller
 			'empty_value' => 'Elija Genero',
 			   'required' => true,
                 'choices' => array(
-                    '0'=>'H',
-                    '1'=>'M',
+                    '0'=>'Hombre',
+                    '1'=>'Mujer',
                     ),
 			'multiple'  => false,
                 ))

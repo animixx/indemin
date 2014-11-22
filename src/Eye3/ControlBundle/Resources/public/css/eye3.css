@@ -1,6 +1,102 @@
 .eye3color {
   color: #00a79d !important;
 }
+.navbar {
+  background: #00a79d;
+}
+
+.page-header h1 { 
+  color: #00a79d;
+}
+.widget-header {
+  color: #00a79d;
+}
+
+.no-skin .nav-list > li.active > a:hover,
+.no-skin .nav-list > li.active > a:focus,
+.no-skin .nav-list > li.active > a {
+  color: #00a79d;
+}
+.no-skin .nav-list > li > a:hover,
+.no-skin .nav-list > li > a:focus {
+  color: #00a79d;
+}
+.no-skin .nav-list > li .submenu > li.active > a:hover,
+.no-skin .nav-list > li .submenu > li.active > a:focus,
+.no-skin .nav-list > li .submenu > li.active > a {
+  color: #00a79d;
+ }
+.no-skin .nav-list > li .submenu > li > a:hover,
+.no-skin .nav-list > li .submenu > li > a:focus {
+  color: #00a79d;
+ }
+ 
+ .no-skin .nav-list li.active > a:after {
+  border-right-color: #00a79d;
+  -moz-border-right-colors: #00a79d;
+}
+.no-skin .nav-list > li.active:after {
+  border-color: #00a79d;
+}
+
+.nav-list > li:before {
+  background-color: #00a79d;
+} 
+ 
+ .no-skin .nav-list > li > .submenu li > .submenu > li a {
+  color: #757575;
+}
+.no-skin .nav-list > li > .submenu li > .submenu > li a:hover {
+  color: #00a79d;
+}
+.no-skin .nav-list > li > .submenu li.open > a {
+  color: #00a79d;
+}
+.no-skin .nav-list > li > .submenu li > .submenu li.open > a,
+.no-skin .nav-list > li > .submenu li > .submenu li.active > a {
+  color: #00a79d;
+}
+.no-skin .nav-list > li > .submenu:before,
+.no-skin .nav-list > li > .submenu > li:before {
+  border-color: #9dbdd6;
+}
+.no-skin .nav-list > li.active > .submenu:before,
+.no-skin .nav-list > li.active > .submenu > li:before {
+  border-color: #8eb3d0;
+}
+ 
+.no-skin .sidebar.navbar-collapse .nav-list > li .submenu > li.active.hover > a.dropdown-toggle > .menu-icon {
+color: #00a79d;
+}
+.no-skin .sidebar.navbar-collapse .nav-list > li .submenu > li.active.open.hover > a.dropdown-toggle > .menu-icon {
+color: #00a79d;
+}
+  
+.no-skin .nav-list>li.open>a { 
+   color: #009890;
+  }
+
+  
+.no-skin .navbar .navbar-toggle {
+  background-color: #84c2be;
+}
+.no-skin .navbar .navbar-toggle:focus {
+  background-color: #c0dada;
+  border-color: transparent;
+}
+.no-skin .navbar .navbar-toggle:hover {
+  background-color: #c0dada;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ace-nav > li.eye3 > a {
+  background-color: #84c2be;
+}
+.ace-nav > li.eye3 > a:hover,
+.ace-nav > li.eye3 > a:focus,
+.ace-nav > li.open.eye3 > a {
+  background-color: #c0dada;
+}
 
 .login-layout {
 	background-color:#ffffff;

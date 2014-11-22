@@ -25,6 +25,17 @@ class RGB {
 
         // Conversion array between color names and RGB
         $this->rgb_table = array(
+			'rojo'=>array(238,56,48),
+			'naranjo'=>array(244,122,44),
+			'verde'=>array(156,204,81),
+			'azul'=>array(0,130,143),
+			'morado'=>array(108,86,164),
+			'rosado'=>array(196,74,114),
+			'naranjo2'=>array(240,90,48),
+			'naranjo3'=>array(250,171,51),
+			'amarillo'=>array(253,223,22),
+			'verde2'=>array(0,172,92),
+			'azul2'=>array(46,87,167),
             'aqua'=> array(0,255,255),
             'lime'=> array(0,255,0),
             'teal'=> array(0,128,128),
@@ -465,7 +476,8 @@ class RGB {
             'darkred'=>array(139,0,0),
             'silver'=>array(192, 192, 192),
             'eggplant'=>array(144,176,168),
-            'lightgreen'=>array(144,238,144));
+            'lightgreen'=>array(144,238,144),
+			'morado2'=>array(146,86,162));
     }
 
 

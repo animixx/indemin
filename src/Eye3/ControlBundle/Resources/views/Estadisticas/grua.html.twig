@@ -172,7 +172,7 @@
 			  //but sometimes it brings up errors with normal resize event handlers
 			  $.resize.throttleWindow = false;
 
-			  {% set colores = ["#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2", "#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33"] %}
+			{% set colores = ["#EE3830", "#F47A2C", "#9CCC51", "#00828F", "#6C56A4", "#C44A72", "#F05A30", "#FAAB33", "#FDDF16", "#00AC5C", "#2E57A7" , "#9256A2" ] %}
 
 				{% set corte = 0 %}
 				{% set contador = 0 %}
@@ -370,6 +370,8 @@
 				//link
 				$('.date-picker').datepicker({
 					autoclose: true,
+					startDate: "{{inicio}}",
+					endDate: "today",
 					todayHighlight: true
 				})
 				//show datepicker when clicking on the icon

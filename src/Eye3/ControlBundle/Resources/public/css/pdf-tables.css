@@ -44,7 +44,7 @@
 		h4 {	font-family: opensans-mod ; font-weight: normal ; font-style: italic ; font-size: 10pt; color: #707070; 
 			/* margin-top: 10pt; margin-bottom: 7pt; font-variant: small-caps;  */
 			text-align: ;  margin-collapse:collapse; page-break-after:avoid; }
-		h5 {	font-weight: normal;  font-size: 11,25pt; color: cyan; 
+		h5 {	font-weight: normal;  font-size: 11,25pt; color: #00a79d; 
 				border: 0px; margin: 0px; padding: 0px; vertical-align: middle;
 			 }
 		h6 {	font-weight: bold;  

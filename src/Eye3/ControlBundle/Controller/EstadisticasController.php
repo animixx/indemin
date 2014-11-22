@@ -16,15 +16,16 @@ class EstadisticasController extends Controller
      */
     public function tiempoAction(Request $request)
     {
-		$fecha='16-06-2014';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
-		
 		  }
+		 else
+			$fecha = date("d-m-Y");
 		 
 		$em = $this->getDoctrine()->getManager();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia($fecha);
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_dia(date("Y-m-d", strtotime($fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
         return array(
 				'titulo' => 'Diario',
@@ -32,7 +33,7 @@ class EstadisticasController extends Controller
 				'fecha' => $fecha,
 				'adicional' => '',
 				'formato' => 'dd-mm-yyyy',
-				'inicio' => '13-08-2013',
+				'inicio' => reset($desde)['inicio'],
             );    
 			
 	}
@@ -43,15 +44,17 @@ class EstadisticasController extends Controller
      */
     public function tiempoSemanaAction(Request $request)
     {
-		$fecha='16-06-2014';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
 		
 		  }
-		 
+		 else
+			$fecha = date("d-m-Y");
+			
 		$em = $this->getDoctrine()->getManager();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_semana($fecha);
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_semana(date("Y-m-d", strtotime($fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
         return array(
 				'titulo' => 'Semanal',
@@ -59,7 +62,7 @@ class EstadisticasController extends Controller
 				'fecha' => $fecha,
 				'adicional' => 'selectWeek:true,',
 				'formato' => 'dd-mm-yyyy',
-				'inicio' => '13-08-2013',
+				'inicio' => reset($desde)['inicio'],
             );    
 			
 	}
@@ -74,11 +77,12 @@ class EstadisticasController extends Controller
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
 			} 
-		else $fecha='06-2014';
+		else $fecha = date("m-Y");
 		 
 		$em = $this->getDoctrine()->getManager();
 
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_mes($fecha);
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->tiempo_mes(date("Y-m-d", strtotime("01-".$fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato("%m-%Y");
 
         return array(
 				'titulo' => 'Mensual',
@@ -86,7 +90,7 @@ class EstadisticasController extends Controller
 				'fecha' => $fecha,
 				'adicional' => 'minViewMode: 1,',
 				'formato' => 'mm-yyyy',
-				'inicio' => '08-2013',
+				'inicio' => reset($desde)['inicio'],
             );    
 			
 	}
@@ -97,21 +101,26 @@ class EstadisticasController extends Controller
      */
     public function camionAction(Request $request)
     {
-		 $fecha='16-06-2014';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
 		
 		  }
+		 else
+			$fecha = date("d-m-Y");
 		  
         $em = $this->getDoctrine()->getManager();
+		
+		$where = "where datos.id_tag_camiones not in (SELECT id_tag_camiones  FROM datos WHERE date(inicio) = :fecha GROUP BY id_tag_camiones,grua )" ;
 
-		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia($fecha);
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones($where, date("Y-m-d", strtotime($fecha)));
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_dia(date("Y-m-d", strtotime($fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
         return array(
                 'datos' => $datos,
                 'camiones' => $camiones,
 				'fecha' => $fecha,
+				'inicio' => reset($desde)['inicio'],
             );    
 		
 	}
@@ -122,21 +131,25 @@ class EstadisticasController extends Controller
      */
     public function camionSemanaAction(Request $request)
     {
-		 $fecha='16-06-2014';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
-		
 		  }
+		 else
+			$fecha = date("d-m-Y");
 		
         $em = $this->getDoctrine()->getManager();
 
-		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_semana($fecha);
+		$where = "where datos.id_tag_camiones not in (SELECT id_tag_camiones  FROM datos WHERE DATE_FORMAT(inicio,'%u-%Y') = DATE_FORMAT( :fecha ,'%u-%Y' ) GROUP BY id_tag_camiones,grua )" ;
+
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones($where, date("Y-m-d", strtotime($fecha)));
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_semana(date("Y-m-d", strtotime($fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
         return array(
                 'datos' => $datos,
                 'camiones' => $camiones,
 				'fecha' => $fecha,
+				'inicio' => reset($desde)['inicio'],
 				'domingo' => date_create($fecha)->modify('last Sunday'),
             );    
 	}
@@ -151,17 +164,22 @@ class EstadisticasController extends Controller
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
 		  }
-		  else $fecha='06-2014';
+		 else
+			$fecha = date("m-Y");
 		
         $em = $this->getDoctrine()->getManager();
 
-		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones();
-        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_mes($fecha);
+		$where = "where datos.id_tag_camiones not in (SELECT id_tag_camiones FROM datos WHERE DATE_FORMAT(inicio,'%m-%Y') = DATE_FORMAT( :fecha ,'%m-%Y' ) GROUP BY id_tag_camiones,grua )" ;
+		
+		$camiones = $em->getRepository('Eye3ControlBundle:Datos')->camiones($where, date("Y-m-d", strtotime("01-".$fecha)));
+        $datos = $em->getRepository('Eye3ControlBundle:Datos')->camion_mes(date("Y-m-d", strtotime("01-".$fecha)));
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato("%m-%Y");
 
         return array(
                 'datos' => $datos,
                 'camiones' => $camiones,
 				'fecha' => $fecha,
+				'inicio' => reset($desde)['inicio'],
 				'primer' => date_create('01-'.$fecha)->modify('next Monday'),
             );    
 	}
@@ -173,19 +191,21 @@ class EstadisticasController extends Controller
      */
     public function gruaAction(Request $request)
     {
-		 $fecha='24-09-2013';
 		 if ($request->getMethod() == 'POST' and $request->request->get('fecha') != "" ) {
 		 $fecha = $request->request->get('fecha');
-		
 		  }
+		 else
+			$fecha = date("d-m-Y");
 		  
         $em = $this->getDoctrine()->getManager();
 
         $datos = $em->getRepository('Eye3ControlBundle:Datos')->grua_dia($fecha);
+		$desde = $em->getRepository('Eye3ControlBundle:Datos')->primer_dato();
 
         return array(
                 'datos' => $datos,
 				'fecha' => $fecha,
+				'inicio' => reset($desde)['inicio'],
             ); 
      }
 
